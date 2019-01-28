@@ -1,13 +1,12 @@
-package vn.asiantech.travelmate
+package vn.asiantech.travelmate.login
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import vn.asiantech.travelmate.R
 
-class MainActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_login)
     }
 }
