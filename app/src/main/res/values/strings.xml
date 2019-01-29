@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">WinterFinal-Travelmate</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="notRegisteredYetCreateANewAccount">Not registered yet? Create a new account</string>
+    <string name="travelMate">Travel Mate</string>
 </resources>
