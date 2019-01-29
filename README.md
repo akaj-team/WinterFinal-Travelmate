@@ -7,5 +7,5 @@
   -
   -
 ### Cơ sở dữ liệu
-  - F
+  - FireBase
   -
