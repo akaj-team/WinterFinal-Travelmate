@@ -6,4 +6,14 @@
     <string name="login">Login</string>
     <string name="notRegisteredYetCreateANewAccount">Not registered yet? Create a new account</string>
     <string name="travelMate">Travel Mate</string>
+    <string name="firstName">First Name</string>
+    <string name="lastName">Last Name</string>
+    <string name="confirmPassword">Confirm Password</string>
+    <string name="signUp">Signup</string>
+    <string name="alreadyAMemberLogin">Already A Member? Login</string>
+    <string name="emailFormatWrong">Email Format Wrong!</string>
+    <string name="passwordFormatWrong">Password Format Wrong!</string>
+    <string name="firstNameFormatWrong">First Name Format Wrong!</string>
+    <string name="confirmPasswordWrong">Confirm Password Wrong!</string>
+    <string name="lastNameFormatWrong">Last Name Format Wrong!</string>
 </resources>
