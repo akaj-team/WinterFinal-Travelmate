@@ -9,9 +9,11 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_sign_up.*
 import kotlinx.android.synthetic.main.fragment_sign_up.view.*
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.utils.Validate
 
 
@@ -21,10 +23,12 @@ class SignUpFragment : Fragment(), View.OnClickListener {
     private var edtEmail: EditText? = null
     private var edtPassword: EditText? = null
     private var edtConfirmPassword: EditText? = null
+    private var fireBaseAuth: FirebaseAuth? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.fragment_sign_up, container, false)
         initView(view)
+        fireBaseAuth = FirebaseAuth.getInstance()
         return view
     }
 
@@ -74,6 +78,14 @@ class SignUpFragment : Fragment(), View.OnClickListener {
             showMessage(getString(R.string.confirmPasswordWrong))
         } else {
             Toast.makeText(context, "Ok", Toast.LENGTH_SHORT).show()
+            fireBaseAuth?.createUserWithEmailAndPassword(email, password)?.addOnCompleteListener {
+                if (it.isSuccessful) {
+                    val user = User(firstName, lastName, email, password)
+
+                } else {
+                    Toast.makeText(context, it.exception?.message, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
