@@ -55,6 +55,9 @@ class WeatherSevenDay {
     @SerializedName("humidity")
     var humidity: Int = 0
 
+    @SerializedName("weather")
+    var weather: List<WeatherCity>? = null
+
     @SerializedName("speed")
     var speed: Double = 0.0
 
@@ -92,4 +95,19 @@ class Temp {
 
     @SerializedName("morn")
     var morn: Double = 0.0
+}
+
+class WeatherCity {
+
+    @SerializedName("id")
+    var id: Int = 0
+
+    @SerializedName("main")
+    var main: String = ""
+
+    @SerializedName("description")
+    var description: String = ""
+
+    @SerializedName("icon")
+    var icon: String = ""
 }

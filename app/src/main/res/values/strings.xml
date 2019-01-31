@@ -10,5 +10,5 @@
     <string name="daNang">Da nang</string>
     <string name="percent">%</string>
     <string name="metric">C</string>
-    <string name="kilometersOverHours">Km/h</string>
+    <string name="meterOverSecond">m/s</string>
 </resources>

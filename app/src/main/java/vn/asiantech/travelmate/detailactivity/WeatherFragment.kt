@@ -64,6 +64,7 @@ class WeatherFragment : Fragment() {
         service?.getWeatherList(city, "metric", 7, DetailFragment.APP_ID)?.enqueue(object : Callback<WeatherList> {
             override fun onResponse(call: Call<WeatherList>, response: Response<WeatherList>?) {
                 weatherItems.addAll(response?.body()?.list!!)
+                weatherAdapter.notifyDataSetChanged()
             }
 
             override fun onFailure(call: Call<WeatherList>, t: Throwable) {

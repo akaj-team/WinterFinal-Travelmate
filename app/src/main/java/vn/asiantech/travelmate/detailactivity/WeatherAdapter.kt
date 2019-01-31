@@ -4,10 +4,14 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_weather.view.*
 import kotlinx.android.synthetic.main.item_weather_top.view.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.WeatherSevenDay
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.math.ceil
 
 class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -48,8 +52,14 @@ class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>) :
         fun onBind() {
             val cityWeather = weatherItems[adapterPosition]
             if (adapterPosition > 0) {
-                itemView.tvTemperatureItem.text = cityWeather.temp?.day.toString()
-                itemView.tvDayItem.text = cityWeather.dt.toString()
+                itemView.tvTemperatureItem.text = (cityWeather.temp?.day?.let {
+                    ceil(it).toInt().toString()
+                } + " " + itemView.context.getString(R.string.metric))
+                itemView.tvDayItem.text = formatDate(cityWeather.dt)
+                itemView.context?.let {
+                    Glide.with(it).load("http://openweathermap.org/img/w/${cityWeather.weather?.get(0)?.icon}.png")
+                        .into(itemView.imgIcon)
+                }
             }
         }
     }
@@ -57,9 +67,19 @@ class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>) :
     inner class ItemTopViewHolder(itemView: View) : ViewHolder(itemView) {
         fun onBind() {
             val cityWeather = weatherItems[0]
-            //itemView.tvCity.text = cityWeather?.city?.name
-            itemView.tvTemperature.text = cityWeather.temp?.day.toString()
-            itemView.tvDay.text = cityWeather.dt.toString()
+            itemView.tvDescriptionWeather.text = cityWeather.weather?.get(0)?.description
+            itemView.tvTemperature.text =
+                (cityWeather.temp?.day?.let {
+                    ceil(it).toInt().toString()
+                } + " " + itemView.context.getString(R.string.metric))
+            itemView.tvDay.text = formatDate(cityWeather.dt)
         }
+    }
+
+    fun formatDate(day: Int): String? {
+        val dayFormat = day.toLong()
+        val date: Date? = Date(dayFormat.times(1000L))
+        val simpleDateFormat = SimpleDateFormat("EEEE", Locale.US)
+        return simpleDateFormat.format(date)
     }
 }

@@ -75,7 +75,7 @@ class DetailFragment : Fragment(), View.OnClickListener {
                     (cityWeather?.main?.temp?.let { ceil(it) }?.toInt().toString() + " " + getString(R.string.metric))
                 tvHumidity.text =
                     (cityWeather?.main?.humidity?.let { ceil(it) }?.toInt().toString() + " " + getString(R.string.percent))
-                tvWind.text = (cityWeather?.wind?.speed.toString() + " " + getString(R.string.kilometersOverHours))
+                tvWind.text = (cityWeather?.wind?.speed.toString() + " " + getString(R.string.meterOverSecond))
                 context?.let {
                     Glide.with(it).load("https://danangz.vn/wp-content/uploads/2016/12/phaohoa-1.jpg").into(imgCity)
                 }
