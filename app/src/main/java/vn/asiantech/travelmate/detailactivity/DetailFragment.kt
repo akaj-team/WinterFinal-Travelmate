@@ -2,6 +2,7 @@ package vn.asiantech.travelmate.detailactivity
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.CardView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,10 +21,13 @@ import vn.asiantech.travelmate.models.WeatherResponse
 import kotlin.math.ceil
 
 
-class DetailFragment : Fragment() {
+class DetailFragment : Fragment(), View.OnClickListener {
+
     companion object {
         const val BASE_URL = "http://api.openweathermap.org/data/2.5/"
-        const val APP_ID = "b1e590b8d7440070913a4c78bd976c84"
+        const val URL_LIST_SEVEN_DAYS = "http://api.openweathermap.org/data/2.5/forecast/"
+        //const val APP_ID = "b1e590b8d7440070913a4c78bd976c84"
+        const val APP_ID = "9de243494c0b295cca9337e1e96b00e2"
     }
 
     private var service: SOService? = null
@@ -31,7 +35,21 @@ class DetailFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setUpApi()
         weatherData("Danang")
-        return inflater.inflate(R.layout.fragment_detail, container, false)
+        val view = inflater.inflate(R.layout.fragment_detail, container, false)
+        addListener(view)
+        return view
+    }
+
+    private fun addListener(view: View?) {
+        val cvWeather = view?.findViewById<CardView>(R.id.cvWeather)
+        cvWeather?.setOnClickListener(this)
+    }
+
+    override fun onClick(v: View?) {
+        val fragmentTransaction = fragmentManager?.beginTransaction()
+        fragmentTransaction?.add(R.id.fragment_container, WeatherFragment())
+        fragmentTransaction?.addToBackStack(null)
+        fragmentTransaction?.commit()
     }
 
     private fun setUpApi() {
@@ -62,7 +80,8 @@ class DetailFragment : Fragment() {
                     Glide.with(it).load("https://danangz.vn/wp-content/uploads/2016/12/phaohoa-1.jpg").into(imgCity)
                 }
                 context?.let {
-                    Glide.with(it).load("http://openweathermap.org/img/w/${cityWeather?.weather?.get(0)?.icon}.png").into(imgIconWeather)
+                    Glide.with(it).load("http://openweathermap.org/img/w/${cityWeather?.weather?.get(0)?.icon}.png")
+                        .into(imgIconWeather)
                 }
             }
 
