@@ -6,6 +6,7 @@ import android.support.v7.widget.CardView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.google.gson.GsonBuilder
@@ -45,7 +46,9 @@ class DetailFragment : Fragment(), View.OnClickListener {
 
     private fun addListener(view: View?) {
         val cvWeather = view?.findViewById<CardView>(R.id.cvWeather)
+        val imgMap = view?.findViewById<ImageView>(R.id.imgMap)
         cvWeather?.setOnClickListener(this)
+        imgMap?.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -56,7 +59,14 @@ class DetailFragment : Fragment(), View.OnClickListener {
             R.anim.left_to_right1,
             R.anim.left_to_right2
         )
-        fragmentTransaction?.replace(R.id.fragment_container, WeatherFragment())
+        when (v?.id) {
+            R.id.cvWeather -> {
+                fragmentTransaction?.replace(R.id.fragment_container, WeatherFragment())
+            }
+            R.id.imgMap -> {
+                fragmentTransaction?.replace(R.id.fragment_container, MapFragment())
+            }
+        }
         fragmentTransaction?.addToBackStack(null)
         fragmentTransaction?.commit()
     }
@@ -78,15 +88,25 @@ class DetailFragment : Fragment(), View.OnClickListener {
     private fun weatherData(city: String) {
         service?.getCity(city, UNITS, APP_ID)?.enqueue(object : Callback<WeatherResponse> {
             override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>?) {
-                val cityWeather: WeatherResponse? = response?.body()
-                tvTemperature.text =
-                    (cityWeather?.main?.temp?.let { ceil(it) }?.toInt().toString() + "°" + getString(R.string.metric))
-                tvHumidity.text =
-                    (cityWeather?.main?.humidity?.let { ceil(it) }?.toInt().toString() + " " + getString(R.string.percent))
-                tvWind.text = (cityWeather?.wind?.speed.toString() + " " + getString(R.string.meterOverSecond))
-                context?.let {
-                    Glide.with(it).load(Constant.MOCK_IMAGE).into(imgCity)
+                var cityWeather: WeatherResponse? = null
+                response?.let {
+                    it.body()?.let { temp ->
+                        cityWeather = temp
+                    }
                 }
+
+                cityWeather?.main?.temp?.let { temp ->
+                    tvTemperature.text = (ceil(temp).toInt().toString() + "°" + getString(R.string.metric))
+                }
+
+                cityWeather?.main?.humidity?.let { temp ->
+                    tvHumidity.text = (ceil(temp).toInt().toString() + " " + getString(R.string.percent))
+                }
+
+                tvWind.text = (cityWeather?.wind?.speed.toString() + " " + getString(R.string.meterOverSecond))
+
+                context?.let { Glide.with(it).load(Constant.MOCK_IMAGE).into(imgCity) }
+
                 context?.let {
                     Glide.with(it).load("http://openweathermap.org/img/w/${cityWeather?.weather?.get(0)?.icon}.png")
                         .into(imgIconWeather)

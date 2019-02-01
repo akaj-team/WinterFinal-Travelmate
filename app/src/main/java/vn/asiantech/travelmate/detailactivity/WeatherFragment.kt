@@ -21,7 +21,7 @@ import vn.asiantech.travelmate.models.WeatherList
 import vn.asiantech.travelmate.models.WeatherSevenDay
 import vn.asiantech.travelmate.utils.Constant
 
-class WeatherFragment : Fragment() {
+class WeatherFragment : Fragment(){
     private var service: SOService? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var weatherAdapter: WeatherAdapter

@@ -2,112 +2,105 @@ package vn.asiantech.travelmate.models
 
 import com.google.gson.annotations.SerializedName
 
-
-class WeatherList {
+data class WeatherList(
 
     @SerializedName("city")
-    var city: City? = null
+    var city: City,
 
     @SerializedName("cod")
-    var cod: String = ""
+    var cod: String,
 
     @SerializedName("message")
 
-    var message: Double = 0.0
+    var message: Double,
 
     @SerializedName("cnt")
-    var cnt: Int = 0
+    var cnt: Int,
 
     @SerializedName("list")
-    var list: List<WeatherSevenDay>? = null
-}
+    var list: List<WeatherSevenDay>
+)
 
-
-class City {
+data class City(
 
     @SerializedName("id")
-    var id: Int? = 0
-    @SerializedName("name")
+    var id: Int,
 
-    var name: String = ""
+    @SerializedName("name")
+    var name: String,
 
     @SerializedName("coord")
-    var coord: Coord? = null
+    var coord: Coord,
 
     @SerializedName("country")
-
-    var country: String = ""
+    var country: String,
 
     @SerializedName("population")
-    var population: Int? = 0
-}
+    var population: Int
+)
 
-class WeatherSevenDay {
+data class WeatherSevenDay(
+
     @SerializedName("dt")
-    var dt: Int = 0
+    var dt: Int,
 
     @SerializedName("temp")
-    var temp: Temp? = null
+    var temp: Temp,
 
     @SerializedName("pressure")
-    var pressure: Double = 0.0
+    var pressure: Double,
 
     @SerializedName("humidity")
-    var humidity: Int = 0
+    var humidity: Int,
 
     @SerializedName("weather")
-    var weather: List<WeatherCity>? = null
+    var weather: List<WeatherCity>,
 
     @SerializedName("speed")
-    var speed: Double = 0.0
+    var speed: Double,
 
     @SerializedName("deg")
-    var deg: Int = 0
+    var deg: Int,
 
     @SerializedName("clouds")
-    var clouds: Int = 0
+    var clouds: Int,
 
     @SerializedName("rain")
+    var rain: Double
+)
 
-    var rain: Double = 0.0
-}
-
-class Temp {
+data class Temp(
 
     @SerializedName("day")
-    var day: Double = 0.0
+    var day: Double,
 
     @SerializedName("min")
-
-    var min: Double = 0.0
+    var min: Double,
 
     @SerializedName("max")
-
-    var max: Double = 0.0
+    var max: Double,
 
     @SerializedName("night")
-
-    var night: Double = 0.0
+    var night: Double,
 
     @SerializedName("eve")
-
-    var eve: Double = 0.0
+    var eve: Double,
 
     @SerializedName("morn")
-    var morn: Double = 0.0
-}
+    var morn: Double
+)
 
-class WeatherCity {
+data class WeatherCity(
 
     @SerializedName("id")
-    var id: Int = 0
+    var id: Int,
 
     @SerializedName("main")
-    var main: String = ""
+    var main: String,
 
     @SerializedName("description")
-    var description: String = ""
+    var description: String,
 
     @SerializedName("icon")
-    var icon: String = ""
-}
+    var icon: String
+)
