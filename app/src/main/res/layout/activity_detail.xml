@@ -12,4 +12,3 @@
             android:id="@+id/fragment_container"
     />
 </android.support.constraint.ConstraintLayout>
-

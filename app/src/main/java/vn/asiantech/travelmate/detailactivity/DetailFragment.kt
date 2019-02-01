@@ -6,6 +6,7 @@ import android.support.v7.widget.CardView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.fragment_detail.*
@@ -18,6 +19,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.WeatherResponse
+import vn.asiantech.travelmate.utils.Constant
 import kotlin.math.ceil
 
 
@@ -28,13 +30,14 @@ class DetailFragment : Fragment(), View.OnClickListener {
         const val URL_LIST_SEVEN_DAYS = "http://api.openweathermap.org/data/2.5/forecast/"
         //const val APP_ID = "b1e590b8d7440070913a4c78bd976c84"
         const val APP_ID = "9de243494c0b295cca9337e1e96b00e2"
+        const val UNITS = "metric"
     }
 
     private var service: SOService? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setUpApi()
-        weatherData("Danang")
+        weatherData(Constant.MOCK_CITY)
         val view = inflater.inflate(R.layout.fragment_detail, container, false)
         addListener(view)
         return view
@@ -47,7 +50,13 @@ class DetailFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         val fragmentTransaction = fragmentManager?.beginTransaction()
-        fragmentTransaction?.add(R.id.fragment_container, WeatherFragment())
+        fragmentTransaction?.setCustomAnimations(
+            R.anim.right_to_left1,
+            R.anim.right_to_left2,
+            R.anim.left_to_right1,
+            R.anim.left_to_right2
+        )
+        fragmentTransaction?.replace(R.id.fragment_container, WeatherFragment())
         fragmentTransaction?.addToBackStack(null)
         fragmentTransaction?.commit()
     }
@@ -67,17 +76,16 @@ class DetailFragment : Fragment(), View.OnClickListener {
     }
 
     private fun weatherData(city: String) {
-        service?.getCity(city, "metric", APP_ID)?.enqueue(object : Callback<WeatherResponse> {
+        service?.getCity(city, UNITS, APP_ID)?.enqueue(object : Callback<WeatherResponse> {
             override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>?) {
                 val cityWeather: WeatherResponse? = response?.body()
-
                 tvTemperature.text =
-                    (cityWeather?.main?.temp?.let { ceil(it) }?.toInt().toString() + " " + getString(R.string.metric))
+                    (cityWeather?.main?.temp?.let { ceil(it) }?.toInt().toString() + "°" + getString(R.string.metric))
                 tvHumidity.text =
                     (cityWeather?.main?.humidity?.let { ceil(it) }?.toInt().toString() + " " + getString(R.string.percent))
                 tvWind.text = (cityWeather?.wind?.speed.toString() + " " + getString(R.string.meterOverSecond))
                 context?.let {
-                    Glide.with(it).load("https://danangz.vn/wp-content/uploads/2016/12/phaohoa-1.jpg").into(imgCity)
+                    Glide.with(it).load(Constant.MOCK_IMAGE).into(imgCity)
                 }
                 context?.let {
                     Glide.with(it).load("http://openweathermap.org/img/w/${cityWeather?.weather?.get(0)?.icon}.png")
@@ -86,6 +94,7 @@ class DetailFragment : Fragment(), View.OnClickListener {
             }
 
             override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
+                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
             }
         })
     }

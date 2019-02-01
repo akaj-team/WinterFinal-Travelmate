@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.item_weather.view.*
 import kotlinx.android.synthetic.main.item_weather_top.view.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.WeatherSevenDay
+import vn.asiantech.travelmate.utils.Constant
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.ceil
@@ -54,11 +55,10 @@ class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>) :
             if (adapterPosition > 0) {
                 itemView.tvTemperatureItem.text = (cityWeather.temp?.day?.let {
                     ceil(it).toInt().toString()
-                } + " " + itemView.context.getString(R.string.metric))
+                } + "°" + itemView.context.getString(R.string.metric))
                 itemView.tvDayItem.text = formatDate(cityWeather.dt)
                 itemView.context?.let {
-                    Glide.with(it).load("http://openweathermap.org/img/w/${cityWeather.weather?.get(0)?.icon}.png")
-                        .into(itemView.imgIcon)
+                    Glide.with(it).load("http://openweathermap.org/img/w/${cityWeather.weather?.get(0)?.icon}.png").into(itemView.imgIcon)
                 }
             }
         }
@@ -67,11 +67,12 @@ class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>) :
     inner class ItemTopViewHolder(itemView: View) : ViewHolder(itemView) {
         fun onBind() {
             val cityWeather = weatherItems[0]
+            itemView.tvCity.text = Constant.MOCK_CITY
             itemView.tvDescriptionWeather.text = cityWeather.weather?.get(0)?.description
             itemView.tvTemperature.text =
                 (cityWeather.temp?.day?.let {
                     ceil(it).toInt().toString()
-                } + " " + itemView.context.getString(R.string.metric))
+                } + "°" + itemView.context.getString(R.string.metric))
             itemView.tvDay.text = formatDate(cityWeather.dt)
         }
     }

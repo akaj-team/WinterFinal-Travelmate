@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -19,6 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.WeatherList
 import vn.asiantech.travelmate.models.WeatherSevenDay
+import vn.asiantech.travelmate.utils.Constant
 
 class WeatherFragment : Fragment() {
     private var service: SOService? = null
@@ -31,7 +32,7 @@ class WeatherFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_weather, container, false)
         weatherItems = ArrayList()
         setUpApi()
-        weatherData("Danang")
+        weatherData(Constant.MOCK_CITY)
         initView(view)
         return view
     }
@@ -61,15 +62,16 @@ class WeatherFragment : Fragment() {
     }
 
     private fun weatherData(city: String) {
-        service?.getWeatherList(city, "metric", 7, DetailFragment.APP_ID)?.enqueue(object : Callback<WeatherList> {
-            override fun onResponse(call: Call<WeatherList>, response: Response<WeatherList>?) {
-                weatherItems.addAll(response?.body()?.list!!)
-                weatherAdapter.notifyDataSetChanged()
-            }
+        service?.getWeatherList(city, DetailFragment.UNITS, 7, DetailFragment.APP_ID)
+            ?.enqueue(object : Callback<WeatherList> {
+                override fun onResponse(call: Call<WeatherList>, response: Response<WeatherList>?) {
+                    weatherItems.addAll(response?.body()?.list!!)
+                    weatherAdapter.notifyDataSetChanged()
+                }
 
-            override fun onFailure(call: Call<WeatherList>, t: Throwable) {
-                Log.d("xxxxxx", t.message)
-            }
-        })
+                override fun onFailure(call: Call<WeatherList>, t: Throwable) {
+                    Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                }
+            })
     }
 }
