@@ -5,9 +5,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".detailactivity.MapFragment">
-    <fragment
-            android:id="@+id/fragment_map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
+    <FrameLayout
+            android:id="@+id/flMap"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 </android.support.constraint.ConstraintLayout>
