@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.Toast
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_sign_up.*
 import kotlinx.android.synthetic.main.fragment_sign_up.view.*
@@ -78,14 +80,28 @@ class SignUpFragment : Fragment(), View.OnClickListener {
             showMessage(getString(R.string.confirmPasswordWrong))
         } else {
             Toast.makeText(context, "Ok", Toast.LENGTH_SHORT).show()
-            fireBaseAuth?.createUserWithEmailAndPassword(email, password)?.addOnCompleteListener {
+            /*fireBaseAuth?.createUserWithEmailAndPassword(email, password)?.addOnCompleteListener {
                 if (it.isSuccessful) {
                     val user = User(firstName, lastName, email, password)
 
                 } else {
                     Toast.makeText(context, it.exception?.message, Toast.LENGTH_SHORT).show()
                 }
-            }
+            }*/
+
+            fireBaseAuth?.createUserWithEmailAndPassword(edtEmail.text.toString(), edtPassword.text.toString())
+                ?.addOnCompleteListener{task : Task<AuthResult> ->
+                    if (task.isSuccessful){
+                        val db = FirebaseDatabase.getInstance().getReference("account")
+                        val courseId = db.push().key
+                        val user = User(edtFirstName.text.toString(), edtLastName.text.toString(), edtEmail.text.toString(), edtPassword.text.toString())
+                        courseId?.let { db.child(it).setValue(user) }
+                        Toast.makeText(applicationContext, "complete", Toast.LENGTH_SHORT).show()
+                        finish()
+                    } else {
+                        Toast.makeText(applicationContext, "error", Toast.LENGTH_SHORT).show()
+                    }
+                }
         }
     }
 
