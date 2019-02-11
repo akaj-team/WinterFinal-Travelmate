@@ -20,13 +20,15 @@ import com.google.android.gms.maps.model.MarkerOptions
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.utils.Constant
 
+
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
     GoogleMap.OnMyLocationClickListener {
     companion object {
         const val REQUEST_CODE_ASK_PERMISSIONS_LOCATION = 123
     }
 
-    private var mapFragment: SupportMapFragment? = null
+    private var supportMapFragment: SupportMapFragment? = null
+
     override fun onMyLocationClick(location: Location) {
         Toast.makeText(context, "Current location:\n$location", Toast.LENGTH_LONG).show()
     }
@@ -39,42 +41,37 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
     private var mapGoogle: GoogleMap? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_map, container, false)
-        checkAndRequestCameraPermission()
+        checkAndRequestPermission()
         initViews()
         return view
     }
 
     private fun initViews() {
         val fragmentManager = fragmentManager
-        val supportMapFragment = SupportMapFragment.newInstance()
-        fragmentManager?.beginTransaction()?.replace(R.id.flMap, supportMapFragment)?.commit()
-        supportMapFragment.getMapAsync(this)
+        supportMapFragment = SupportMapFragment.newInstance()
+        supportMapFragment?.let {
+            fragmentManager?.beginTransaction()?.replace(R.id.flMap, it)?.commit()
+            supportMapFragment?.getMapAsync(this)
+        }
     }
 
-    private fun checkAndRequestCameraPermission(): Boolean {
-        if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
-            != PackageManager.PERMISSION_GRANTED) {
+    private fun checkAndRequestPermission(): Boolean {
+        if (context?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            } != PackageManager.PERMISSION_GRANTED) {
             activity?.let { temp ->
                 ActivityCompat.requestPermissions(
-                    temp, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_CODE_ASK_PERMISSIONS_LOCATION
+                    temp,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    REQUEST_CODE_ASK_PERMISSIONS_LOCATION
                 )
             }
             return false
         }
         return true
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            REQUEST_CODE_ASK_PERMISSIONS_LOCATION -> {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    val fragmentManager = this.fragmentManager
-                    mapFragment?.getMapAsync(this)
-
-                }
-            }
-            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        }
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -90,5 +87,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
         }
         mapGoogle?.setOnMyLocationButtonClickListener(this)
         mapGoogle?.setOnMyLocationClickListener(this)
+    }
+
+    fun updateViewFragment() {
+        supportMapFragment?.getMapAsync(this)
     }
 }
