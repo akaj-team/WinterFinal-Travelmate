@@ -12,6 +12,7 @@ import android.widget.Toast
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_sign_up.*
 import kotlinx.android.synthetic.main.fragment_sign_up.view.*
 import vn.asiantech.travelmate.R
@@ -79,30 +80,28 @@ class SignUpFragment : Fragment(), View.OnClickListener {
         } else if (password != confirmPassword) {
             showMessage(getString(R.string.confirmPasswordWrong))
         } else {
-            Toast.makeText(context, "Ok", Toast.LENGTH_SHORT).show()
-            /*fireBaseAuth?.createUserWithEmailAndPassword(email, password)?.addOnCompleteListener {
-                if (it.isSuccessful) {
-                    val user = User(firstName, lastName, email, password)
-
-                } else {
-                    Toast.makeText(context, it.exception?.message, Toast.LENGTH_SHORT).show()
-                }
-            }*/
-
-            fireBaseAuth?.createUserWithEmailAndPassword(edtEmail.text.toString(), edtPassword.text.toString())
+            fireBaseAuth?.createUserWithEmailAndPassword(edtEmail?.text.toString(), edtPassword?.text.toString())
                 ?.addOnCompleteListener{task : Task<AuthResult> ->
                     if (task.isSuccessful){
                         val db = FirebaseDatabase.getInstance().getReference("account")
                         val courseId = db.push().key
-                        val user = User(edtFirstName.text.toString(), edtLastName.text.toString(), edtEmail.text.toString(), edtPassword.text.toString())
+                        val user = User(firstName, lastName, email, password)
                         courseId?.let { db.child(it).setValue(user) }
-                        Toast.makeText(applicationContext, "complete", Toast.LENGTH_SHORT).show()
-                        finish()
+                        showMessage(getString(R.string.successful))
+                        resetInputdata()
                     } else {
-                        Toast.makeText(applicationContext, "error", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
                     }
                 }
         }
+    }
+
+    private fun resetInputdata() {
+        edtFirstName?.setText("")
+        edtLastName?.setText("")
+        edtEmail?.setText("")
+        edtPassword?.setText("")
+        edtConfirmPassword?.setText("")
     }
 
     private fun showMessage(message: String) {

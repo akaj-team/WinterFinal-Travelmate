@@ -16,4 +16,6 @@
     <string name="firstNameFormatWrong">First Name Format Wrong!</string>
     <string name="confirmPasswordWrong">Confirm Password Wrong!</string>
     <string name="lastNameFormatWrong">Last Name Format Wrong!</string>
+    <string name="successful">thanh cong</string>
+    <string name="error">error</string>
 </resources>

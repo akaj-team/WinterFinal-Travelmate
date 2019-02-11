@@ -49,19 +49,22 @@ class LoginFragment : Fragment(), View.OnClickListener {
             }
             R.id.btnLogin -> {
                 if (validate.isValidEmail(email = edtEmail?.text.toString().trim()) && validate.isValidPassword(password = edtPassword?.text.toString().trim())) {
-                    firebaseAuth?.signInWithEmailAndPassword(edtEmail?.text.toString().trim(), edtPassword?.text.toString().trim())
-                        ?.addOnCompleteListener{task : Task<AuthResult> ->
-                            if (task.isSuccessful){
-                                Toast.makeText(activity, "complete", Toast.LENGTH_SHORT).show()
+                    firebaseAuth?.signInWithEmailAndPassword(
+                        edtEmail?.text.toString().trim(),
+                        edtPassword?.text.toString().trim()
+                    )
+                        ?.addOnCompleteListener { task: Task<AuthResult> ->
+                            if (task.isSuccessful) {
+                                Toast.makeText(context, getString(R.string.successful), Toast.LENGTH_SHORT).show()
                                 activity?.finish()
                                 val intent = Intent(activity, ProfileActivity::class.java)
                                 startActivity(intent)
                             } else {
-                                Toast.makeText(activity, "error", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
                             }
                         }
                 } else {
-                    Toast.makeText(context, "Can not login", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
                 }
             }
             else -> {
