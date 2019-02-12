@@ -13,6 +13,8 @@ import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.City
 
 class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
+    /*private lateinit var database : DatabaseReference
+    private var firebase : FirebaseDatabase? = FirebaseDatabase.getInstance()*/
     private lateinit var listCity: ArrayList<City>
     private lateinit var popularCityAdapter: PopularCityAdapter
     private var recyclerView: RecyclerView? = null
@@ -41,7 +43,7 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
     }
 
     private fun mockData(): List<City> {
-        listCity.add(
+        /*listCity.add(
             City(
                 "Hue",
                 "http://webdulichhue.com/wp-content/uploads/dai-noi-hue-1-1024x666.jpg",
@@ -90,7 +92,7 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
                 "ahiih",
                 "sadasd"
             )
-        )
+        )*/
         return listCity
     }
 
