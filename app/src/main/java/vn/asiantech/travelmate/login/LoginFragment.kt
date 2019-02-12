@@ -29,28 +29,22 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         val validate = Validate()
-        when (v?.id) {
-            R.id.tvRegister -> {
-                val fragmentTransaction = fragmentManager?.beginTransaction()
-                fragmentTransaction?.setCustomAnimations(
-                    R.anim.right_to_left1,
-                    R.anim.right_to_left2,
-                    R.anim.left_to_right1,
-                    R.anim.left_to_right2
-                )
-                fragmentTransaction?.add(R.id.fragment_container, SignUpFragment())
-                fragmentTransaction?.addToBackStack("ok")
-                fragmentTransaction?.commit()
-            }
-            R.id.btnLogin -> {
-                if (validate.isValidEmail(email = edtEmail?.text.toString().trim()) && validate.isValidPassword(password = edtPassword?.text.toString().trim())) {
-
-                } else {
-                    Toast.makeText(context, "Can not login", Toast.LENGTH_SHORT).show()
-                }
-            }
-            else -> {
-                //nothing
+        if (v?.id == R.id.tvRegister) {
+            val fragmentTransaction = fragmentManager?.beginTransaction()
+            fragmentTransaction?.setCustomAnimations(
+                R.anim.right_to_left1,
+                R.anim.right_to_left2,
+                R.anim.left_to_right1,
+                R.anim.left_to_right2
+            )
+            fragmentTransaction?.add(R.id.fragment_container, SignUpFragment())
+            fragmentTransaction?.addToBackStack("ok")
+            fragmentTransaction?.commit()
+        } else {
+            if (validate.isValidEmail(email = edtEmail?.text.toString().trim()) && validate.isValidPassword(password = edtPassword?.text.toString().trim())) {
+                Toast.makeText(context, "Successful", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Can not login", Toast.LENGTH_SHORT).show()
             }
         }
     }
