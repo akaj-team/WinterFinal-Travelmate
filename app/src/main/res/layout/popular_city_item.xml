@@ -32,5 +32,4 @@
             android:textColor="@color/colorBlack"
             android:fontFamily="cursive"
             app:layout_constraintBottom_toBottomOf="parent"/>
-
 </android.support.constraint.ConstraintLayout>

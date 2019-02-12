@@ -11,12 +11,8 @@ import vn.asiantech.travelmate.models.City
 
 class PopularCityAdapter(private val listCity: ArrayList<City>, private val onItemclickListener: OnItemClickListener) :
     RecyclerView.Adapter<PopularCityAdapter.ImageViewHolder>() {
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): PopularCityAdapter.ImageViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.popular_city_item, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PopularCityAdapter.ImageViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.popular_city_item, parent, false)
         return ImageViewHolder(view)
     }
 

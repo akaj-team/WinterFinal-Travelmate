@@ -34,7 +34,7 @@ class PopularCityActivity : AppCompatActivity(),PopularCityAdapter.OnItemClickLi
     }
 
     override fun onClicked(position: Int) {
-        //val intent = Intent(this,)
+        //move to detail activity
     }
 
     private fun mockData(): List<City> {
