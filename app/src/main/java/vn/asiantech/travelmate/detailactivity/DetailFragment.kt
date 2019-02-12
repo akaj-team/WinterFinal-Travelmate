@@ -29,7 +29,6 @@ class DetailFragment : Fragment(), View.OnClickListener {
     companion object {
         const val BASE_URL = "http://api.openweathermap.org/data/2.5/"
         const val URL_LIST_SEVEN_DAYS = "http://api.openweathermap.org/data/2.5/forecast/"
-        //const val APP_ID = "b1e590b8d7440070913a4c78bd976c84"
         const val APP_ID = "9de243494c0b295cca9337e1e96b00e2"
         const val UNITS = "metric"
     }
