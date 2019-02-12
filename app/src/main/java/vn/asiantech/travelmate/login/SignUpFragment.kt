@@ -7,20 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.EditText
 import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_sign_up.*
 import kotlinx.android.synthetic.main.fragment_sign_up.view.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.utils.Validate
 
-
 class SignUpFragment : Fragment(), View.OnClickListener {
-    private var edtFirstName: EditText? = null
-    private var edtLastName: EditText? = null
-    private var edtEmail: EditText? = null
-    private var edtPassword: EditText? = null
-    private var edtConfirmPassword: EditText? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.fragment_sign_up, container, false)
@@ -29,45 +22,46 @@ class SignUpFragment : Fragment(), View.OnClickListener {
     }
 
     private fun initView(view: View?) {
-        edtFirstName = view?.findViewById(R.id.edtFirstName)
-        edtLastName = view?.findViewById(R.id.edtLastName)
-        edtEmail = view?.findViewById(R.id.edtEmail)
-        edtPassword = view?.findViewById(R.id.edtPassword)
-        edtConfirmPassword = view?.findViewById(R.id.edtConfirmPassword)
         view?.tvLogin?.setOnClickListener(this)
         view?.btnSignUp?.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
         if (v?.id == R.id.btnSignUp) {
-            checkUserPassEmail()
+            if (checkUserPassEmail() == "pass") {
+                Toast.makeText(context, "OK", Toast.LENGTH_SHORT).show()
+            } else {
+                showMessage(checkUserPassEmail())
+            }
+
         } else {
-            val fragmentTransaction = fragmentManager?.beginTransaction()
-            fragmentTransaction?.setCustomAnimations(R.anim.left_to_right1, R.anim.left_to_right2)
-            fragmentTransaction?.replace(R.id.fragment_container, LoginFragment())
-            fragmentTransaction?.commit()
+            fragmentManager?.beginTransaction()?.apply {
+                setCustomAnimations(R.anim.left_to_right1, R.anim.left_to_right2)
+                replace(R.id.fragment_container, LoginFragment())
+                commit()
+            }
         }
     }
 
-    private fun checkUserPassEmail() {
+    private fun checkUserPassEmail(): String {
         val validate = Validate()
-        val firstName = edtFirstName?.text.toString().trim()
-        val lastName = edtLastName?.text.toString().trim()
-        val email = edtEmail?.text.toString().trim()
-        val password = edtPassword?.text.toString().trim()
-        val confirmPassword = edtConfirmPassword?.text.toString().trim()
-        if (!validate.isValidFirstName(firstName)) {
-            showMessage(getString(R.string.firstNameFormatWrong))
+        val firstName = edtFirstName.text.toString().trim()
+        val lastName = edtLastName.text.toString().trim()
+        val email = edtEmail.text.toString().trim()
+        val password = edtPassword.text.toString().trim()
+        val confirmPassword = edtConfirmPassword.text.toString().trim()
+        return if (!validate.isValidFirstName(firstName)) {
+            getString(R.string.signupTvFirstNameFormatWrong)
         } else if (!validate.isValidLastName(lastName)) {
-            showMessage(getString(R.string.lastNameFormatWrong))
+            getString(R.string.signupTvLastNameFormatWrong)
         } else if (!validate.isValidEmail(email)) {
-            showMessage(getString(R.string.emailFormatWrong))
+            getString(R.string.emailFormatWrong)
         } else if (!validate.isValidPassword(password)) {
-            showMessage(getString(R.string.passwordFormatWrong))
+            getString(R.string.signupTvPasswordFormatWrong)
         } else if (password != confirmPassword) {
-            showMessage(getString(R.string.confirmPasswordWrong))
+            getString(R.string.signupTvConfirmPasswordWrong)
         } else {
-            Toast.makeText(context, "Ok", Toast.LENGTH_SHORT).show()
+            "pass"
         }
     }
 

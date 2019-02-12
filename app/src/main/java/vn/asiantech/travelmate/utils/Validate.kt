@@ -4,10 +4,9 @@ import java.util.regex.Pattern
 
 class Validate {
     companion object {
-        const val EMAIL_PATTERN =
-            "^([a-zA-Z0-9_\\-.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(]?)$"
+        const val EMAIL_PATTERN = "^([a-zA-Z0-9_\\-.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(]?)$"
         const val PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-zA-Z]).{6,18}$"
-        const val FIRSTNAME_PATTERN = "[A-Z][a-zA-Z]*"
+        const val FIRSTNAME_PATTERN = "[a-zA-Z][a-zA-Z]*"
         const val LASTNAME_PATTERN = "[a-zA-z]+([ '-][a-zA-Z]+)*"
     }
 
