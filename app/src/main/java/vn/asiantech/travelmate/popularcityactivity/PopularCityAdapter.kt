@@ -29,7 +29,7 @@ class PopularCityAdapter(private val listCity: ArrayList<City>, private val onIt
         fun onBind() {
             val city = listCity[adapterPosition]
             Glide.with(itemView.context).load(city.image).into(itemView.imgCity)
-            view.tvCityName.text = city.nameCity
+            view.tvCityName.text = city.name
             itemView.setOnClickListener(this)
         }
     }
