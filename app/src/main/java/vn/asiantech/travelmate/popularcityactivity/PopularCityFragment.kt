@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.firebase.database.*
-
+import kotlinx.android.synthetic.main.fragment_popular_city.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.City
 
@@ -22,11 +22,11 @@ class PopularCityFragment : Fragment() {
     private lateinit var viewManager: GridLayoutManager
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_popular_city, container, false)
-        initRecyclerView(view)
+        initRecyclerView()
         return view
     }
 
-    private fun initRecyclerView(view: View) {
+    private fun initRecyclerView() {
         listCity = ArrayList()
         database = firebase!!.getReference("travel")
         database.addValueEventListener(object : ValueEventListener, PopularCityAdapter.OnItemClickListener {
@@ -44,7 +44,7 @@ class PopularCityFragment : Fragment() {
                 }
                 viewManager = GridLayoutManager(context, 2)
                 popularCityAdapter = PopularCityAdapter(listCity, this)
-                recyclerView = view.findViewById<RecyclerView>(R.id.recyclerViewPopularCity)?.apply {
+                recyclerView = recyclerViewPopularCity?.apply {
                     setHasFixedSize(true)
                     layoutManager = viewManager
                     adapter = popularCityAdapter
