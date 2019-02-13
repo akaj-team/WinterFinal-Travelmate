@@ -1,6 +1,7 @@
 package vn.asiantech.travelmate.utils
 
 object Constant {
+<<<<<<< HEAD
     const val MOCK_IMAGE = "https://danangz.vn/wp-content/uploads/2016/12/phaohoa-1.jpg"
     const val MOCK_CITY = "Danang"
     const val BASE_URL = "http://api.openweathermap.org/data/2.5/"
@@ -8,4 +9,7 @@ object Constant {
     const val APP_ID = "9de243494c0b295cca9337e1e96b00e2"
     const val UNITS = "metric"
     const val SIMPLE_DAY_FORMAT = "EEEE"
+=======
+    const val CHECK_SIGNUP = "OK"
+>>>>>>> master
 }
