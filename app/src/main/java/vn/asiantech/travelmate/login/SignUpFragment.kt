@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.EditText
 import android.widget.Toast
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
@@ -21,26 +20,16 @@ import vn.asiantech.travelmate.utils.Validate
 
 
 class SignUpFragment : Fragment(), View.OnClickListener {
-    private var edtFirstName: EditText? = null
-    private var edtLastName: EditText? = null
-    private var edtEmail: EditText? = null
-    private var edtPassword: EditText? = null
-    private var edtConfirmPassword: EditText? = null
     private var fireBaseAuth: FirebaseAuth? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.fragment_sign_up, container, false)
-        initView(view)
+        actionHandler(view)
         fireBaseAuth = FirebaseAuth.getInstance()
         return view
     }
 
-    private fun initView(view: View?) {
-        edtFirstName = view?.findViewById(R.id.edtFirstName)
-        edtLastName = view?.findViewById(R.id.edtLastName)
-        edtEmail = view?.findViewById(R.id.edtEmail)
-        edtPassword = view?.findViewById(R.id.edtPassword)
-        edtConfirmPassword = view?.findViewById(R.id.edtConfirmPassword)
+    private fun actionHandler(view: View?) {
         view?.tvLogin?.setOnClickListener(this)
         view?.btnSignUp?.setOnClickListener(this)
     }

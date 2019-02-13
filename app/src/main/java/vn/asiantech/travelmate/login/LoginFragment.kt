@@ -11,23 +11,20 @@ import android.widget.Toast
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_login.view.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.utils.Validate
 
 class LoginFragment : Fragment(), View.OnClickListener {
-    private var edtEmail: EditText? = null
-    private var edtPassword: EditText? = null
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.fragment_login, container, false)
-        initView(view)
+        actionHandler(view)
         return view
     }
 
-    private fun initView(view: View?) {
-        edtEmail = view?.findViewById(R.id.edtEmail)
-        edtPassword = view?.findViewById(R.id.edtPassword)
+    private fun actionHandler(view: View?) {
         view?.tvRegister?.setOnClickListener(this)
         view?.btnLogin?.setOnClickListener(this)
     }
