@@ -80,7 +80,7 @@ class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>) :
     fun formatDate(day: Int): String? {
         val dayFormat = day.toLong()
         val date: Date? = Date(dayFormat.times(1000L))
-        val simpleDateFormat = SimpleDateFormat("EEEE", Locale.US)
+        val simpleDateFormat = SimpleDateFormat(Constant.SIMPLE_DAY_FORMAT, Locale.US)
         return simpleDateFormat.format(date)
     }
 }

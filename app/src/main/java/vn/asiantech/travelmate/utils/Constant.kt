@@ -7,4 +7,5 @@ object Constant {
     const val URL_LIST_SEVEN_DAYS = "http://api.openweathermap.org/data/2.5/forecast/"
     const val APP_ID = "9de243494c0b295cca9337e1e96b00e2"
     const val UNITS = "metric"
+    const val SIMPLE_DAY_FORMAT = "EEEE"
 }

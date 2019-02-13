@@ -81,10 +81,10 @@ data class Main(
     var pressure: Float,
 
     @SerializedName("temp_min")
-    var temp_min: Float,
+    var tempMin: Float,
 
     @SerializedName("temp_max")
-    var temp_max: Float
+    var tempMax: Float
 )
 
 data class Sys(
