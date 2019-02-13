@@ -53,12 +53,12 @@ class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>) :
         fun onBind() {
             val cityWeather = weatherItems[adapterPosition]
             if (adapterPosition > 0) {
-                itemView.tvTemperatureItem.text = (cityWeather.temp?.day?.let {
+                itemView.tvTemperatureItem.text = (cityWeather.temp.day.let {
                     ceil(it).toInt().toString()
                 } + "°" + itemView.context.getString(R.string.metric))
                 itemView.tvDayItem.text = formatDate(cityWeather.dt)
                 itemView.context?.let {
-                    Glide.with(it).load("http://openweathermap.org/img/w/${cityWeather.weather?.get(0)?.icon}.png").into(itemView.imgIcon)
+                    Glide.with(it).load("http://openweathermap.org/img/w/${cityWeather.weather.get(0).icon}.png").into(itemView.imgIcon)
                 }
             }
         }
@@ -68,9 +68,9 @@ class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>) :
         fun onBind() {
             val cityWeather = weatherItems[0]
             itemView.tvCity.text = Constant.MOCK_CITY
-            itemView.tvDescriptionWeather.text = cityWeather.weather?.get(0)?.description
+            itemView.tvDescriptionWeather.text = cityWeather.weather.get(0).description
             itemView.tvTemperature.text =
-                (cityWeather.temp?.day?.let {
+                (cityWeather.temp.day.let {
                     ceil(it).toInt().toString()
                 } + "°" + itemView.context.getString(R.string.metric))
             itemView.tvDay.text = formatDate(cityWeather.dt)
