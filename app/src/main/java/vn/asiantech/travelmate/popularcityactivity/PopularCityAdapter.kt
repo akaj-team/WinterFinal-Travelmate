@@ -21,7 +21,7 @@ class PopularCityAdapter(private val listCity: ArrayList<City>, private val onIt
     }
 
     override fun getItemCount() = listCity.size
-    inner class ImageViewHolder(val view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
+    inner class ImageViewHolder(private val view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
         override fun onClick(v: View?) {
             onItemclickListener.onClicked(adapterPosition)
         }
