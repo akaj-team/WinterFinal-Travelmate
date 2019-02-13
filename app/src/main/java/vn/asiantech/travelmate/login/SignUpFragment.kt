@@ -9,25 +9,25 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_sign_up.*
-import kotlinx.android.synthetic.main.fragment_sign_up.view.*
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.utils.ValidationUtil
 
 class SignUpFragment : Fragment(), View.OnClickListener {
-    companion object {
-        const val CHECK_SIGNUP = "OK"
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view: View = inflater.inflate(R.layout.fragment_sign_up, container, false)
-        view.tvLogin.setOnClickListener(this)
-        view.btnSignUp.setOnClickListener(this)
-        return view
+        return inflater.inflate(R.layout.fragment_sign_up, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        tvLogin.setOnClickListener(this)
+        btnSignUp.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
         if (v?.id == R.id.btnSignUp) {
-            if (checkUserPassEmail() == CHECK_SIGNUP) {
+            if (checkUserPassEmail() == Constant.CHECK_SIGNUP) {
                 Toast.makeText(context, "OK", Toast.LENGTH_SHORT).show()
             } else {
                 showMessage(checkUserPassEmail())
@@ -43,7 +43,6 @@ class SignUpFragment : Fragment(), View.OnClickListener {
     }
 
     private fun checkUserPassEmail(): String {
-        val validate = ValidationUtil
         val firstName = edtFirstName.text.toString().trim()
         val lastName = edtLastName.text.toString().trim()
         val email = edtEmail.text.toString().trim()
@@ -51,11 +50,11 @@ class SignUpFragment : Fragment(), View.OnClickListener {
         val confirmPassword = edtConfirmPassword.text.toString().trim()
         return when {
             password != confirmPassword -> getString(R.string.signupTvConfirmPasswordWrong)
-            !validate.isValidEmail(email) -> getString(R.string.signupEmailFormatWrong)
-            !validate.isValidFirstName(firstName) -> getString(R.string.signupTvFirstNameFormatWrong)
-            !validate.isValidLastName(lastName) -> getString(R.string.signupTvLastNameFormatWrong)
-            !validate.isValidPassword(password) -> getString(R.string.signupTvPasswordFormatWrong)
-            else -> CHECK_SIGNUP
+            !ValidationUtil.isValidEmail(email) -> getString(R.string.signupEmailFormatWrong)
+            !ValidationUtil.isValidFirstName(firstName) -> getString(R.string.signupTvFirstNameFormatWrong)
+            !ValidationUtil.isValidLastName(lastName) -> getString(R.string.signupTvLastNameFormatWrong)
+            !ValidationUtil.isValidPassword(password) -> getString(R.string.signupTvPasswordFormatWrong)
+            else -> Constant.CHECK_SIGNUP
         }
     }
 
