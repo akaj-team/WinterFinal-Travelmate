@@ -28,7 +28,7 @@ class SignUpFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         if (v?.id == R.id.btnSignUp) {
             if (checkUserPassEmail() == Constant.CHECK_SIGNUP) {
-                Toast.makeText(context, "OK", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.signUpFragmentOk), Toast.LENGTH_SHORT).show()
             } else {
                 showMessage(checkUserPassEmail())
             }

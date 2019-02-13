@@ -17,4 +17,7 @@
     <string name="signupTvFirstNameFormatWrong">First Name Just Have Alphabet!</string>
     <string name="signupTvConfirmPasswordWrong">Confirm Password Wrong!</string>
     <string name="signupTvLastNameFormatWrong">Last Name Just Have Alphabet!</string>
+    <string name="loginFragmentSuccessful">Successful</string>
+    <string name="loginfragmentCannotLogin">Can not login</string>
+    <string name="signUpFragmentOk">OK</string>
 </resources>

@@ -30,10 +30,10 @@ class LoginFragment : Fragment(), View.OnClickListener {
                 commit()
             }
         } else {
-            if (ValidationUtil.isValidEmail(email = edtEmail?.text.toString().trim()) && ValidationUtil.isValidPassword(password = edtPassword?.text.toString().trim())) {
-                Toast.makeText(context, "Successful", Toast.LENGTH_SHORT).show()
+            if (ValidationUtil.isValidEmail(edtEmail?.text.toString().trim()) && ValidationUtil.isValidPassword(edtPassword?.text.toString().trim())) {
+                Toast.makeText(context, getString(R.string.loginFragmentSuccessful), Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(context, "Can not login", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.loginfragmentCannotLogin), Toast.LENGTH_SHORT).show()
             }
         }
     }
