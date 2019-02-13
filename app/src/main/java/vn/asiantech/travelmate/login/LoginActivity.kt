@@ -13,9 +13,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun initFragment() {
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragment_container, LoginFragment())
-            commit()
-        }
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container, LoginFragment())
+            .commit()
     }
 }

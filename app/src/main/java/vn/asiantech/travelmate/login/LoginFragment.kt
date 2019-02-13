@@ -9,22 +9,18 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_login.view.*
 import vn.asiantech.travelmate.R
-import vn.asiantech.travelmate.utils.Validate
+import vn.asiantech.travelmate.utils.ValidationUtil
 
 class LoginFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.fragment_login, container, false)
-        initView(view)
+        view.tvRegister.setOnClickListener(this)
+        view.btnLogin.setOnClickListener(this)
         return view
     }
 
-    private fun initView(view: View?) {
-        view?.tvRegister?.setOnClickListener(this)
-        view?.btnLogin?.setOnClickListener(this)
-    }
-
     override fun onClick(v: View?) {
-        val validate = Validate()
+        val validate = ValidationUtil
         if (v?.id == R.id.tvRegister) {
             fragmentManager?.beginTransaction()?.apply {
                 setCustomAnimations(R.anim.right_to_left1, R.anim.right_to_left2, R.anim.left_to_right1, R.anim.left_to_right2)

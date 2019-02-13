@@ -12,7 +12,7 @@
     <!--Signup Fragment-->
     <string name="signUp">Signup</string>
     <string name="signupTvAlreadyAMemberLogin">Already A Member? Login</string>
-    <string name="emailFormatWrong">Email Format Wrong!</string>
+    <string name="signupEmailFormatWrong">Email Format Wrong!</string>
     <string name="signupTvPasswordFormatWrong">Password Should Have !</string>
     <string name="signupTvFirstNameFormatWrong">First Name Just Have Alphabet!</string>
     <string name="signupTvConfirmPasswordWrong">Confirm Password Wrong!</string>

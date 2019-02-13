@@ -11,24 +11,23 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_sign_up.*
 import kotlinx.android.synthetic.main.fragment_sign_up.view.*
 import vn.asiantech.travelmate.R
-import vn.asiantech.travelmate.utils.Validate
+import vn.asiantech.travelmate.utils.ValidationUtil
 
 class SignUpFragment : Fragment(), View.OnClickListener {
+    companion object {
+        const val CHECK_SIGNUP = "OK"
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.fragment_sign_up, container, false)
-        initView(view)
+        view.tvLogin.setOnClickListener(this)
+        view.btnSignUp.setOnClickListener(this)
         return view
-    }
-
-    private fun initView(view: View?) {
-        view?.tvLogin?.setOnClickListener(this)
-        view?.btnSignUp?.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
         if (v?.id == R.id.btnSignUp) {
-            if (checkUserPassEmail() == "pass") {
+            if (checkUserPassEmail() == CHECK_SIGNUP) {
                 Toast.makeText(context, "OK", Toast.LENGTH_SHORT).show()
             } else {
                 showMessage(checkUserPassEmail())
@@ -44,24 +43,19 @@ class SignUpFragment : Fragment(), View.OnClickListener {
     }
 
     private fun checkUserPassEmail(): String {
-        val validate = Validate()
+        val validate = ValidationUtil
         val firstName = edtFirstName.text.toString().trim()
         val lastName = edtLastName.text.toString().trim()
         val email = edtEmail.text.toString().trim()
         val password = edtPassword.text.toString().trim()
         val confirmPassword = edtConfirmPassword.text.toString().trim()
-        return if (!validate.isValidFirstName(firstName)) {
-            getString(R.string.signupTvFirstNameFormatWrong)
-        } else if (!validate.isValidLastName(lastName)) {
-            getString(R.string.signupTvLastNameFormatWrong)
-        } else if (!validate.isValidEmail(email)) {
-            getString(R.string.emailFormatWrong)
-        } else if (!validate.isValidPassword(password)) {
-            getString(R.string.signupTvPasswordFormatWrong)
-        } else if (password != confirmPassword) {
-            getString(R.string.signupTvConfirmPasswordWrong)
-        } else {
-            "pass"
+        return when {
+            password != confirmPassword -> getString(R.string.signupTvConfirmPasswordWrong)
+            !validate.isValidEmail(email) -> getString(R.string.signupEmailFormatWrong)
+            !validate.isValidFirstName(firstName) -> getString(R.string.signupTvFirstNameFormatWrong)
+            !validate.isValidLastName(lastName) -> getString(R.string.signupTvLastNameFormatWrong)
+            !validate.isValidPassword(password) -> getString(R.string.signupTvPasswordFormatWrong)
+            else -> CHECK_SIGNUP
         }
     }
 
@@ -70,13 +64,15 @@ class SignUpFragment : Fragment(), View.OnClickListener {
         val slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down)
         val handler = Handler()
         if (tvMessageError.visibility == View.INVISIBLE) {
-            tvMessageError.visibility = View.VISIBLE
-            tvMessageError.text = message
-            tvMessageError.startAnimation(slideUp)
-            handler.postDelayed({
-                tvMessageError.startAnimation(slideDown)
-                tvMessageError.visibility = View.INVISIBLE
-            }, 3000)
+            tvMessageError?.apply {
+                visibility = View.VISIBLE
+                text = message
+                startAnimation(slideUp)
+                handler.postDelayed({
+                    startAnimation(slideDown)
+                    visibility = View.INVISIBLE
+                }, 3000)
+            }
         }
     }
 }
