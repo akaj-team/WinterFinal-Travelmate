@@ -13,8 +13,9 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun initFragment() {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container, DetailFragment())
-        fragmentTransaction.commit()
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container, DetailFragment())
+            .commit()
     }
 }
