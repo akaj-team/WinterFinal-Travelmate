@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class WeatherList(
 
     @SerializedName("city")
-    var city: City,
+    var city: Travel,
 
     @SerializedName("cod")
     var cod: String,
