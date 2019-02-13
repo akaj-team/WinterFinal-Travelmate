@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "961187150862",
+    "firebase_url": "https://travelmate-54563.firebaseio.com",
+    "project_id": "travelmate-54563",
+    "storage_bucket": "travelmate-54563.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:961187150862:android:6adad9128e891b90",
+        "android_client_info": {
+          "package_name": "vn.asiantech.travelmate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "961187150862-e3ddkr22csisq0a6li3mm27c46upffe5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "vn.asiantech.travelmate",
+            "certificate_hash": "bc868a0a05a81ac0a20763bce378a1a4ff5ac234"
+          }
+        },
+        {
+          "client_id": "961187150862-jbeqr9g7v3pfihk60ur407in4ehgrrjc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOhXhlHOGN_12a80THvtc0Qd9S-RS9wJU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "961187150862-jbeqr9g7v3pfihk60ur407in4ehgrrjc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
