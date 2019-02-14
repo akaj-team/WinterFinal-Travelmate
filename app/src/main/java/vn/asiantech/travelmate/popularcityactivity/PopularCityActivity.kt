@@ -2,6 +2,7 @@ package vn.asiantech.travelmate.popularcityactivity
 
 import android.os.Bundle
 import android.support.design.widget.NavigationView
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -17,16 +18,19 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_popular_city)
+        initDrawer()
+        initView()
+        initFragment()
+    }
+
+    private fun initDrawer() {
         setSupportActionBar(toolbar)
         val toggle = ActionBarDrawerToggle(
             this, drawerLayout, toolbar, R.string.navigationDrawerOpen, R.string.navigationDrawerClose
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
-
         navView.setNavigationItemSelectedListener(this)
-        initView()
-        initFragment()
     }
 
     override fun onBackPressed() {
@@ -72,6 +76,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     private fun initView() {
         val actionBar = supportActionBar
         actionBar?.title = "TravelMate"
+        val drawer= ContextCompat.getDrawable(applicationContext,R.drawable.ic_search_white_24dp)
     }
 
     override fun onClick(v: View?) {
