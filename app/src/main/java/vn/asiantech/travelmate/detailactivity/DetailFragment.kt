@@ -18,13 +18,14 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.models.WeatherResponse
-import vn.asiantech.travelmate.utils.Constant
 import kotlin.math.ceil
 
 
 class DetailFragment : Fragment(), View.OnClickListener {
 
+    lateinit var travel: Travel
     companion object {
         const val BASE_URL = "http://api.openweathermap.org/data/2.5/"
         const val URL_LIST_SEVEN_DAYS = "http://api.openweathermap.org/data/2.5/forecast/"
@@ -35,8 +36,11 @@ class DetailFragment : Fragment(), View.OnClickListener {
     private var service: SOService? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        if (activity is DetailActivity) {
+            travel = (activity as DetailActivity).getCity()
+        }
         setUpApi()
-        weatherData(Constant.MOCK_CITY)
+        weatherData(travel.province.toString())
         val view = inflater.inflate(R.layout.fragment_detail, container, false)
         addListener(view)
         return view
@@ -75,26 +79,35 @@ class DetailFragment : Fragment(), View.OnClickListener {
     }
 
     private fun weatherData(city: String) {
-        service?.getCity(city, UNITS, APP_ID)?.enqueue(object : Callback<WeatherResponse> {
-            override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>?) {
-                val cityWeather: WeatherResponse? = response?.body()
-                tvTemperature.text =
-                    (cityWeather?.main?.temp?.let { ceil(it) }?.toInt().toString() + "°" + getString(R.string.metric))
-                tvHumidity.text =
-                    (cityWeather?.main?.humidity?.let { ceil(it) }?.toInt().toString() + " " + getString(R.string.percent))
-                tvWind.text = (cityWeather?.wind?.speed.toString() + " " + getString(R.string.meterOverSecond))
-                context?.let {
-                    Glide.with(it).load(Constant.MOCK_IMAGE).into(imgCity)
-                }
-                context?.let {
-                    Glide.with(it).load("http://openweathermap.org/img/w/${cityWeather?.weather?.get(0)?.icon}.png")
-                        .into(imgIconWeather)
-                }
-            }
+        if (activity is DetailActivity) {
+            (activity as DetailActivity).showProgressbarDialog()
 
-            override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
-                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
-            }
-        })
+            service?.getCity(city, UNITS, APP_ID)?.enqueue(object : Callback<WeatherResponse> {
+                override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>?) {
+                    val cityWeather: WeatherResponse? = response?.body()
+                    tvTemperature.text =
+                        (cityWeather?.main?.temp?.let { ceil(it) }?.toInt().toString() + "°" + getString(R.string.metric))
+                    tvHumidity.text =
+                        (cityWeather?.main?.humidity?.let { ceil(it) }?.toInt().toString() + " " + getString(R.string.percent))
+                    tvWind.text = (cityWeather?.wind?.speed.toString() + " " + getString(R.string.meterOverSecond))
+
+                    context?.let {
+                        Glide.with(it).load(travel.image).into(imgCity)
+                    }
+                    tvDescription.text = travel.description
+                    tvNamePlace.text = travel.name
+                    context?.let {
+                        Glide.with(it).load("http://openweathermap.org/img/w/${cityWeather?.weather?.get(0)?.icon}.png")
+                            .into(imgIconWeather)
+                    }
+                    (activity as DetailActivity).progressDialog?.dismiss()
+                }
+
+                override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
+                    Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                    (activity as DetailActivity).progressDialog?.dismiss()
+                }
+            })
+        }
     }
 }

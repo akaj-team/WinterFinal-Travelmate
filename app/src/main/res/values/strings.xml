@@ -12,4 +12,6 @@
     <string name="percent">%</string>
     <string name="metric">C</string>
     <string name="meterOverSecond">m/s</string>
+    <string name="note">Please wait ...</string>
+    <string name="checkInternet">Please check the internet</string>
 </resources>

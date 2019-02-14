@@ -1,6 +1,8 @@
 package vn.asiantech.travelmate.models
 
-class Travel{
+import java.io.Serializable
+
+class Travel : Serializable {
     var area:String ? = null
     var description: String ? = null
     var image: String ? = null

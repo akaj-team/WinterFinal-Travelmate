@@ -17,11 +17,12 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.models.WeatherList
 import vn.asiantech.travelmate.models.WeatherSevenDay
-import vn.asiantech.travelmate.utils.Constant
 
 class WeatherFragment : Fragment() {
+    private lateinit var travel : Travel
     private var service: SOService? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var weatherAdapter: WeatherAdapter
@@ -29,17 +30,20 @@ class WeatherFragment : Fragment() {
     private lateinit var weatherItems: ArrayList<WeatherSevenDay>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        if(activity is DetailActivity) {
+            travel = (activity as DetailActivity).getCity()
+        }
         val view = inflater.inflate(R.layout.fragment_weather, container, false)
         weatherItems = ArrayList()
         setUpApi()
-        weatherData(Constant.MOCK_CITY)
+        weatherData(travel.province.toString())
         initView(view)
         return view
     }
 
     private fun initView(view: View) {
         viewManager = LinearLayoutManager(view.context)
-        weatherAdapter = WeatherAdapter(weatherItems)
+        weatherAdapter = WeatherAdapter(weatherItems, travel.province.toString())
         recyclerView = view.findViewById<RecyclerView>(R.id.recyclerViewWeather).apply {
             setHasFixedSize(true)
             layoutManager = viewManager
@@ -62,16 +66,22 @@ class WeatherFragment : Fragment() {
     }
 
     private fun weatherData(city: String) {
+        if(activity is DetailActivity) {
+            (activity as DetailActivity).showProgressbarDialog()
+
         service?.getWeatherList(city, DetailFragment.UNITS, 7, DetailFragment.APP_ID)
             ?.enqueue(object : Callback<WeatherList> {
                 override fun onResponse(call: Call<WeatherList>, response: Response<WeatherList>?) {
                     weatherItems.addAll(response?.body()?.list!!)
                     weatherAdapter.notifyDataSetChanged()
+                    (activity as DetailActivity).progressDialog?.dismiss()
                 }
 
                 override fun onFailure(call: Call<WeatherList>, t: Throwable) {
                     Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                    (activity as DetailActivity).progressDialog?.dismiss()
                 }
             })
+        }
     }
 }
