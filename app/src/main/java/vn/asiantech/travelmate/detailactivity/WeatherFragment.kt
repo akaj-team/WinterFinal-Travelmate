@@ -35,7 +35,7 @@ class WeatherFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setUpApi()
         initView()
-        weatherData(Constant.MOCK_CITY)
+        getWeatherData(Constant.MOCK_CITY)
     }
 
     private fun initView() {
@@ -62,7 +62,7 @@ class WeatherFragment : Fragment() {
         service = getImagesRetrofit.create<SOService>(SOService::class.java)
     }
 
-    private fun weatherData(city: String) {
+    private fun getWeatherData(city: String) {
         service?.getWeatherList(city, Constant.UNITS, 7, Constant.APP_ID)
             ?.enqueue(object : Callback<WeatherList> {
                 override fun onResponse(call: Call<WeatherList>, response: Response<WeatherList>?) {

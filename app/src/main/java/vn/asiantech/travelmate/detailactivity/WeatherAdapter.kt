@@ -50,19 +50,20 @@ class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>) :
         }
     }
 
-    open inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    open class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     inner class ItemViewHolder(itemView: View) : ViewHolder(itemView) {
         fun onBind() {
-            val cityWeather = weatherItems[adapterPosition]
             if (adapterPosition > 0) {
-                itemView.tvTemperatureItem.text = (cityWeather.temp.day.let {
-                    ceil(it).toInt().toString()
-                } + itemView.context.getString(R.string.detailFragmentTvTemperatureItemDegree) + itemView.context.getString(R.string.metric))
-                itemView.tvDayItem.text = formatDate(cityWeather.dt)
-                itemView.context?.let {
-                    Glide.with(it).load("http://openweathermap.org/img/w/${cityWeather.weather[0].icon}.png")
-                        .into(itemView.imgIcon)
+                val cityWeather = weatherItems[adapterPosition]
+                with(itemView) {
+                    Glide.with(context).load("http://openweathermap.org/img/w/${cityWeather.weather[0].icon}.png").into(imgIcon)
+                    tvDayItem.text = formatDate(cityWeather.dt)
+                    tvTemperatureItem.text = (cityWeather.temp.day.let {
+                        ceil(it).toInt().toString()
+                    } + with(context){
+                        getString(R.string.detailFragmentTvTemperatureItemDegree) + getString(R.string.metric)
+                    })
                 }
             }
         }
@@ -70,17 +71,23 @@ class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>) :
 
     inner class ItemTopViewHolder(itemView: View) : ViewHolder(itemView) {
         fun onBind() {
-            val cityWeather = weatherItems[0]
-            itemView.tvCity.text = Constant.MOCK_CITY
-            itemView.tvDescriptionWeather.text = cityWeather.weather[0].description
-            itemView.tvTemperature.text =
-                (cityWeather.temp.day.let {
-                    ceil(it).toInt().toString()
-                } + itemView.context.getString(R.string.detailFragmentTvTemperatureItemDegree) + itemView.context.getString(R.string.metric))
-            itemView.tvDay.text = formatDate(cityWeather.dt)
+            if (adapterPosition == 0) {
+                val cityWeather = weatherItems[0]
+                with(itemView) {
+                    tvDay.text = formatDate(cityWeather.dt)
+                    tvCity.text = Constant.MOCK_CITY
+                    tvDescriptionWeather.text = cityWeather.weather[0].description
+                    tvTemperature.text = (cityWeather.temp.day.let {
+                        ceil(it).toInt().toString()
+                    } + with(context){
+                        getString(R.string.detailFragmentTvTemperatureItemDegree) + getString(R.string.metric)
+                    })
+                    }
+                }
+            }
         }
-    }
 
+    // format time to day in week
     fun formatDate(day: Int): String? {
         val dayFormat = day.toLong()
         val date: Date? = Date(dayFormat.times(1000L))
