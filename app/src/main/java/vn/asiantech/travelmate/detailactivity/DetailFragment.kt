@@ -33,7 +33,7 @@ class DetailFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpApi()
-        weatherData(Constant.MOCK_CITY)
+        getWeatherData(Constant.MOCK_CITY)
         cvWeather.setOnClickListener(this)
     }
 
@@ -65,7 +65,7 @@ class DetailFragment : Fragment(), View.OnClickListener {
         service = getImagesRetrofit.create<SOService>(SOService::class.java)
     }
 
-    private fun weatherData(city: String) {
+    private fun getWeatherData(city: String) {
         service?.getCity(city, Constant.UNITS, Constant.APP_ID)?.enqueue(object : Callback<WeatherResponse> {
             override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>?) {
                 val cityWeather: WeatherResponse? = response?.body()
