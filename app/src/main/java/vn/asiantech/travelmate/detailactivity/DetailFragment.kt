@@ -19,8 +19,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.WeatherResponse
 import vn.asiantech.travelmate.utils.Constant
-import kotlin.math.ceil
-
 
 class DetailFragment : Fragment(), View.OnClickListener {
 
@@ -69,13 +67,14 @@ class DetailFragment : Fragment(), View.OnClickListener {
         service?.getCity(city, Constant.UNITS, Constant.APP_ID)?.enqueue(object : Callback<WeatherResponse> {
             override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>?) {
                 val cityWeather: WeatherResponse? = response?.body()
-                tvTemperature.text = (cityWeather?.main?.temp?.let { ceil(it) }?.toInt().toString() + "°" + getString(R.string.metric))
-                tvHumidity.text = (cityWeather?.main?.humidity?.let { ceil(it) }?.toInt().toString() + " " + getString(R.string.percent))
-                tvWind.text = (cityWeather?.wind?.speed.toString() + " " + getString(R.string.meterOverSecond))
-                context?.let {
-                    Glide.with(it).load(Constant.MOCK_IMAGE).into(imgCity)
-                    Glide.with(it).load("http://openweathermap.org/img/w/${cityWeather?.weather?.get(0)?.icon}.png")
-                        .into(imgIconWeather)
+                cityWeather?.let {
+                    tvTemperature.text = getString(R.string.degreeC,it.tempDisplay)
+                    tvHumidity.text = getString(R.string.percent,it.humidityDisplay)
+                    tvWind.text = getString(R.string.meterOverSecond,it.speedDisplay)
+                    context?.let { temp ->
+                        Glide.with(temp).load(Constant.MOCK_IMAGE).into(imgCity)
+                        Glide.with(temp).load("http://openweathermap.org/img/w/${it.iconDisplay}.png").into(imgIconWeather)
+                    }
                 }
             }
 

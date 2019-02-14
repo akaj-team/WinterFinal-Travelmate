@@ -3,6 +3,7 @@ package vn.asiantech.travelmate.detailactivity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.extensions.add
 import vn.asiantech.travelmate.models.WeatherList
 import vn.asiantech.travelmate.models.WeatherSevenDay
 import vn.asiantech.travelmate.utils.Constant
@@ -36,6 +38,8 @@ class WeatherFragment : Fragment() {
         setUpApi()
         initView()
         getWeatherData(Constant.MOCK_CITY)
+
+        Log.d("xxx","abc".add("cd"))
     }
 
     private fun initView() {

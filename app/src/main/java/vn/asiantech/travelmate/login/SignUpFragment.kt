@@ -10,6 +10,7 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_sign_up.*
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.extensions.getInputText
 import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.utils.ValidationUtil
 
@@ -43,20 +44,16 @@ class SignUpFragment : Fragment(), View.OnClickListener {
     }
 
     private fun checkUserPassEmail(): String {
-        val firstName = edtFirstName.text.toString().trim()
-        val lastName = edtLastName.text.toString().trim()
-        val email = edtEmail.text.toString().trim()
-        val password = edtPassword.text.toString().trim()
-        val confirmPassword = edtConfirmPassword.text.toString().trim()
         return when {
-            password != confirmPassword -> getString(R.string.signupTvConfirmPasswordWrong)
-            !ValidationUtil.isValidEmail(email) -> getString(R.string.signupEmailFormatWrong)
-            !ValidationUtil.isValidFirstName(firstName) -> getString(R.string.signupTvFirstNameFormatWrong)
-            !ValidationUtil.isValidLastName(lastName) -> getString(R.string.signupTvLastNameFormatWrong)
-            !ValidationUtil.isValidPassword(password) -> getString(R.string.signupTvPasswordFormatWrong)
+            edtPassword.getInputText() != edtPassword.getInputText() -> getString(R.string.signupTvConfirmPasswordWrong)
+            !ValidationUtil.isValidEmail(edtEmail.getInputText()) -> getString(R.string.signupEmailFormatWrong)
+            !ValidationUtil.isValidFirstName(edtFirstName.getInputText()) -> getString(R.string.signupTvFirstNameFormatWrong)
+            !ValidationUtil.isValidLastName(edtLastName.getInputText()) -> getString(R.string.signupTvLastNameFormatWrong)
+            !ValidationUtil.isValidPassword(edtPassword.getInputText()) -> getString(R.string.signupTvPasswordFormatWrong)
             else -> Constant.CHECK_SIGNUP
         }
     }
+
 
     private fun showMessage(message: String) {
         val slideUp = AnimationUtils.loadAnimation(context, R.anim.slide_up)

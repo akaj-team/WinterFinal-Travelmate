@@ -1,6 +1,7 @@
 package vn.asiantech.travelmate.models
 
 import com.google.gson.annotations.SerializedName
+import kotlin.math.ceil
 
 data class WeatherList(
 
@@ -67,7 +68,10 @@ data class WeatherSevenDay(
 
     @SerializedName("rain")
     var rain: Double
-)
+){
+    val tempDisplay: Int
+        get() = ceil(temp.day).toInt()
+}
 
 data class Temp(
 
