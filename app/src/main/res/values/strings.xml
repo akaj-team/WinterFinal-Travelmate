@@ -37,4 +37,5 @@
     <string name="navigationDrawerCommunicate">Communicate</string>
     <string name="navigationDrawerLogout">Logout</string>
     <string name="navigationDrawerSetting">Setting</string>
+    <string name="populatFragmentTravelMate">TravelMate</string>
 </resources>
