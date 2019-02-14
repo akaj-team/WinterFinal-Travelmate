@@ -16,8 +16,11 @@ import kotlin.math.ceil
 
 class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val viewTypeItemTop = 0
-    private val viewTypeItem = 1
+    companion object {
+        const val viewTypeItemTop = 0
+        const val viewTypeItem = 1
+    }
+
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater: LayoutInflater = LayoutInflater.from(viewGroup.context)
         if (viewType == viewTypeItemTop) {
@@ -49,16 +52,17 @@ class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>) :
 
     open inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-    open inner class ItemViewHolder(itemView: View) : ViewHolder(itemView) {
+    inner class ItemViewHolder(itemView: View) : ViewHolder(itemView) {
         fun onBind() {
             val cityWeather = weatherItems[adapterPosition]
             if (adapterPosition > 0) {
                 itemView.tvTemperatureItem.text = (cityWeather.temp.day.let {
                     ceil(it).toInt().toString()
-                } + "°" + itemView.context.getString(R.string.metric))
+                } + itemView.context.getString(R.string.detailFragmentTvTemperatureItemDegree) + itemView.context.getString(R.string.metric))
                 itemView.tvDayItem.text = formatDate(cityWeather.dt)
                 itemView.context?.let {
-                    Glide.with(it).load("http://openweathermap.org/img/w/${cityWeather.weather.get(0).icon}.png").into(itemView.imgIcon)
+                    Glide.with(it).load("http://openweathermap.org/img/w/${cityWeather.weather[0].icon}.png")
+                        .into(itemView.imgIcon)
                 }
             }
         }
@@ -68,11 +72,11 @@ class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>) :
         fun onBind() {
             val cityWeather = weatherItems[0]
             itemView.tvCity.text = Constant.MOCK_CITY
-            itemView.tvDescriptionWeather.text = cityWeather.weather.get(0).description
+            itemView.tvDescriptionWeather.text = cityWeather.weather[0].description
             itemView.tvTemperature.text =
                 (cityWeather.temp.day.let {
                     ceil(it).toInt().toString()
-                } + "°" + itemView.context.getString(R.string.metric))
+                } + itemView.context.getString(R.string.detailFragmentTvTemperatureItemDegree) + itemView.context.getString(R.string.metric))
             itemView.tvDay.text = formatDate(cityWeather.dt)
         }
     }
