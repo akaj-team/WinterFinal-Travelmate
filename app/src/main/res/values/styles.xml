@@ -1,9 +1,5 @@
 <resources>
-<<<<<<< HEAD
-=======
-
     <!-- Base application theme. -->
->>>>>>> master
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -11,4 +7,5 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorControlNormal">@color/colorWhite</item>
     </style>
+
 </resources>
