@@ -14,7 +14,7 @@ import vn.asiantech.travelmate.extensions.getInputText
 import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.utils.ValidationUtil
 
-class SignUpFragment : Fragment(), View.OnClickListener {
+class SignUpFragment : Fragment(), View.OnClickListener{
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_sign_up, container, false)
@@ -27,19 +27,22 @@ class SignUpFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        if (v?.id == R.id.btnSignUp) {
-            if (checkUserPassEmail() == Constant.CHECK_SIGNUP) {
-                Toast.makeText(context, getString(R.string.signUpFragmentOk), Toast.LENGTH_SHORT).show()
-            } else {
-                showMessage(checkUserPassEmail())
+        when (v?.id) {
+            R.id.btnSignUp -> {
+                if (checkUserPassEmail() == Constant.CHECK_SIGNUP) {
+                    Toast.makeText(context, getString(R.string.signUpFragmentOk), Toast.LENGTH_SHORT).show()
+                } else {
+                    showMessage(checkUserPassEmail())
+                }
             }
-
-        } else {
-            fragmentManager?.beginTransaction()?.apply {
-                setCustomAnimations(R.anim.left_to_right1, R.anim.left_to_right2)
-                replace(R.id.fragment_container, LoginFragment())
-                commit()
+            R.id.tvLogin -> {
+                fragmentManager?.beginTransaction()?.apply {
+                    setCustomAnimations(R.anim.left_to_right1, R.anim.left_to_right2)
+                    replace(R.id.fragment_container, LoginFragment())
+                    commit()
+                }
             }
+            else -> print(getString(R.string.noCaseSatisfied))
         }
     }
 
@@ -53,7 +56,6 @@ class SignUpFragment : Fragment(), View.OnClickListener {
             else -> Constant.CHECK_SIGNUP
         }
     }
-
 
     private fun showMessage(message: String) {
         val slideUp = AnimationUtils.loadAnimation(context, R.anim.slide_up)

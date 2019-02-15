@@ -29,4 +29,5 @@
     <string name="percent">%s %%</string>
     <string name="meterOverSecond">%s m/s</string>
     <string name="degreeC">%s°C</string>
+    <string name="noCaseSatisfied">No case satisfied</string>
 </resources>

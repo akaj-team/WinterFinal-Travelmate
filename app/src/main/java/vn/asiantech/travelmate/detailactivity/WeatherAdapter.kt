@@ -57,7 +57,7 @@ class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>) :
                     with(cityWeather) {
                         Glide.with(context).load("http://openweathermap.org/img/w/${weather[0].icon}.png")
                             .into(imgIcon)
-                        tvDayItem.text = (dt.toLong()).toDateFormat()
+                        tvDayItem.text = dt.toDateFormat()
                         tvTemperatureItem.text = context.getString(R.string.degreeC, tempDisplay)
                     }
                 }
@@ -71,7 +71,7 @@ class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>) :
                 val cityWeather = weatherItems[0]
                 with(itemView) {
                     with(cityWeather) {
-                        tvDay.text = dt.toLong().toDateFormat()
+                        tvDay.text = dt.toDateFormat()
                         tvCity.text = Constant.MOCK_CITY
                         tvDescriptionWeather.text = weather[0].description
                         tvTemperature.text = context.getString(R.string.degreeC, tempDisplay)

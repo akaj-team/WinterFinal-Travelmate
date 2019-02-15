@@ -68,12 +68,15 @@ class DetailFragment : Fragment(), View.OnClickListener {
             override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>?) {
                 val cityWeather: WeatherResponse? = response?.body()
                 cityWeather?.let {
-                    tvTemperature.text = getString(R.string.degreeC,it.tempDisplay)
-                    tvHumidity.text = getString(R.string.percent,it.humidityDisplay)
-                    tvWind.text = getString(R.string.meterOverSecond,it.speedDisplay)
-                    context?.let { temp ->
-                        Glide.with(temp).load(Constant.MOCK_IMAGE).into(imgCity)
-                        Glide.with(temp).load("http://openweathermap.org/img/w/${it.iconDisplay}.png").into(imgIconWeather)
+                    with(it) {
+                        tvTemperature.text = getString(R.string.degreeC, tempDisplay)
+                        tvHumidity.text = getString(R.string.percent, humidityDisplay)
+                        tvWind.text = getString(R.string.meterOverSecond, speedDisplay)
+                        context?.let { temp ->
+                            Glide.with(temp).load(Constant.MOCK_IMAGE).into(imgCity)
+                            Glide.with(temp).load("http://openweathermap.org/img/w/$iconDisplay.png")
+                                .into(imgIconWeather)
+                        }
                     }
                 }
             }
