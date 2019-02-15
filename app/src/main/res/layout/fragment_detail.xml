@@ -6,6 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".detailactivity.DetailFragment">
+
     <ImageView
             android:id="@+id/imgCity"
             android:layout_width="match_parent"
@@ -15,6 +16,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:contentDescription="@string/todo"/>
+
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,6 +27,7 @@
             android:textColor="@color/colorWhite"
             android:padding="10dp"
             app:layout_constraintBottom_toBottomOf="@+id/imgCity"/>
+
     <android.support.v7.widget.CardView
             android:id="@+id/cvWeather"
             android:layout_width="match_parent"
@@ -33,11 +36,13 @@
             app:layout_constraintTop_toBottomOf="@id/imgCity"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent">
+
         <android.support.constraint.ConstraintLayout
                 android:background="@drawable/bg_weather_one_day"
                 android:padding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
             <ImageView
                     android:id="@+id/imgIconWeather"
                     android:layout_width="70dp"
@@ -47,6 +52,7 @@
                     app:layout_constraintRight_toLeftOf="@id/tvTemperature"
                     android:contentDescription="@string/todo"
                     android:layout_marginStart="5dp"/>
+
             <TextView
                     android:id="@+id/tvTemperatureName"
                     android:gravity="center"
@@ -62,6 +68,7 @@
                     app:layout_constraintRight_toLeftOf="@id/tvHumidity"
                     app:layout_constraintBottom_toTopOf="@id/tvTemperature"
                     app:layout_constraintVertical_chainStyle="spread_inside"/>
+
             <TextView
                     android:id="@+id/tvTemperature"
                     android:layout_width="0dp"
@@ -90,6 +97,7 @@
                     app:layout_constraintLeft_toRightOf="@+id/tvTemperature"
                     app:layout_constraintRight_toLeftOf="@id/tvWind"
                     app:layout_constraintBottom_toTopOf="@id/tvHumidity"/>
+
             <TextView
                     android:id="@+id/tvHumidity"
                     android:layout_width="0dp"
@@ -104,6 +112,7 @@
                     app:layout_constraintRight_toLeftOf="@id/tvWind"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"/>
+
             <TextView
                     android:id="@+id/tvWindName"
                     android:gravity="center"
@@ -118,6 +127,7 @@
                     app:layout_constraintLeft_toRightOf="@+id/tvHumidity"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintBottom_toTopOf="@id/tvWind"/>
+
             <TextView
                     android:id="@+id/tvWind"
                     android:layout_width="0dp"
@@ -132,7 +142,9 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:textAlignment="center"
                     app:layout_constraintHorizontal_bias="0.5"/>
+
         </android.support.constraint.ConstraintLayout>
+
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
@@ -144,21 +156,23 @@
             app:layout_constraintTop_toBottomOf="@+id/cvWeather"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent">
+
         <android.support.constraint.ConstraintLayout
                 android:padding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
             <TextView
                     android:id="@+id/tvDescription"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:textAlignment="center"
                     android:gravity="center"
-                    android:text="Khu du lịch Bà Nà - Núi Chúa điểm du lịch nổi bật ở Đà Nẵng cách trung tâm thành phố khoảng 50km về phía Tây. Nằm ở độ cao 1.487m so với mặt biển, khí hậu nơi đây quanh năm mát mẻ, một ngày có đủ 4 mùa trong năm, và được coi là Đà Lạt thứ hai ở Trung bộ. Thiên nhiên như một bức tranh thủy mặc hiếm nơi nào có được.Ngũ Hành Sơn điểm du lịch Đà Nẵng cách trung tâm thành phố Đà Nẵng chỉ 7km, kề bên khu du lịch Non Nước, Ngũ Hành Sơn là năm ngọn núi đá (Kim sơn, Mộc sơn, Thủy sơn, Hỏa sơn và Thổ sơn) trông giống như những hòn non bộ nổi lên giữa một cồn cát đá mênh mông, quanh năm sóng vỗ dưới chân. Đến Ngũ Hành Sơn, du khách thường đến ngọn núi lớn Thủy Sơn, chùa Tam Thai, các hang động Huyền Không, động Linh Nham,…Sơn Trà là tên một bán đảo hình cây nấm thuộc quận Sơn Trà, nằm cách trung tâm thành phố Ðà Nẵng 10 km về hướng Ðông Bắc. Đến điểm du lịch ở Đà Nẵng này, du khách được “lên rừng, xuống biển”, trải nghiệm các hoạt động như: Khám phá rừng già Sơn Trà, tắm biển, tham gia câu cá cùng ngư dân, lặn biển ngắm san hô; thăm hải đăng Tiên Sa; tham quan chùa Linh Ứng… "
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
+
             <ImageView
                     android:layout_margin="10dp"
                     android:id="@+id/imgMap"
@@ -167,6 +181,9 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:src="@drawable/ic_map"/>
+
         </android.support.constraint.ConstraintLayout>
+
     </android.support.v7.widget.CardView>
+
 </android.support.constraint.ConstraintLayout>

@@ -21,23 +21,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.WeatherResponse
 import vn.asiantech.travelmate.utils.Constant
-import kotlin.math.ceil
-
 
 class DetailFragment : Fragment(), View.OnClickListener {
-
-    companion object {
-        const val BASE_URL = "http://api.openweathermap.org/data/2.5/"
-        const val URL_LIST_SEVEN_DAYS = "http://api.openweathermap.org/data/2.5/forecast/"
-        const val APP_ID = "9de243494c0b295cca9337e1e96b00e2"
-        const val UNITS = "metric"
-    }
 
     private var service: SOService? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setUpApi()
-        weatherData(Constant.MOCK_CITY)
+        getWeatherData(Constant.MOCK_CITY)
         val view = inflater.inflate(R.layout.fragment_detail, container, false)
         addListener(view)
         return view
@@ -77,38 +68,25 @@ class DetailFragment : Fragment(), View.OnClickListener {
         httpClient.addInterceptor(logging)
         val gson = GsonBuilder().setLenient().create()
         val getImagesRetrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(Constant.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(httpClient.build())
             .build()
         service = getImagesRetrofit.create<SOService>(SOService::class.java)
     }
 
-    private fun weatherData(city: String) {
-        service?.getCity(city, UNITS, APP_ID)?.enqueue(object : Callback<WeatherResponse> {
+    private fun getWeatherData(city: String) {
+        service?.getCity(city, Constant.UNITS, Constant.APP_ID)?.enqueue(object : Callback<WeatherResponse> {
             override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>?) {
-                var cityWeather: WeatherResponse? = null
-                response?.let {
-                    it.body()?.let { temp ->
-                        cityWeather = temp
+                val cityWeather: WeatherResponse? = response?.body()
+                cityWeather?.let {
+                    tvTemperature.text = getString(R.string.degreeC,it.tempDisplay)
+                    tvHumidity.text = getString(R.string.percent,it.humidityDisplay)
+                    tvWind.text = getString(R.string.meterOverSecond,it.speedDisplay)
+                    context?.let { temp ->
+                        Glide.with(temp).load(Constant.MOCK_IMAGE).into(imgCity)
+                        Glide.with(temp).load("http://openweathermap.org/img/w/${it.iconDisplay}.png").into(imgIconWeather)
                     }
-                }
-
-                cityWeather?.main?.temp?.let { temp ->
-                    tvTemperature.text = (ceil(temp).toInt().toString() + "°" + getString(R.string.metric))
-                }
-
-                cityWeather?.main?.humidity?.let { temp ->
-                    tvHumidity.text = (ceil(temp).toInt().toString() + " " + getString(R.string.percent))
-                }
-
-                tvWind.text = (cityWeather?.wind?.speed.toString() + " " + getString(R.string.meterOverSecond))
-
-                context?.let { Glide.with(it).load(Constant.MOCK_IMAGE).into(imgCity) }
-
-                context?.let {
-                    Glide.with(it).load("http://openweathermap.org/img/w/${cityWeather?.weather?.get(0)?.icon}.png")
-                        .into(imgIconWeather)
                 }
             }
 
