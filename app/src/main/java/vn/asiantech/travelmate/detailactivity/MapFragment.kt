@@ -10,7 +10,6 @@ import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -23,18 +22,15 @@ import vn.asiantech.travelmate.utils.Constant
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
     GoogleMap.OnMyLocationClickListener {
-    companion object {
-        const val REQUEST_CODE_ASK_PERMISSIONS_LOCATION = 123
-    }
 
     private var supportMapFragment: SupportMapFragment? = null
 
     override fun onMyLocationClick(location: Location) {
-        Toast.makeText(context, "Current location:\n$location", Toast.LENGTH_LONG).show()
+        // TO DO
     }
 
     override fun onMyLocationButtonClick(): Boolean {
-        Toast.makeText(context, "MyLocation button clicked", Toast.LENGTH_SHORT).show()
+        //TO DO
         return false
     }
 
@@ -57,17 +53,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
 
     private fun checkAndRequestPermission(): Boolean {
         if (context?.let {
-                ContextCompat.checkSelfPermission(
-                    it,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-            } != PackageManager.PERMISSION_GRANTED) {
+                ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) } != PackageManager.PERMISSION_GRANTED) {
             activity?.let { temp ->
-                ActivityCompat.requestPermissions(
-                    temp,
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    REQUEST_CODE_ASK_PERMISSIONS_LOCATION
-                )
+                ActivityCompat.requestPermissions(temp, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), Constant.REQUEST_CODE_ASK_PERMISSIONS_LOCATION)
             }
             return false
         }
@@ -77,16 +65,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
     override fun onMapReady(googleMap: GoogleMap?) {
         mapGoogle = googleMap
         val daNang = LatLng(16.078400, 108.234618)
-        mapGoogle?.addMarker(MarkerOptions().position(daNang).title(Constant.MOCK_CITY))
-        mapGoogle?.moveCamera(CameraUpdateFactory.newLatLng(daNang))
-        mapGoogle?.uiSettings?.isZoomControlsEnabled = true
-        mapGoogle?.uiSettings?.isCompassEnabled = true
-        if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
-            == PackageManager.PERMISSION_GRANTED) {
-            mapGoogle?.isMyLocationEnabled = true
+        mapGoogle?.let {
+            it.addMarker(MarkerOptions().position(daNang).title(Constant.MOCK_CITY))
+            it.moveCamera(CameraUpdateFactory.newLatLng(daNang))
+            it.uiSettings?.isZoomControlsEnabled = true
+            it.uiSettings?.isCompassEnabled = true
+            if (context?.let {temp ->
+                    ContextCompat.checkSelfPermission(temp, Manifest.permission.ACCESS_FINE_LOCATION) } == PackageManager.PERMISSION_GRANTED) {
+                it.isMyLocationEnabled = true
+            }
+            it.setOnMyLocationButtonClickListener(this)
+            it.setOnMyLocationClickListener(this)
         }
-        mapGoogle?.setOnMyLocationButtonClickListener(this)
-        mapGoogle?.setOnMyLocationClickListener(this)
     }
 
     fun updateViewFragment() {
