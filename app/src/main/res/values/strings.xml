@@ -25,7 +25,7 @@
     <string name="todo">TODO</string>
     <string name="hue">Hue</string>
     <string name="popularCityTvTravelmate">TravelMate</string>
-    <!--navigation-->
+    <!--Navigation-->
     <string name="navigationDrawerOpen">Open navigation drawer</string>
     <string name="navigationDrawerClose">Close navigation drawer</string>
     <string name="navigationHeaderTitle">Android Studio</string>
@@ -38,4 +38,11 @@
     <string name="navigationDrawerLogout">Logout</string>
     <string name="navigationDrawerSetting">Setting</string>
     <string name="populatFragmentTravelMate">TravelMate</string>
+    <!--Fragment Setting-->
+    <string name="search">Search</string>
+    <string name="fragmentSettingEdtOldPassword">Old Password</string>
+    <string name="fragmentSettingEdtNewPassword">New Password</string>
+    <string name="fragmentSettingEdtconfirmPassword">Confirm Password</string>
+    <string name="fragmentSettingBtnDone">Done</string>
+    <string name="fragmentSettingBtnCancle">Cancle</string>
 </resources>

@@ -10,4 +10,6 @@
     <color name="colorDark">#323232</color>
     <color name="colorBlue">#3283F3</color>
     <color name="colorBlack">#050505</color>
+    <color name="colorBlueGreen">#129FAD</color>
+    <color name="colorYellow">#E6F553</color>
 </resources>
