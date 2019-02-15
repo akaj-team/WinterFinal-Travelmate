@@ -13,75 +13,71 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_sign_up.*
-import kotlinx.android.synthetic.main.fragment_sign_up.view.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.User
-import vn.asiantech.travelmate.utils.Validate
-
+import vn.asiantech.travelmate.utils.Constant
+import vn.asiantech.travelmate.utils.ValidationUtil
 
 class SignUpFragment : Fragment(), View.OnClickListener {
-    private var fireBaseAuth: FirebaseAuth? = null
+    private lateinit var fireBaseAuth: FirebaseAuth
+    private lateinit var firstName: String
+    private lateinit var lastName: String
+    private lateinit var email: String
+    private lateinit var password: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view: View = inflater.inflate(R.layout.fragment_sign_up, container, false)
-        actionHandler(view)
-        fireBaseAuth = FirebaseAuth.getInstance()
-        return view
+        this.fireBaseAuth = FirebaseAuth.getInstance()
+        return inflater.inflate(R.layout.fragment_sign_up, container, false)
     }
 
-    private fun actionHandler(view: View?) {
-        view?.tvLogin?.setOnClickListener(this)
-        view?.btnSignUp?.setOnClickListener(this)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        tvLogin.setOnClickListener(this)
+        btnSignUp.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.btnSignUp -> {
-                checkUserPassEmail()
+        if (v?.id == R.id.btnSignUp) {
+            if (checkUserPassEmail() == Constant.CHECK_SIGNUP) {
+                fireBaseAuth.createUserWithEmailAndPassword(edtEmail?.text.toString(), edtPassword?.text.toString())
+                    .addOnCompleteListener{ task : Task<AuthResult> ->
+                        if (task.isSuccessful){
+                            val db = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
+                            val courseId = db.push().key
+                            val user = User(firstName, lastName, email, password)
+                            courseId?.let { db.child(it).setValue(user) }
+                            Toast.makeText(context, getString(R.string.successful), Toast.LENGTH_SHORT).show()
+                            resetInputdata()
+                        } else {
+                            Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            } else {
+                showMessage(checkUserPassEmail())
             }
-            R.id.tvLogin -> {
-                val fragmentTransaction = fragmentManager?.beginTransaction()
-                fragmentTransaction?.setCustomAnimations(R.anim.left_to_right1, R.anim.left_to_right2)
-                fragmentTransaction?.replace(R.id.fragment_container, LoginFragment())
-                fragmentTransaction?.commit()
-            }
-            else -> {
-                //nothing
+
+        } else {
+            fragmentManager?.beginTransaction()?.apply {
+                setCustomAnimations(R.anim.left_to_right1, R.anim.left_to_right2)
+                replace(R.id.fragment_container, LoginFragment())
+                commit()
             }
         }
     }
 
-    private fun checkUserPassEmail() {
-        val validate = Validate()
-        val firstName = edtFirstName?.text.toString().trim()
-        val lastName = edtLastName?.text.toString().trim()
-        val email = edtEmail?.text.toString().trim()
-        val password = edtPassword?.text.toString().trim()
-        val confirmPassword = edtConfirmPassword?.text.toString().trim()
-        if (!validate.isValidFirstName(firstName)) {
-            showMessage(getString(R.string.firstNameFormatWrong))
-        } else if (!validate.isValidLastName(lastName)) {
-            showMessage(getString(R.string.lastNameFormatWrong))
-        } else if (!validate.isValidEmail(email)) {
-            showMessage(getString(R.string.emailFormatWrong))
-        } else if (!validate.isValidPassword(password)) {
-            showMessage(getString(R.string.passwordFormatWrong))
-        } else if (password != confirmPassword) {
-            showMessage(getString(R.string.confirmPasswordWrong))
-        } else {
-            fireBaseAuth?.createUserWithEmailAndPassword(edtEmail?.text.toString(), edtPassword?.text.toString())
-                ?.addOnCompleteListener{task : Task<AuthResult> ->
-                    if (task.isSuccessful){
-                        val db = FirebaseDatabase.getInstance().getReference("account")
-                        val courseId = db.push().key
-                        val user = User(firstName, lastName, email, password)
-                        courseId?.let { db.child(it).setValue(user) }
-                        showMessage(getString(R.string.successful))
-                        resetInputdata()
-                    } else {
-                        Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
-                    }
-                }
+    private fun checkUserPassEmail(): String {
+        firstName = edtFirstName.text.toString().trim()
+        lastName = edtLastName.text.toString().trim()
+        email = edtEmail.text.toString().trim()
+        val password = edtPassword.text.toString().trim()
+        val confirmPassword = edtConfirmPassword.text.toString().trim()
+        return when {
+            password != confirmPassword -> getString(R.string.signupTvConfirmPasswordWrong)
+            !ValidationUtil.isValidEmail(email) -> getString(R.string.signupEmailFormatWrong)
+            !ValidationUtil.isValidFirstName(firstName) -> getString(R.string.signupTvFirstNameFormatWrong)
+            !ValidationUtil.isValidLastName(lastName) -> getString(R.string.signupTvLastNameFormatWrong)
+            !ValidationUtil.isValidPassword(password) -> getString(R.string.signupTvPasswordFormatWrong)
+            else -> Constant.CHECK_SIGNUP
         }
     }
 

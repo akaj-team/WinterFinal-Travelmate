@@ -10,12 +10,14 @@
     <string name="lastName">Last Name</string>
     <string name="confirmPassword">Confirm Password</string>
     <string name="signUp">Signup</string>
-    <string name="alreadyAMemberLogin">Already A Member? Login</string>
-    <string name="emailFormatWrong">Email Format Wrong!</string>
-    <string name="passwordFormatWrong">Password Format Wrong!</string>
-    <string name="firstNameFormatWrong">First Name Format Wrong!</string>
-    <string name="confirmPasswordWrong">Confirm Password Wrong!</string>
-    <string name="lastNameFormatWrong">Last Name Format Wrong!</string>
+    <string name="loginfragmentCannotLogin">Can not login</string>
+    <string name="signupTvAlreadyAMemberLogin">Already A Member? Login</string>
+    <string name="signupEmailFormatWrong">Email Format Wrong!</string>
+    <string name="signupTvPasswordFormatWrong">Password Should Have !</string>
+    <string name="signupTvFirstNameFormatWrong">First Name Just Have Alphabet!</string>
+    <string name="signupTvConfirmPasswordWrong">Confirm Password Wrong!</string>
+    <string name="signupTvLastNameFormatWrong">Last Name Just Have Alphabet!</string>
+    <string name="loginFragmentSuccessful">Successful</string>
     <string name="successful">thanh cong</string>
     <string name="error">error</string>
 </resources>
