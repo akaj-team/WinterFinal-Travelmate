@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.popular_city_item.view.*
 import vn.asiantech.travelmate.R
-import vn.asiantech.travelmate.models.City
+import vn.asiantech.travelmate.models.Travel
 
-class PopularCityAdapter(private val listCity: ArrayList<City>, private val onItemclickListener: OnItemClickListener) :
+class PopularCityAdapter(private val listCity: ArrayList<Travel>, private val onItemclickListener: OnItemClickListener) :
     RecyclerView.Adapter<PopularCityAdapter.ImageViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PopularCityAdapter.ImageViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.popular_city_item, parent, false)

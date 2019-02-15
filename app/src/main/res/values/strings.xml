@@ -5,4 +5,6 @@
     <string name="mostPopularCities">Most Popular Cities</string>
     <string name="todo">TODO</string>
     <string name="hue">Hue</string>
+    <string name="note">please waiting ...</string>
+    <string name="checkInternet">please check the internet</string>
 </resources>
