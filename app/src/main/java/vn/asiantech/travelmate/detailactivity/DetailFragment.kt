@@ -7,22 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.bumptech.glide.Glide
-import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.fragment_detail.*
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.WeatherResponse
 import vn.asiantech.travelmate.utils.Constant
+import vn.asiantech.travelmate.utils.SetAPIUtil
 
 class DetailFragment : Fragment(), View.OnClickListener {
-
-    private var service: SOService? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_detail, container, false)
@@ -30,7 +24,6 @@ class DetailFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpApi()
         getWeatherData(Constant.MOCK_CITY)
         cvWeather.setOnClickListener(this)
     }
@@ -49,22 +42,10 @@ class DetailFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun setUpApi() {
-        val logging = HttpLoggingInterceptor()
-        logging.level = HttpLoggingInterceptor.Level.BODY
-        val httpClient = OkHttpClient.Builder()
-        httpClient.addInterceptor(logging)
-        val gson = GsonBuilder().setLenient().create()
-        val getImagesRetrofit = Retrofit.Builder()
-            .baseUrl(Constant.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .client(httpClient.build())
-            .build()
-        service = getImagesRetrofit.create<SOService>(SOService::class.java)
-    }
-
     private fun getWeatherData(city: String) {
-        service?.getCity(city, Constant.UNITS, Constant.APP_ID)?.enqueue(object : Callback<WeatherResponse> {
+        val setApi = SetAPIUtil()
+        val service = setApi.setUpApi(Constant.BASE_URL)
+        service.getCity(city, Constant.UNITS, Constant.APP_ID)?.enqueue(object : Callback<WeatherResponse> {
             override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>?) {
                 val cityWeather: WeatherResponse? = response?.body()
                 cityWeather?.let {
