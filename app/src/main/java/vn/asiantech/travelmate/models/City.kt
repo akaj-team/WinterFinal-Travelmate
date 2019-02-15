@@ -1,8 +1,10 @@
 package vn.asiantech.travelmate.models
 
-data class City (
-    val nameCity:String,
-    val image: String,
-    val description: String,
-    val location: String
-)
+class City{
+    var area:String ? = null
+    var description: String ? = null
+    var image: String ? = null
+    var location: String ? = null
+    var name: String ? = null
+    var province: String ? = null
+}

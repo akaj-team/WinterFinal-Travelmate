@@ -37,4 +37,6 @@
     <string name="navigationDrawerCommunicate">Communicate</string>
     <string name="navigationDrawerLogout">Logout</string>
     <string name="navigationDrawerSetting">Setting</string>
+    <string name="note">plese wait ...</string>
+    <string name="checkInternet">plese check the internet</string>
 </resources>

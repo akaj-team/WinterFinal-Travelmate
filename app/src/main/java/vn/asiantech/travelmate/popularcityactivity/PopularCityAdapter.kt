@@ -21,7 +21,7 @@ class PopularCityAdapter(private val listCity: ArrayList<City>, private val onIt
     }
 
     override fun getItemCount() = listCity.size
-    inner class ImageViewHolder(private val view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
+    inner class ImageViewHolder(val view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
         override fun onClick(v: View?) {
             onItemclickListener.onClicked(adapterPosition)
         }
@@ -29,7 +29,7 @@ class PopularCityAdapter(private val listCity: ArrayList<City>, private val onIt
         fun onBind() {
             val city = listCity[adapterPosition]
             Glide.with(itemView.context).load(city.image).into(itemView.imgCity)
-            view.tvCityName.text = city.nameCity
+            view.tvCityName.text = city.name
             itemView.setOnClickListener(this)
         }
     }
