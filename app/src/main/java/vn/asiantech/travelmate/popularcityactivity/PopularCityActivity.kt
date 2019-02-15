@@ -2,7 +2,6 @@ package vn.asiantech.travelmate.popularcityactivity
 
 import android.os.Bundle
 import android.support.design.widget.NavigationView
-import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -75,8 +74,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
 
     private fun initView() {
         val actionBar = supportActionBar
-        actionBar?.title = "TravelMate"
-        val drawer= ContextCompat.getDrawable(applicationContext,R.drawable.ic_search_white_24dp)
+        actionBar?.title = getString(R.string.travelMate)
     }
 
     override fun onClick(v: View?) {

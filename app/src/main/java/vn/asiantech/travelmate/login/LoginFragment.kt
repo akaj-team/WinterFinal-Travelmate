@@ -22,18 +22,26 @@ class LoginFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        if (v?.id == R.id.tvRegister) {
-            fragmentManager?.beginTransaction()?.apply {
-                setCustomAnimations(R.anim.right_to_left1, R.anim.right_to_left2, R.anim.left_to_right1, R.anim.left_to_right2)
-                add(R.id.fragment_container, SignUpFragment())
-                addToBackStack(null)
-                commit()
+        when (v?.id) {
+            R.id.tvRegister -> {
+                fragmentManager?.beginTransaction()?.apply {
+                    setCustomAnimations(
+                        R.anim.right_to_left1,
+                        R.anim.right_to_left2,
+                        R.anim.left_to_right1,
+                        R.anim.left_to_right2
+                    )
+                    add(R.id.fragment_container, SignUpFragment())
+                    addToBackStack(null)
+                    commit()
+                }
             }
-        } else {
-            if (ValidationUtil.isValidEmail(edtEmail?.text.toString().trim()) && ValidationUtil.isValidPassword(edtPassword?.text.toString().trim())) {
-                Toast.makeText(context, getString(R.string.loginFragmentSuccessful), Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, getString(R.string.loginfragmentCannotLogin), Toast.LENGTH_SHORT).show()
+            R.id.btnLogin -> {
+                if (ValidationUtil.isValidEmail(edtEmail?.text.toString().trim()) && ValidationUtil.isValidPassword(edtPassword?.text.toString().trim())) {
+                    Toast.makeText(context, getString(R.string.loginFragmentSuccessful), Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, getString(R.string.loginfragmentCannotLogin), Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
