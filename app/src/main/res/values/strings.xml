@@ -19,5 +19,7 @@
     <string name="signupTvLastNameFormatWrong">Last Name Just Have Alphabet!</string>
     <string name="loginFragmentSuccessful">Successful</string>
     <string name="successful">thanh cong</string>
-    <string name="error">error</string>
+    <string name="error">please check email or password</string>
+    <string name="note">please waiting ...</string>
+    <string name="inputAccount">please input email and password</string>
 </resources>

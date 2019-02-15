@@ -24,6 +24,7 @@ class SignUpFragment : Fragment(), View.OnClickListener {
     private lateinit var lastName: String
     private lateinit var email: String
     private lateinit var password: String
+    private lateinit var confirmPassword: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         this.fireBaseAuth = FirebaseAuth.getInstance()
@@ -38,20 +39,25 @@ class SignUpFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         if (v?.id == R.id.btnSignUp) {
-            if (checkUserPassEmail() == Constant.CHECK_SIGNUP) {
-                fireBaseAuth.createUserWithEmailAndPassword(edtEmail?.text.toString(), edtPassword?.text.toString())
-                    .addOnCompleteListener{ task : Task<AuthResult> ->
-                        if (task.isSuccessful){
-                            val db = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
-                            val courseId = db.push().key
-                            val user = User(firstName, lastName, email, password)
-                            courseId?.let { db.child(it).setValue(user) }
-                            Toast.makeText(context, getString(R.string.successful), Toast.LENGTH_SHORT).show()
-                            resetInputdata()
-                        } else {
-                            Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
+            if (checkUserPassEmail() == Constant.CHECK_SIGNUP && !firstName.isEmpty() && !lastName.isEmpty() && !email.isEmpty() && !password.isEmpty() && !confirmPassword.isEmpty()) {
+                if(activity is LoginActivity) {
+                    (activity as LoginActivity).showProgressbarDialog()
+                    fireBaseAuth.createUserWithEmailAndPassword(edtEmail?.text.toString(), edtPassword?.text.toString())
+                        .addOnCompleteListener { task: Task<AuthResult> ->
+                            if (task.isSuccessful) {
+                                val db = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
+                                val courseId = db.push().key
+                                val user = User(firstName, lastName, email, password)
+                                courseId?.let { db.child(it).setValue(user) }
+                                Toast.makeText(context, getString(R.string.successful), Toast.LENGTH_SHORT).show()
+                                resetInputdata()
+                                (activity as LoginActivity).progressDialog?.dismiss()
+                            } else {
+                                Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
+                                (activity as LoginActivity).progressDialog?.dismiss()
+                            }
                         }
-                    }
+                }
             } else {
                 showMessage(checkUserPassEmail())
             }
@@ -69,8 +75,8 @@ class SignUpFragment : Fragment(), View.OnClickListener {
         firstName = edtFirstName.text.toString().trim()
         lastName = edtLastName.text.toString().trim()
         email = edtEmail.text.toString().trim()
-        val password = edtPassword.text.toString().trim()
-        val confirmPassword = edtConfirmPassword.text.toString().trim()
+        password = edtPassword.text.toString().trim()
+        confirmPassword = edtConfirmPassword.text.toString().trim()
         return when {
             password != confirmPassword -> getString(R.string.signupTvConfirmPasswordWrong)
             !ValidationUtil.isValidEmail(email) -> getString(R.string.signupEmailFormatWrong)

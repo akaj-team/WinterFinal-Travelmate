@@ -1,8 +1,10 @@
 package vn.asiantech.travelmate.login
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +18,7 @@ import vn.asiantech.travelmate.utils.ValidationUtil
 
 class LoginFragment : Fragment(), View.OnClickListener {
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
@@ -40,22 +43,30 @@ class LoginFragment : Fragment(), View.OnClickListener {
                 commit()
             }
         } else {
-            if (ValidationUtil.isValidEmail(edtEmail?.text.toString().trim()) && ValidationUtil.isValidPassword(edtPassword?.text.toString().trim())) {
-                firebaseAuth?.signInWithEmailAndPassword(edtEmail?.text.toString().trim(), edtPassword?.text.toString().trim())
-                    ?.addOnCompleteListener { task: Task<AuthResult> ->
-                        if (task.isSuccessful) {
-                            Toast.makeText(context, getString(R.string.loginFragmentSuccessful), Toast.LENGTH_SHORT)
-                                .show()
-                            activity?.finish()
-                            val intent = Intent(activity, ProfileActivity::class.java)
-                            startActivity(intent)
-                        } else {
-                            Toast.makeText(context, getString(R.string.loginfragmentCannotLogin), Toast.LENGTH_SHORT).show()
+            val emailLogin = edtEmail?.text.toString().trim()
+            val passwordLogin = edtPassword?.text.toString().trim()
+            if(!emailLogin.isEmpty() && !passwordLogin.isEmpty()){
+                if(activity is LoginActivity) {
+                    (activity as LoginActivity).showProgressbarDialog()
+                    firebaseAuth?.signInWithEmailAndPassword(emailLogin, passwordLogin)
+                        ?.addOnCompleteListener { task: Task<AuthResult> ->
+                            if (task.isSuccessful) {
+                                Toast.makeText(context, getString(R.string.loginFragmentSuccessful), Toast.LENGTH_SHORT)
+                                    .show()
+                                activity?.finish()
+                                val intent = Intent(activity, ProfileActivity::class.java)
+                                startActivity(intent)
+                                (activity as LoginActivity).progressDialog?.dismiss()
+                            } else {
+                                Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
+                                (activity as LoginActivity).progressDialog?.dismiss()
+                            }
                         }
-                    }
+                }
             } else {
-                Toast.makeText(context, getString(R.string.loginfragmentCannotLogin), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.inputAccount), Toast.LENGTH_SHORT).show()
             }
         }
     }
+
 }
