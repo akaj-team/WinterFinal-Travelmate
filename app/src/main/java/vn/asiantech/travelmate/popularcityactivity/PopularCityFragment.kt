@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,7 +38,7 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
     }
 
     override fun onClicked(position: Int) {
-        Log.d("xxxxxx", position.toString())
+        // TO DO
     }
 
     private fun mockData(): ArrayList<City>? {

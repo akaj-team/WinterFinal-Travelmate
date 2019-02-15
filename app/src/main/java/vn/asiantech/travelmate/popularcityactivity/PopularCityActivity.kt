@@ -47,7 +47,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.actionSearch -> true
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -67,7 +67,6 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
 
             }
         }
-
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
@@ -82,9 +81,8 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     }
 
     private fun initFragment() {
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.frameLayoutDrawer, PopularCityFragment())
-            commit()
-        }
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.frameLayoutDrawer, PopularCityFragment())
+            .commit()
     }
 }
