@@ -1,19 +1,34 @@
 package vn.asiantech.travelmate.popularcityactivity
 
+import android.graphics.Color
 import android.os.Bundle
+import android.support.design.button.MaterialButton
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
+import android.support.v4.view.MenuItemCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
+import android.widget.SearchView
+import android.widget.Toolbar
+import com.miguelcatalan.materialsearchview.MaterialSearchView
 import kotlinx.android.synthetic.main.activity_popular_city.*
 import vn.asiantech.travelmate.R
+import android.widget.Toast
+import android.content.Context.SEARCH_SERVICE
+import android.support.v4.content.ContextCompat.getSystemService
+import android.app.SearchManager
+
+
 
 class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
-
+    lateinit var searchView : SearchView
+    lateinit var searchText : EditText
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_popular_city)

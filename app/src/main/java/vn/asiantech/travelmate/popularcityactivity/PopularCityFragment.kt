@@ -5,12 +5,10 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.google.firebase.database.*
+import com.miguelcatalan.materialsearchview.MaterialSearchView
 import kotlinx.android.synthetic.main.fragment_popular_city.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.City
@@ -22,7 +20,10 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
     private lateinit var popularCityAdapter: PopularCityAdapter
     private var progressDialog: ProgressDialog? = null
     private lateinit var viewManager: GridLayoutManager
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
         return inflater.inflate(R.layout.fragment_popular_city, container, false)
     }
 
@@ -32,8 +33,19 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
         initData()
     }
 
+    /*override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        activity?.menuInflater?.inflate(R.menu.main, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.actionSearch -> true
+            else -> super.onOptionsItemSelected(item)
+        }
+    }*/
     private fun initData() {
         showProgressbarDialog()
+
         database = firebase!!.getReference("travel")
         database.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
