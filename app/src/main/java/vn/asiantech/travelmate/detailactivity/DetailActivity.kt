@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
+import kotlinx.android.synthetic.main.activity_detail.*
 import vn.asiantech.travelmate.R
 
 class DetailActivity : AppCompatActivity() {
@@ -17,12 +18,11 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun initProgressBar() {
-            val layout: RelativeLayout = this.findViewById(R.id.display)
-            progressBar = ProgressBar(applicationContext, null, android.R.attr.progressBarStyleLarge)
-            val params = RelativeLayout.LayoutParams(120, 120).apply {
-                addRule(RelativeLayout.CENTER_IN_PARENT)
-            }
-            layout.addView(progressBar, params)
+        progressBar = ProgressBar(applicationContext, null, android.R.attr.progressBarStyleLarge)
+        val params = RelativeLayout.LayoutParams(120, 120).apply {
+            addRule(RelativeLayout.CENTER_IN_PARENT)
+        }
+        rlActivityDetail.addView(progressBar, params)
     }
 
     private fun initFragment() {
