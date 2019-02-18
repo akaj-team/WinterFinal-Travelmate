@@ -9,5 +9,6 @@ object Constant {
     const val APP_ID = "9de243494c0b295cca9337e1e96b00e2"
     const val UNITS = "metric"
     const val SIMPLE_DAY_FORMAT = "EEEE"
+    const val URL_ICON = "http://openweathermap.org/img/w/"
     const val REQUEST_CODE_ASK_PERMISSIONS_LOCATION = 123
 }
