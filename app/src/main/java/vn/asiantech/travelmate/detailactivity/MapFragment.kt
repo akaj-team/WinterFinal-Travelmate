@@ -43,11 +43,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
     }
 
     private fun initViews() {
-        val fragmentManager = fragmentManager
         supportMapFragment = SupportMapFragment.newInstance()
         supportMapFragment?.let {
             fragmentManager?.beginTransaction()?.replace(R.id.flMap, it)?.commit()
-            supportMapFragment?.getMapAsync(this)
+            it.getMapAsync(this)
         }
     }
 
@@ -66,16 +65,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
         mapGoogle = googleMap
         val daNang = LatLng(16.078400, 108.234618)
         mapGoogle?.let {
-            it.addMarker(MarkerOptions().position(daNang).title(Constant.MOCK_CITY))
-            it.moveCamera(CameraUpdateFactory.newLatLng(daNang))
-            it.uiSettings?.isZoomControlsEnabled = true
-            it.uiSettings?.isCompassEnabled = true
-            if (context?.let {temp ->
-                    ContextCompat.checkSelfPermission(temp, Manifest.permission.ACCESS_FINE_LOCATION) } == PackageManager.PERMISSION_GRANTED) {
-                it.isMyLocationEnabled = true
+            with(it){
+                addMarker(MarkerOptions().position(daNang).title(Constant.MOCK_CITY))
+                moveCamera(CameraUpdateFactory.newLatLng(daNang))
+                uiSettings?.isZoomControlsEnabled = true
+                uiSettings?.isCompassEnabled = true
+                if (context?.let {temp ->
+                        ContextCompat.checkSelfPermission(temp, Manifest.permission.ACCESS_FINE_LOCATION) } == PackageManager.PERMISSION_GRANTED) {
+                    isMyLocationEnabled = true
+                }
+                setOnMyLocationButtonClickListener(this@MapFragment)
+                setOnMyLocationClickListener(this@MapFragment)
             }
-            it.setOnMyLocationButtonClickListener(this)
-            it.setOnMyLocationClickListener(this)
         }
     }
 
