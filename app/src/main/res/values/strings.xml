@@ -20,4 +20,15 @@
     <string name="loginFragmentSuccessful">Successful</string>
     <string name="loginfragmentCannotLogin">Can not login</string>
     <string name="signUpFragmentOk">OK</string>
+    <!--Detail Activity-->
+    <string name="todo">TODO</string>
+    <string name="temperature">Temperature</string>
+    <string name="humidity">Humidity</string>
+    <string name="wind">Wind</string>
+    <string name="daNang">Da nang</string>
+    <string name="percent">%s %%</string>
+    <string name="meterOverSecond">%s m/s</string>
+    <string name="degreeC">%s°C</string>
+    <string name="noCaseSatisfied">No case satisfied</string>
+    <string name="loading">Loading</string>
 </resources>
