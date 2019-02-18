@@ -1,6 +1,6 @@
 package vn.asiantech.travelmate.models
 
-data class Travel (
+data class City (
     val nameCity:String,
     val image: String,
     val description: String,
