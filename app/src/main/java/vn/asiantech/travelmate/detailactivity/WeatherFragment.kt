@@ -14,8 +14,8 @@ import retrofit2.Response
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.WeatherList
 import vn.asiantech.travelmate.models.WeatherSevenDay
+import vn.asiantech.travelmate.utils.APIUtil
 import vn.asiantech.travelmate.utils.Constant
-import vn.asiantech.travelmate.utils.SetAPIUtil
 
 class WeatherFragment : Fragment() {
     private lateinit var weatherAdapter: WeatherAdapter
@@ -42,18 +42,22 @@ class WeatherFragment : Fragment() {
     }
 
     private fun getWeatherData(city: String) {
-        val setAPIUtil = SetAPIUtil()
-        val service = setAPIUtil.setUpApi(Constant.URL_LIST_SEVEN_DAYS)
-        service.getWeatherList(city, Constant.UNITS, 7, Constant.APP_ID)
-            ?.enqueue(object : Callback<WeatherList> {
-                override fun onResponse(call: Call<WeatherList>, response: Response<WeatherList>?) {
-                    response?.body()?.list?.let { weatherItems.addAll(it) }
-                    weatherAdapter.notifyDataSetChanged()
-                }
+        if (activity is DetailActivity) {
+            (activity as DetailActivity).progressBar?.visibility = View.VISIBLE
+            val service = APIUtil.setUpApi(Constant.URL_LIST_SEVEN_DAYS)
+            service.getWeatherList(city, Constant.UNITS, 7, Constant.APP_ID)
+                ?.enqueue(object : Callback<WeatherList> {
+                    override fun onResponse(call: Call<WeatherList>, response: Response<WeatherList>?) {
+                        response?.body()?.list?.let { weatherItems.addAll(it) }
+                        weatherAdapter.notifyDataSetChanged()
+                        (activity as DetailActivity).progressBar?.visibility = View.GONE
+                    }
 
-                override fun onFailure(call: Call<WeatherList>, t: Throwable) {
-                    Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
-                }
-            })
+                    override fun onFailure(call: Call<WeatherList>, t: Throwable) {
+                        (activity as DetailActivity).progressBar?.visibility = View.GONE
+                        Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                    }
+                })
+        }
     }
 }

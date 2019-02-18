@@ -7,13 +7,15 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import vn.asiantech.travelmate.detailactivity.SOService
 
-class SetAPIUtil {
+object APIUtil {
 
     fun setUpApi(url: String): SOService {
-        val logging = HttpLoggingInterceptor()
-        logging.level = HttpLoggingInterceptor.Level.BODY
-        val httpClient = OkHttpClient.Builder()
-        httpClient.addInterceptor(logging)
+        val logging = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        val httpClient = OkHttpClient.Builder().apply {
+            addInterceptor(logging)
+        }
         val gson = GsonBuilder().setLenient().create()
         val getImagesRetrofit = Retrofit.Builder()
             .baseUrl(url)
