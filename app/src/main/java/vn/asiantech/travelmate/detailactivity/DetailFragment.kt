@@ -54,7 +54,7 @@ class DetailFragment : Fragment(), View.OnClickListener {
                             tvHumidity.text = getString(R.string.percent, humidityDisplay)
                             tvWind.text = getString(R.string.meterOverSecond, speedDisplay)
                             Glide.with(this@DetailFragment).load(Constant.MOCK_IMAGE).into(imgCity)
-                            Glide.with(this@DetailFragment).load("http://openweathermap.org/img/w/$iconDisplay.png")
+                            Glide.with(this@DetailFragment).load("${Constant.URL_ICON}$iconDisplay.png")
                                 .into(imgIconWeather)
                         }
                     }
