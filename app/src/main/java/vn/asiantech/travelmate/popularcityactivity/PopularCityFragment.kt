@@ -7,6 +7,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_popular_city.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.City
@@ -14,7 +15,6 @@ import vn.asiantech.travelmate.models.City
 class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
     private lateinit var popularCityAdapter: PopularCityAdapter
     private var listCity: ArrayList<City> = arrayListOf()
-    private lateinit var viewManager: GridLayoutManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_popular_city, container, false)
@@ -26,11 +26,10 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
     }
 
     private fun initRecyclerView() {
-        viewManager = GridLayoutManager(context, 2)
         popularCityAdapter = PopularCityAdapter(mockData() as ArrayList<City>, this)
         recyclerViewPopularCity.apply {
             setHasFixedSize(true)
-            layoutManager = viewManager
+            layoutManager = GridLayoutManager(context, 2)
             adapter = popularCityAdapter
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL))
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
@@ -38,7 +37,7 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
     }
 
     override fun onClicked(position: Int) {
-        // TO DO
+        Toast.makeText(context,position.toString(),Toast.LENGTH_SHORT).show()
     }
 
     private fun mockData(): ArrayList<City>? {

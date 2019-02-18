@@ -55,7 +55,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.navDestination -> {
-                // Handle the camera action
+
             }
             R.id.navHotel -> {
 
@@ -72,8 +72,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     }
 
     private fun initView() {
-        val actionBar = supportActionBar
-        actionBar?.title = getString(R.string.travelMate)
+        supportActionBar?.title = getString(R.string.travelMate)
     }
 
     override fun onClick(v: View?) {
