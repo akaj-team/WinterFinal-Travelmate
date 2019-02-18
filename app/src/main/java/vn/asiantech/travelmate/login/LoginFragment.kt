@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_login.*
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.extensions.getInputText
 import vn.asiantech.travelmate.utils.ValidationUtil
 
 class LoginFragment : Fragment(), View.OnClickListener {
@@ -23,6 +24,13 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
+            R.id.btnLogin -> {
+                if (ValidationUtil.isValidEmail(edtEmail.getInputText()) && ValidationUtil.isValidPassword(edtPassword.getInputText())) {
+                    Toast.makeText(context, getString(R.string.loginFragmentSuccessful), Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, getString(R.string.loginfragmentCannotLogin), Toast.LENGTH_SHORT).show()
+                }
+            }
             R.id.tvRegister -> {
                 fragmentManager?.beginTransaction()?.apply {
                     setCustomAnimations(
@@ -36,13 +44,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
                     commit()
                 }
             }
-            R.id.btnLogin -> {
-                if (ValidationUtil.isValidEmail(edtEmail?.text.toString().trim()) && ValidationUtil.isValidPassword(edtPassword?.text.toString().trim())) {
-                    Toast.makeText(context, getString(R.string.loginFragmentSuccessful), Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(context, getString(R.string.loginfragmentCannotLogin), Toast.LENGTH_SHORT).show()
-                }
-            }
+            else -> print(getString(R.string.noCaseSatisfied))
         }
     }
 }
