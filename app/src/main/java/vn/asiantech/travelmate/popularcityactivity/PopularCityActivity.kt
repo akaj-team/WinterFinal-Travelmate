@@ -1,10 +1,14 @@
 package vn.asiantech.travelmate.popularcityactivity
 
+import android.app.SearchManager
+import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.SearchView
+import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -12,7 +16,8 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_popular_city.*
 import vn.asiantech.travelmate.R
 
-class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener,
+    SearchView.OnQueryTextListener, SearchView.OnSuggestionListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,8 +47,41 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         this.menuInflater.inflate(R.menu.main, menu)
+
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchView = menu.findItem(R.id.actionSearch).actionView as SearchView
+        searchView.apply {
+            setSearchableInfo(searchManager.getSearchableInfo(componentName))
+            setOnQueryTextListener(this@PopularCityActivity)
+            setOnSuggestionListener(this@PopularCityActivity)
+        }
+
+        //searchView.suggestionsAdapter = suggestionAdapter
+
         return true
     }
+    //------Search----------
+    override fun onQueryTextSubmit(query: String): Boolean {
+        Log.w("xxxx----", query)
+        return false
+    }
+
+    override fun onQueryTextChange(newText: String): Boolean {
+        Log.d("xxxx", newText)
+        return false
+    }
+
+    override fun onSuggestionSelect(p0: Int): Boolean {
+
+        return true
+    }
+
+    override fun onSuggestionClick(p0: Int): Boolean {
+
+        return true
+    }
+
+    //---------------------------------
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {

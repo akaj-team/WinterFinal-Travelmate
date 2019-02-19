@@ -47,4 +47,17 @@
     <string name="navigationDrawerCommunicate">Communicate</string>
     <string name="navigationDrawerLogout">Logout</string>
     <string name="navigationDrawerSetting">Setting</string>
+
+    <string-array name="query_suggestions">
+        <item>One</item>
+        <item>One One</item>
+        <item>Two</item>
+        <item>Two Two</item>
+        <item>Three</item>
+        <item>Three Three</item>
+        <item>Four</item>
+        <item>Four four</item>
+        <item>Five</item>
+        <item>Five file</item>
+    </string-array>
 </resources>
