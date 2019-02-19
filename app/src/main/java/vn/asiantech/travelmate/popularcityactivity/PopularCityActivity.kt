@@ -13,11 +13,18 @@ import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.activity_popular_city.*
 import vn.asiantech.travelmate.R
 
 class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener,
-    SearchView.OnQueryTextListener, SearchView.OnSuggestionListener {
+    SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, SuggestionAdapter.OnItemClickListener {
+
+    private var listData: List<String> = arrayListOf()
+    private var adapter: ArrayAdapter<String>? = null
+    override fun onClicked(position: Int) {
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +32,9 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
         initDrawer()
         initView()
         initFragment()
+        mockData()
+        adapter = ArrayAdapter(this, R.layout.item_suggestion, listData)
+        lvSuggest.adapter = adapter
     }
 
     private fun initDrawer() {
@@ -47,7 +57,6 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         this.menuInflater.inflate(R.menu.main, menu)
-
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchView = menu.findItem(R.id.actionSearch).actionView as SearchView
         searchView.apply {
@@ -56,10 +65,24 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
             setOnSuggestionListener(this@PopularCityActivity)
         }
 
-        //searchView.suggestionsAdapter = suggestionAdapter
-
-        return true
+        return super.onCreateOptionsMenu(menu)
     }
+
+    private fun mockData(): List<String> {
+        (listData as ArrayList<String>).apply {
+            add("Apple")
+            add("Banana")
+            add("Pineapple")
+            add("Orange")
+            add("Gavava")
+            add("Peech")
+            add("Melon")
+            add("Watermelon")
+            add("Papaya")
+        }
+        return listData
+    }
+
     //------Search----------
     override fun onQueryTextSubmit(query: String): Boolean {
         Log.w("xxxx----", query)
@@ -67,7 +90,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     }
 
     override fun onQueryTextChange(newText: String): Boolean {
-        Log.d("xxxx", newText)
+        adapter?.filter?.filter(newText)
         return false
     }
 
