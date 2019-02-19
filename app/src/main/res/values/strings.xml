@@ -48,4 +48,5 @@
     <string name="fragmentSettingEdtconfirmPassword">Confirm Password</string>
     <string name="fragmentSettingBtnDone">Done</string>
     <string name="fragmentSettingBtnCancle">Cancle</string>
+    <string name="passwordWrong">password wrong!</string>
 </resources>

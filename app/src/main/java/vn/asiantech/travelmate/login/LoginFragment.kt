@@ -1,10 +1,8 @@
 package vn.asiantech.travelmate.login
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_login.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.popularcityactivity.PopularCityActivity
-import vn.asiantech.travelmate.utils.ValidationUtil
+import vn.asiantech.travelmate.utils.Constant
 
 class LoginFragment : Fragment(), View.OnClickListener {
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
@@ -56,6 +54,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
                                     .show()
                                 activity?.finish()
                                 val intent = Intent(activity, PopularCityActivity::class.java)
+                                intent.putExtra(Constant.KEY_PASSWORD, passwordLogin)
                                 startActivity(intent)
                                 (activity as LoginActivity).progressDialog?.dismiss()
                             } else {

@@ -1,25 +1,26 @@
 package vn.asiantech.travelmate.popularcityactivity
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.activity_popular_city.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.login.LoginActivity
 import vn.asiantech.travelmate.navigationdrawer.SearchHotelFragment
 import vn.asiantech.travelmate.navigationdrawer.SettingFragment
+import vn.asiantech.travelmate.utils.Constant
 
 class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+    var progressDialog: ProgressDialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_popular_city)
@@ -102,5 +103,20 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
         supportFragmentManager.beginTransaction()
             .replace(R.id.frameLayoutDrawer, PopularCityFragment())
             .commit()
+    }
+
+    fun getPassLogin(): String {
+        intent.getStringExtra(Constant.KEY_PASSWORD)?.let {
+            val password = intent.getStringExtra(Constant.KEY_PASSWORD)
+            return password
+        }
+        return ""
+    }
+
+    fun showProgressbarDialog() {
+        progressDialog = ProgressDialog(this)
+        progressDialog?.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+        progressDialog?.setMessage(getString(R.string.note))
+        progressDialog?.show()
     }
 }
