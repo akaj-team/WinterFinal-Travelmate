@@ -49,7 +49,7 @@ class SignUpFragment : Fragment(), View.OnClickListener {
                     )
                         ?.addOnCompleteListener { task: Task<AuthResult> ->
                             if (task.isSuccessful) {
-                                val path = ValidationUtil.valuePathChild(email)
+                                val path = ValidationUtil.getValuePathChild(email)
                                 val db = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
                                 val courseId = db.push().key
                                 val user = User(firstName, lastName, email, password)

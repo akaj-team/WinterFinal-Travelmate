@@ -14,7 +14,7 @@ object ValidationUtil {
     fun isValidLastName(lastName: String): Boolean = Pattern.compile(LASTNAME_PATTERN).matcher(lastName).matches()
 
     // field containt information account userlogin
-    fun valuePathChild(email : String) : String{
+    fun getValuePathChild(email : String) : String{
         val result = email.replace(".", "_")
         val pathChild = result.replace("@", "_")
         return pathChild
