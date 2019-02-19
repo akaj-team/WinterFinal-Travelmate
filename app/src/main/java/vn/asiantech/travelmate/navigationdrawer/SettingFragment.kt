@@ -1,9 +1,14 @@
 package vn.asiantech.travelmate.navigationdrawer
 
+import android.app.Activity
 import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.provider.MediaStore
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,17 +20,20 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.fragment_setting.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.login.LoginActivity
 import vn.asiantech.travelmate.popularcityactivity.PopularCityActivity
 import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.utils.ValidationUtil
+import java.util.*
 
 class SettingFragment : Fragment(), View.OnClickListener {
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
     private var fireBaseUser: FirebaseUser? = firebaseAuth?.currentUser
     private var password: String = ""
+    private var selectedPhotoUri : Uri ?= null
     private lateinit var oldPassword: String
     private lateinit var newPassword: String
     private lateinit var confirmPassword: String
@@ -47,6 +55,11 @@ class SettingFragment : Fragment(), View.OnClickListener {
                                         p0.ref.child(Constant.KEY_PASSWORD).setValue(newPassword)
                                     }
                                 })
+
+
+//                                uploadImageToFirebase()
+
+
                                 firebaseAuth?.signOut()
                                 Toast.makeText(context, getString(R.string.successful), Toast.LENGTH_SHORT).show()
                                 val intent = Intent(activity, LoginActivity::class.java)
@@ -62,8 +75,23 @@ class SettingFragment : Fragment(), View.OnClickListener {
                     showMessage(checkUserPassEmail())
                 }
             }
+            R.id.imgAvatar -> {
+                val intent = Intent(Intent.ACTION_PICK)
+                intent.type = "image/*"
+                startActivityForResult(intent, 0)
+            }
         }
     }
+
+    /*private fun uploadImageToFirebase() {
+        if (selectedPhotoUri == null) return
+        val filename = UUID.randomUUID().toString()
+        val ref = FirebaseStorage.getInstance().getReference("/image/$filename")
+        ref.putFile(selectedPhotoUri!!)
+            .addOnSuccessListener {
+                Log.i("bbbb", "success : ${it.metadata?.path}")
+            }
+    }*/
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (activity is PopularCityActivity) {
@@ -75,6 +103,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnChangePassword.setOnClickListener(this)
+        imgAvatar.setOnClickListener(this)
     }
 
     private fun checkUserPassEmail(): String {
@@ -86,6 +115,18 @@ class SettingFragment : Fragment(), View.OnClickListener {
             !ValidationUtil.isValidPassword(newPassword) -> getString(R.string.signupTvPasswordFormatWrong)
             newPassword != confirmPassword -> getString(R.string.signupTvConfirmPasswordWrong)
             else -> Constant.CHECK_SIGNUP
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
+            Log.i("bbbb", "selected")
+            selectedPhotoUri = data.data
+            val bitmap = MediaStore.Images.Media.getBitmap(activity?.contentResolver, selectedPhotoUri)
+            val bitmapDrawable = BitmapDrawable(resources ,bitmap)
+            Log.i("bbbb", bitmapDrawable.toString())
+            imgAvatar?.setImageDrawable(bitmapDrawable)
         }
     }
 
