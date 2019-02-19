@@ -10,6 +10,7 @@ class LoginActivity : AppCompatActivity() {
     var progressDialog: ProgressDialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        progressDialog = ProgressDialog(this)
         setContentView(R.layout.activity_login)
         initFragment()
     }
@@ -21,9 +22,10 @@ class LoginActivity : AppCompatActivity() {
             .commit()
     }
     fun showProgressbarDialog() {
-        progressDialog = ProgressDialog(this)
-        progressDialog?.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-        progressDialog?.setMessage(getString(R.string.note))
-        progressDialog?.show()
+        progressDialog?.apply {
+            setProgressStyle(ProgressDialog.STYLE_SPINNER)
+            setMessage(getString(R.string.note))
+            show()
+        }
     }
 }

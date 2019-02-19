@@ -20,7 +20,7 @@ import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.utils.ValidationUtil
 
 class SignUpFragment : Fragment(), View.OnClickListener {
-    private lateinit var fireBaseAuth: FirebaseAuth
+    private var fireBaseAuth: FirebaseAuth? = null
     private lateinit var firstName: String
     private lateinit var lastName: String
     private lateinit var email: String
@@ -28,7 +28,7 @@ class SignUpFragment : Fragment(), View.OnClickListener {
     private lateinit var confirmPassword: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        this.fireBaseAuth = FirebaseAuth.getInstance()
+        fireBaseAuth = FirebaseAuth.getInstance()
         return inflater.inflate(R.layout.fragment_sign_up, container, false)
     }
 
@@ -43,10 +43,13 @@ class SignUpFragment : Fragment(), View.OnClickListener {
             if (checkUserPassEmail() == Constant.CHECK_SIGNUP && !firstName.isEmpty() && !lastName.isEmpty() && !email.isEmpty() && !password.isEmpty() && !confirmPassword.isEmpty()) {
                 if (activity is LoginActivity) {
                     (activity as LoginActivity).showProgressbarDialog()
-                    fireBaseAuth.createUserWithEmailAndPassword(edtEmail?.text.toString(), edtPassword?.text.toString())
-                        .addOnCompleteListener { task: Task<AuthResult> ->
+                    fireBaseAuth?.createUserWithEmailAndPassword(
+                        edtEmail?.text.toString(),
+                        edtPassword?.text.toString()
+                    )
+                        ?.addOnCompleteListener { task: Task<AuthResult> ->
                             if (task.isSuccessful) {
-                                val path = ValidationUtil.getValueChild(email)
+                                val path = ValidationUtil.valuePathChild(email)
                                 val db = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
                                 val courseId = db.push().key
                                 val user = User(firstName, lastName, email, password)
@@ -100,14 +103,16 @@ class SignUpFragment : Fragment(), View.OnClickListener {
         val slideUp = AnimationUtils.loadAnimation(context, R.anim.slide_up)
         val slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down)
         val handler = Handler()
-        if (tvMessageError.visibility == View.INVISIBLE) {
-            tvMessageError.visibility = View.VISIBLE
-            tvMessageError.text = message
-            tvMessageError.startAnimation(slideUp)
-            handler.postDelayed({
-                tvMessageError.startAnimation(slideDown)
-                tvMessageError.visibility = View.INVISIBLE
-            }, 3000)
+        tvMessageError.apply {
+            if (visibility == View.INVISIBLE) {
+                visibility = View.VISIBLE
+                text = message
+                startAnimation(slideUp)
+                handler.postDelayed({
+                    startAnimation(slideDown)
+                    visibility = View.INVISIBLE
+                }, 3000)
+            }
         }
     }
 }
