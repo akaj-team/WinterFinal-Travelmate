@@ -21,11 +21,11 @@ import vn.asiantech.travelmate.utils.ValidationUtil
 
 class SignUpFragment : Fragment(), View.OnClickListener {
     private var fireBaseAuth: FirebaseAuth? = null
-    private lateinit var firstName: String
-    private lateinit var lastName: String
-    private lateinit var email: String
-    private lateinit var password: String
-    private lateinit var confirmPassword: String
+    private var firstName: String = ""
+    private var lastName: String = ""
+    private var email: String = ""
+    private var password: String = ""
+    private var confirmPassword: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         fireBaseAuth = FirebaseAuth.getInstance()
@@ -52,7 +52,7 @@ class SignUpFragment : Fragment(), View.OnClickListener {
                                 val path = ValidationUtil.getValuePathChild(email)
                                 val db = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
                                 val courseId = db.push().key
-                                val user = User(firstName, lastName, email, password)
+                                val user = User(Constant.URL_AVATAR, firstName, lastName, email, password)
                                 courseId?.let { db.child(path).setValue(user) }
                                 Toast.makeText(context, getString(R.string.successful), Toast.LENGTH_SHORT).show()
                                 resetInputdata()
