@@ -31,4 +31,20 @@
     <string name="degreeC">%s°C</string>
     <string name="noCaseSatisfied">No case satisfied</string>
     <string name="loading">Loading</string>
+    <!--MostPopularActivity-->
+    <string name="mostPopularCities">Most Popular Cities</string>
+    <string name="hue">Hue</string>
+    <string name="popularCityTvTravelmate">TravelMate</string>
+    <!--navigation-->
+    <string name="navigationDrawerOpen">Open navigation drawer</string>
+    <string name="navigationDrawerClose">Close navigation drawer</string>
+    <string name="navigationHeaderTitle">Android Studio</string>
+    <string name="navigationHeaderSubtitle">android.studio@android.com</string>
+    <string name="navigationHeaderDesc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="navigationDrawerDestination">Destination</string>
+    <string name="navigationDrawerHotel">Hotel</string>
+    <string name="navigationDrawerCommunicate">Communicate</string>
+    <string name="navigationDrawerLogout">Logout</string>
+    <string name="navigationDrawerSetting">Setting</string>
 </resources>

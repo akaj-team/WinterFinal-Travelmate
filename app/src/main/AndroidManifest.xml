@@ -23,6 +23,7 @@
         </activity>
         <activity android:name=".MainActivity"/>
         <activity android:name=".login.LoginActivity"/>
+        <activity android:name=".popularcityactivity.PopularCityActivity"/>
     </application>
 
 </manifest>
