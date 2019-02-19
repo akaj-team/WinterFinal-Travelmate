@@ -3,6 +3,7 @@ package vn.asiantech.travelmate.login
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,10 +46,11 @@ class SignUpFragment : Fragment(), View.OnClickListener {
                     fireBaseAuth.createUserWithEmailAndPassword(edtEmail?.text.toString(), edtPassword?.text.toString())
                         .addOnCompleteListener { task: Task<AuthResult> ->
                             if (task.isSuccessful) {
+                                val path = ValidationUtil.getValueChild(email)
                                 val db = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
                                 val courseId = db.push().key
-                                val user = User(firstName, lastName, email)
-                                courseId?.let { db.child(it).setValue(user) }
+                                val user = User(firstName, lastName, email, password)
+                                courseId?.let { db.child(path).setValue(user) }
                                 Toast.makeText(context, getString(R.string.successful), Toast.LENGTH_SHORT).show()
                                 resetInputdata()
                                 (activity as LoginActivity).progressDialog?.dismiss()
@@ -61,7 +63,6 @@ class SignUpFragment : Fragment(), View.OnClickListener {
             } else {
                 showMessage(checkUserPassEmail())
             }
-
         } else {
             fragmentManager?.beginTransaction()?.apply {
                 setCustomAnimations(R.anim.left_to_right1, R.anim.left_to_right2)

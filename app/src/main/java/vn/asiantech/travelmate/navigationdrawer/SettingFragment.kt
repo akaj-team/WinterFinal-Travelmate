@@ -1,24 +1,18 @@
 package vn.asiantech.travelmate.navigationdrawer
 
 import android.content.Intent
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_setting.*
-
 import vn.asiantech.travelmate.R
-import vn.asiantech.travelmate.login.LoginActivity
-import vn.asiantech.travelmate.models.User
-import vn.asiantech.travelmate.utils.Constant
+import vn.asiantech.travelmate.utils.ValidationUtil
 
 class SettingFragment : Fragment(), View.OnClickListener {
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
@@ -26,8 +20,21 @@ class SettingFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnChangePassword -> {
-                val txtNewPass = edtNewPassword.text.toString()
-                val db = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
+                val database = FirebaseDatabase.getInstance().getReference()
+                /*val txtNewPass = edtNewPassword.text.toString()
+                val database = FirebaseDatabase.getInstance().getReference()
+                *//*Log.i("aaaaa", database.child("account").path.toString())*//*
+                database.child("-LYzMGLRveWICZ25jiyR").addListenerForSingleValueEvent(object : ValueEventListener{
+                    override fun onCancelled(p0: DatabaseError) {
+                    }
+
+                    override fun onDataChange(p0: DataSnapshot) {
+                        p0.ref.child("lastName").setValue("Tuan")
+                    }
+
+                })*/
+
+//                Log.i("bbbb", database.child("account").child(firebaseAuth!!.uid!!).child("email").toString())
 
                 /*if(txtNewPass != ""){
                     fireBaseUser!!.updatePassword(txtNewPass).addOnCompleteListener { task ->

@@ -12,4 +12,9 @@ object ValidationUtil {
     fun isValidPassword(password: String): Boolean = Pattern.compile(PASSWORD_PATTERN).matcher(password).matches()
     fun isValidFirstName(firstName: String): Boolean = Pattern.compile(FIRSTNAME_PATTERN).matcher(firstName).matches()
     fun isValidLastName(lastName: String): Boolean = Pattern.compile(LASTNAME_PATTERN).matcher(lastName).matches()
+    fun getValueChild(email : String) : String{
+        val result = email.replace(".", "_")
+        val child = result.replace("@", "_")
+        return child
+    }
 }
