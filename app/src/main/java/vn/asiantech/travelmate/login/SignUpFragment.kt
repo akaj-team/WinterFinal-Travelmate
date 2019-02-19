@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_sign_up.*
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.extensions.getInputText
 import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.utils.ValidationUtil
@@ -40,7 +41,7 @@ class SignUpFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         if (v?.id == R.id.btnSignUp) {
             if (checkUserPassEmail() == Constant.CHECK_SIGNUP && !firstName.isEmpty() && !lastName.isEmpty() && !email.isEmpty() && !password.isEmpty() && !confirmPassword.isEmpty()) {
-                if(activity is LoginActivity) {
+                if (activity is LoginActivity) {
                     (activity as LoginActivity).showProgressbarDialog()
                     fireBaseAuth.createUserWithEmailAndPassword(edtEmail?.text.toString(), edtPassword?.text.toString())
                         .addOnCompleteListener { task: Task<AuthResult> ->
@@ -61,7 +62,6 @@ class SignUpFragment : Fragment(), View.OnClickListener {
             } else {
                 showMessage(checkUserPassEmail())
             }
-
         } else {
             fragmentManager?.beginTransaction()?.apply {
                 setCustomAnimations(R.anim.left_to_right1, R.anim.left_to_right2)
@@ -72,11 +72,11 @@ class SignUpFragment : Fragment(), View.OnClickListener {
     }
 
     private fun checkUserPassEmail(): String {
-        firstName = edtFirstName.text.toString().trim()
-        lastName = edtLastName.text.toString().trim()
-        email = edtEmail.text.toString().trim()
-        password = edtPassword.text.toString().trim()
-        confirmPassword = edtConfirmPassword.text.toString().trim()
+        firstName = edtFirstName.getInputText()
+        lastName = edtLastName.getInputText()
+        email = edtEmail.getInputText()
+        password = edtPassword.getInputText()
+        confirmPassword = edtConfirmPassword.getInputText()
         return when {
             password != confirmPassword -> getString(R.string.signupTvConfirmPasswordWrong)
             !ValidationUtil.isValidEmail(email) -> getString(R.string.signupEmailFormatWrong)

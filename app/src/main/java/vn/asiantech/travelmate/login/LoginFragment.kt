@@ -1,10 +1,8 @@
 package vn.asiantech.travelmate.login
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +12,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_login.*
 import vn.asiantech.travelmate.R
-import vn.asiantech.travelmate.utils.ValidationUtil
+import vn.asiantech.travelmate.popularcityactivity.PopularCityActivity
 
 class LoginFragment : Fragment(), View.OnClickListener {
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
@@ -45,8 +43,8 @@ class LoginFragment : Fragment(), View.OnClickListener {
         } else {
             val emailLogin = edtEmail?.text.toString().trim()
             val passwordLogin = edtPassword?.text.toString().trim()
-            if(!emailLogin.isEmpty() && !passwordLogin.isEmpty()){
-                if(activity is LoginActivity) {
+            if (!emailLogin.isEmpty() && !passwordLogin.isEmpty()) {
+                if (activity is LoginActivity) {
                     (activity as LoginActivity).showProgressbarDialog()
                     firebaseAuth?.signInWithEmailAndPassword(emailLogin, passwordLogin)
                         ?.addOnCompleteListener { task: Task<AuthResult> ->
@@ -54,7 +52,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
                                 Toast.makeText(context, getString(R.string.loginFragmentSuccessful), Toast.LENGTH_SHORT)
                                     .show()
                                 activity?.finish()
-                                val intent = Intent(activity, ProfileActivity::class.java)
+                                val intent = Intent(activity, PopularCityActivity::class.java)
                                 startActivity(intent)
                                 (activity as LoginActivity).progressDialog?.dismiss()
                             } else {
@@ -68,5 +66,4 @@ class LoginFragment : Fragment(), View.OnClickListener {
             }
         }
     }
-
 }
