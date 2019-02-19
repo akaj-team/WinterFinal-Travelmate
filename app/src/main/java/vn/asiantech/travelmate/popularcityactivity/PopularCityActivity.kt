@@ -54,7 +54,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.actionSearch -> true
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -85,7 +85,6 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                     .commit()
             }
         }
-
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
@@ -93,6 +92,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     private fun initView() {
         val actionBar = supportActionBar
         actionBar?.title = getString(R.string.populatFragmentTravelMate)
+        supportActionBar?.title = getString(R.string.travelMate)
     }
 
     override fun onClick(v: View?) {

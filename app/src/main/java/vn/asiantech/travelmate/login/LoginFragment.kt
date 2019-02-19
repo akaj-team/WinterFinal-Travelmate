@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.fragment_login.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.popularcityactivity.PopularCityActivity
 import vn.asiantech.travelmate.utils.Constant
+import vn.asiantech.travelmate.extensions.getInputText
 
 class LoginFragment : Fragment(), View.OnClickListener {
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
@@ -42,8 +43,8 @@ class LoginFragment : Fragment(), View.OnClickListener {
                 commit()
             }
         } else {
-            val emailLogin = edtEmail?.text.toString().trim()
-            val passwordLogin = edtPassword?.text.toString().trim()
+            val emailLogin = edtEmail.getInputText()
+            val passwordLogin = edtPassword.getInputText()
             if(!emailLogin.isEmpty() && !passwordLogin.isEmpty()){
                 if(activity is LoginActivity) {
                     (activity as LoginActivity).showProgressbarDialog()
