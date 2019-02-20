@@ -1,13 +1,12 @@
 package vn.asiantech.travelmate.popularcityactivity
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import vn.asiantech.travelmate.R
-
-/*class PopularCityActivity : AppCompatActivity() {*/
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -16,9 +15,12 @@ import kotlinx.android.synthetic.main.activity_popular_city.*
 
 class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
+    var progressDialog: ProgressDialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_popular_city)
+        progressDialog = ProgressDialog(this)
         initDrawer()
         initView()
         initFragment()
@@ -82,11 +84,15 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     }
 
     private fun initFragment() {
-        /*val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frameLayoutDrawer, PopularCityFragment())
-        fragmentTransaction.commit()*/
         supportFragmentManager.beginTransaction()
             .replace(R.id.frameLayoutDrawer, PopularCityFragment())
             .commit()
+    }
+    fun showProgressbarDialog() {
+        progressDialog?.apply {
+            setProgressStyle(ProgressDialog.STYLE_SPINNER)
+            setMessage(getString(R.string.note))
+            show()
+        }
     }
 }

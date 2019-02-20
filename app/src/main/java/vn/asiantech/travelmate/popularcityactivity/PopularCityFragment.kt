@@ -1,6 +1,5 @@
 package vn.asiantech.travelmate.popularcityactivity
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -18,12 +17,10 @@ import vn.asiantech.travelmate.detailactivity.DetailActivity
 import vn.asiantech.travelmate.utils.Constant
 
 class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
-    private lateinit var database: DatabaseReference
+    private var database: DatabaseReference ?= null
     private var firebase: FirebaseDatabase? = FirebaseDatabase.getInstance()
     private var listCity: ArrayList<Travel> = arrayListOf()
-    private var progressDialog: ProgressDialog? = null
-    private lateinit var viewManager: GridLayoutManager
-    private lateinit var popularCityAdapter: PopularCityAdapter
+    private var popularCityAdapter: PopularCityAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_popular_city, container, false)
@@ -36,23 +33,25 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
     }
 
     private fun initData(){
-        showProgressbarDialog()
-        database = firebase!!.getReference(Constant.KEY_TRAVEL)
-        database.addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-                Toast.makeText(context, getString(R.string.checkInternet), Toast.LENGTH_SHORT).show()
-                progressDialog?.dismiss()
-            }
-
-            override fun onDataChange(p0: DataSnapshot) {
-                for (image in p0.children) {
-                    val city = image.getValue(Travel::class.java)!!
-                    listCity.add(city)
+        if (activity is PopularCityActivity) {
+            (activity as PopularCityActivity).showProgressbarDialog()
+            database = firebase?.getReference(Constant.KEY_TRAVEL)
+            database?.addValueEventListener(object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError) {
+                    Toast.makeText(context, getString(R.string.checkInternet), Toast.LENGTH_SHORT).show()
+                    (activity as PopularCityActivity).progressDialog?.dismiss()
                 }
-                popularCityAdapter.notifyDataSetChanged()
-                progressDialog?.dismiss()
-            }
-        })
+
+                override fun onDataChange(p0: DataSnapshot) {
+                    for (image in p0.children) {
+                        val city = image.getValue(Travel::class.java)
+                        city?.let { listCity.add(it) }
+                    }
+                    popularCityAdapter?.notifyDataSetChanged()
+                    (activity as PopularCityActivity).progressDialog?.dismiss()
+                }
+            })
+        }
     }
 
     private fun initRecyclerView() {
@@ -67,14 +66,7 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
     }
 
     override fun onClicked(position: Int) {
-//        val travel = listCity.get(position)
         val intent = Intent(activity,DetailActivity::class.java)
         startActivity(intent)
-    }
-    private fun showProgressbarDialog() {
-        progressDialog = ProgressDialog(context)
-        progressDialog?.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-        progressDialog?.setMessage(getString(R.string.note))
-        progressDialog?.show()
     }
 }
