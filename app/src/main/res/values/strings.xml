@@ -9,7 +9,6 @@
     <string name="firstName">First Name</string>
     <string name="lastName">Last Name</string>
     <string name="confirmPassword">Confirm Password</string>
-    <!--Signup Fragment-->
     <string name="signUp">Signup</string>
     <string name="signupTvAlreadyAMemberLogin">Already A Member? Login</string>
     <string name="signupEmailFormatWrong">Email Format Wrong!</string>
@@ -18,6 +17,10 @@
     <string name="signupTvConfirmPasswordWrong">Confirm Password Wrong!</string>
     <string name="signupTvLastNameFormatWrong">Last Name Just Have Alphabet!</string>
     <string name="loginFragmentSuccessful">Successful</string>
+    <string name="successful">thanh cong</string>
+    <string name="error">please check email or password</string>
+    <string name="note">please waiting ...</string>
+    <string name="inputAccount">please input email and password</string>
     <string name="loginfragmentCannotLogin">Can not login</string>
     <string name="signUpFragmentOk">OK</string>
     <!--Detail Activity-->
