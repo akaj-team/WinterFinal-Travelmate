@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+                android:id="@+id/navDestination"
+                android:icon="@drawable/ic_business_black_24dp"
+                android:title="@string/navigationDrawerDestination"/>
+        <item
+                android:id="@+id/navHotel"
+                android:icon="@drawable/ic_hotel_black_24dp"
+                android:title="@string/navigationDrawerHotel"/>
+    </group>
+
+    <item android:title="@string/navigationDrawerCommunicate">
+        <menu>
+            <item
+                    android:id="@+id/navLogout"
+                    android:icon="@drawable/ic_person_outline_black_24dp"
+                    android:title="@string/navigationDrawerLogout"/>
+            <item
+                    android:id="@+id/navSetting"
+                    android:icon="@drawable/ic_settings_black_24dp"
+                    android:title="@string/navigationDrawerSetting"/>
+        </menu>
+    </item>
+
+</menu>
