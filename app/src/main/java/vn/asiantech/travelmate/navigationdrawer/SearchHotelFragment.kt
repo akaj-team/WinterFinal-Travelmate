@@ -2,6 +2,7 @@ package vn.asiantech.travelmate.navigationdrawer
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.GridLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,20 +13,24 @@ import kotlinx.android.synthetic.main.fragment_search_hotel.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.Hotel
 
-class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener {
+class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAdapter.OnItemClickListener {
+    override fun onClicked(position: Int) {
+
+    }
+
     private var adapterHotel: HotelAdapter? = null
     private var listHotel: List<Hotel> = arrayListOf()
     private var suggestionAdapter: ArrayAdapter<String>? = null
+
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         Log.w("xxxxxx", "position: ${actvSearchHotel.text.toString().trim()}")
-        (listCity as ArrayList).apply {
+        (listHotel as ArrayList).apply {
             clear()
-            addAll(mockData())
+            addAll(mockDataHotel())
         }
         adapterHotel?.notifyDataSetChanged()
     }
 
-    private var listCity: List<String> = arrayListOf()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_search_hotel, container, false)
     }
@@ -42,8 +47,12 @@ class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener {
     }
 
     private fun initRecyclerView() {
-        adapterHotel = HotelAdapter(context, R.layout.item_hotel, listCity,this)
-        recyclerViewHotel.adapter = adapterHotel
+        adapterHotel = HotelAdapter((listHotel as ArrayList<Hotel>), this)
+        recyclerViewHotel.apply {
+            setHasFixedSize(true)
+            layoutManager = GridLayoutManager(context, 2)
+            adapter = adapterHotel
+        }
     }
 
     private fun mockData(): List<String> {
@@ -56,5 +65,16 @@ class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener {
             add("Luc")
         }
         return list
+    }
+
+    private fun mockDataHotel(): List<Hotel> {
+        (listHotel as ArrayList).apply {
+            add(Hotel("Galaxy", 2.5F, "Hue", 962908124L, "2520"))
+            add(Hotel("MinhToan", 2.5F, "Danang", 962908124L, "2520"))
+            add(Hotel("GreenHotel", 2.5F, "Hue", 962908124L, "2520"))
+            add(Hotel("Novotel", 2.5F, "Hue", 962908124L, "2520"))
+            add(Hotel("KingHotel", 2.5F, "Hue", 962908124L, "2520"))
+        }
+        return listHotel
     }
 }

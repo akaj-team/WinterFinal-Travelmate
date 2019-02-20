@@ -47,6 +47,7 @@
     <string name="navigationDrawerCommunicate">Communicate</string>
     <string name="navigationDrawerLogout">Logout</string>
     <string name="navigationDrawerSetting">Setting</string>
+    <!--ActionBar-->
     <string name="populatFragmentTravelMate">TravelMate</string>
     <!--Fragment Setting-->
     <string name="search">Search</string>

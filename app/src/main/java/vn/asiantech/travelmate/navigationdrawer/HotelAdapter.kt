@@ -17,7 +17,7 @@ class HotelAdapter(private val listHotel: ArrayList<Hotel>, val onClickListener:
             val hotel: Hotel = listHotel[adapterPosition]
             with(itemView) {
                 with(hotel) {
-                    tvDistance.text = distance
+                    tvDistance.text = distance.toString()
                     tvHotelName.text = hotelName
                     tvAddress.text = address
                     tvMoreDetail.setOnClickListener { view ->
