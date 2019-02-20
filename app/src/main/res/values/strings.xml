@@ -43,7 +43,6 @@
     <!--navigation-->
     <string name="navigationDrawerOpen">Open navigation drawer</string>
     <string name="navigationDrawerClose">Close navigation drawer</string>
-    <string name="navigationHeaderTitle">Android Studio</string>
     <string name="navigationHeaderSubtitle">android.studio@android.com</string>
     <string name="navigationHeaderDesc">Navigation header</string>
     <string name="action_settings">Settings</string>
