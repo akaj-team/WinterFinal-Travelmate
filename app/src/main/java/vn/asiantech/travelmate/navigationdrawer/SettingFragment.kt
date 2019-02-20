@@ -28,8 +28,8 @@ import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.utils.ValidationUtil
 
 class SettingFragment : Fragment(), View.OnClickListener {
-    private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
-    private var fireBaseUser: FirebaseUser? = firebaseAuth?.currentUser
+    private val firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
+    private val fireBaseUser: FirebaseUser? = firebaseAuth?.currentUser
     private var password: String = ""
     private var selectedPhotoUri : Uri ?= null
     private lateinit var oldPassword: String
@@ -43,7 +43,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
                 if (checkUserPassEmail() == Constant.CHECK_SIGNUP && !oldPassword.isEmpty() && !newPassword.isEmpty() && !confirmPassword.isEmpty()) {
                     if (activity is PopularCityActivity) {
                         (activity as PopularCityActivity).showProgressbarDialog()
-                        fireBaseUser!!.updatePassword(newPassword).addOnCompleteListener { task ->
+                        fireBaseUser.updatePassword(newPassword).addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 database.child(path).addListenerForSingleValueEvent(object : ValueEventListener {
                                     override fun onCancelled(p0: DatabaseError) {
