@@ -2,20 +2,29 @@ package vn.asiantech.travelmate.navigationdrawer
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.fragment_search_hotel.*
 import vn.asiantech.travelmate.R
-import vn.asiantech.travelmate.extensions.getInputText
+import vn.asiantech.travelmate.models.Hotel
 
+class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener {
+    private var adapterHotel: HotelAdapter? = null
+    private var listHotel: List<Hotel> = arrayListOf()
+    private var suggestionAdapter: ArrayAdapter<String>? = null
+    override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        Log.w("xxxxxx", "position: ${actvSearchHotel.text.toString().trim()}")
+        (listCity as ArrayList).apply {
+            clear()
+            addAll(mockData())
+        }
+        adapterHotel?.notifyDataSetChanged()
+    }
 
-class SearchHotelFragment : Fragment() {
-    private var suggestionAdapter: SuggestionAdapter? = null
     private var listCity: List<String> = arrayListOf()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_search_hotel, container, false)
@@ -23,46 +32,19 @@ class SearchHotelFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //initListView()
-        //edtSearchHotel.addTextChangedListener(this)
+        initRecyclerView()
+        context?.let { suggestionAdapter = ArrayAdapter(it, R.layout.item_suggestion, mockData()) }
+        actvSearchHotel.apply {
+            setAdapter(suggestionAdapter)
+            threshold = 1
+            onItemClickListener = this@SearchHotelFragment
+        }
     }
 
-//    override fun afterTextChanged(s: Editable?) {
-//        (listCity as ArrayList).apply {
-//            clear()
-//            addAll(mockData())
-//        }
-//        val text = edtSearchHotel.getInputText()
-//
-//        if (text.isNotEmpty()) {
-//            mockData().forEach { temp ->
-//                if (!temp.toUpperCase().contains(text.toUpperCase())) {
-//                    (listCity as ArrayList).remove(temp)
-//                }
-//                Log.w("xxxxx", temp)
-//
-//            }
-//        }else{
-//            (listCity as ArrayList).clear()
-//        }
-//        suggestionAdapter?.notifyDataSetChanged()
-//
-//    }
-//
-//    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//    }
-//
-//    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//    }
-//
-//    private fun initListView() {
-//        suggestionAdapter = SuggestionAdapter(listCity as ArrayList<String>,this)
-//        recyclerViewSuggest.apply {
-//            setHasFixedSize(true)
-//            layoutManager = LinearLayoutManager(context)
-//            adapter = suggestionAdapter
-//        }
-//    }
+    private fun initRecyclerView() {
+        adapterHotel = HotelAdapter(context, R.layout.item_hotel, listCity,this)
+        recyclerViewHotel.adapter = adapterHotel
+    }
 
     private fun mockData(): List<String> {
         val list = arrayListOf<String>()

@@ -55,4 +55,5 @@
     <string name="fragmentSettingEdtconfirmPassword">Confirm Password</string>
     <string name="fragmentSettingBtnDone">Done</string>
     <string name="fragmentSettingBtnCancel">Cancel</string>
+    <string name="itemHotelTvTapForMoreDetail">Tap for more detail</string>
 </resources>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cvHotel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <TextView
+                android:id="@+id/tvDistance"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:text="@string/app_name"
+                android:gravity="center"
+                android:layout_marginTop="15dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:background="@drawable/bg_circle"
+                android:textColor="@color/colorWhite"
+                android:padding="15dp"/>
+
+        <TextView
+                android:id="@+id/tvHotelName"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:text="@string/hue"
+                android:gravity="center"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/tvDistance"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:textColor="@color/colorBlack"/>
+
+        <TextView
+                android:id="@+id/tvAddress"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:text="@string/daNang"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@+id/tvHotelName"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+        <TextView
+                android:id="@+id/tvMoreDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="@string/itemHotelTvTapForMoreDetail"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@+id/tvAddress"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:drawablePadding="10dp"
+                android:drawableEnd="@drawable/ic_arrow_drop_down_black_36dp"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>
