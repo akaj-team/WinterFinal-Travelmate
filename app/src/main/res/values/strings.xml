@@ -54,5 +54,5 @@
     <string name="fragmentSettingEdtNewPassword">New Password</string>
     <string name="fragmentSettingEdtconfirmPassword">Confirm Password</string>
     <string name="fragmentSettingBtnDone">Done</string>
-    <string name="fragmentSettingBtnCancle">Cancle</string>
+    <string name="fragmentSettingBtnCancel">Cancel</string>
 </resources>

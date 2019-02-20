@@ -88,6 +88,6 @@
             android:layout_marginTop="45dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:text="@string/fragmentSettingBtnCancle"/>
+            android:text="@string/fragmentSettingBtnCancel"/>
 
 </android.support.constraint.ConstraintLayout>
