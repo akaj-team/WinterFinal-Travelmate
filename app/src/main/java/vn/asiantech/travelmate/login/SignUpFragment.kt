@@ -49,7 +49,7 @@ class SignUpFragment : Fragment(), View.OnClickListener {
                                 val path = ValidationUtil.getValueChild(email)
                                 val db = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
                                 val courseId = db.push().key
-                                val user = User(firstName, lastName, email, password)
+                                val user = User(Constant.URL_AVATAR, firstName, lastName, email, password)
                                 courseId?.let { db.child(path).setValue(user) }
                                 Toast.makeText(context, getString(R.string.successful), Toast.LENGTH_SHORT).show()
                                 resetInputdata()

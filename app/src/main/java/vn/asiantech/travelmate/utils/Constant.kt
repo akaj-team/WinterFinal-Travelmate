@@ -12,4 +12,5 @@ object Constant {
     const val UNITS = "metric"
     const val SIMPLE_DAY_FORMAT = "EEEE"
     const val URL_ICON = "http://openweathermap.org/img/w/"
+    const val URL_AVATAR = "https://firebasestorage.googleapis.com/v0/b/travelmate-54563.appspot.com/o/user.jpg?alt=media&token=8fc39414-2e94-4ba5-aefa-cececedaebbc"
 }

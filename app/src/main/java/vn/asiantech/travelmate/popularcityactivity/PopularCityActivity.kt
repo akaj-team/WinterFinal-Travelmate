@@ -2,21 +2,22 @@ package vn.asiantech.travelmate.popularcityactivity
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.media.Image
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.view.Gravity
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import kotlinx.android.synthetic.main.activity_popular_city.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.login.LoginActivity
 import vn.asiantech.travelmate.navigationdrawer.SearchHotelFragment
 import vn.asiantech.travelmate.navigationdrawer.SettingFragment
 import vn.asiantech.travelmate.utils.Constant
+import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.nav_header_main.view.*
+
 
 class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
     var progressDialog: ProgressDialog? = null
@@ -25,8 +26,15 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_popular_city)
         initDrawer()
+        initHeader()
         initView()
         initFragment()
+    }
+
+    private fun initHeader() {
+        val navigationView = findViewById(R.id.navView) as NavigationView
+        val imgAvatar = navigationView.getHeaderView(0).imgAvatar
+        Glide.with(applicationContext).load(Constant.URL_AVATAR).into(imgAvatar)
     }
 
     private fun initDrawer() {

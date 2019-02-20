@@ -20,14 +20,12 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.fragment_setting.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.login.LoginActivity
 import vn.asiantech.travelmate.popularcityactivity.PopularCityActivity
 import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.utils.ValidationUtil
-import java.util.*
 
 class SettingFragment : Fragment(), View.OnClickListener {
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
