@@ -16,7 +16,6 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_popular_city.*
 import kotlinx.android.synthetic.main.nav_header_main.*
-import kotlinx.android.synthetic.main.nav_header_main.view.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.utils.Constant
