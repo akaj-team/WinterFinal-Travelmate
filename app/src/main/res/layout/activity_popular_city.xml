@@ -31,13 +31,7 @@
                     app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
         </android.support.design.widget.AppBarLayout>
-        <ListView
-                android:id="@+id/lvSuggest"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"/>
+
         <FrameLayout
                 android:id="@+id/frameLayoutDrawer"
                 android:layout_width="0dp"
