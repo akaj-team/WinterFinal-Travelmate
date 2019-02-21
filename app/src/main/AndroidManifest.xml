@@ -11,8 +11,7 @@
             android:roundIcon="@mipmap/ic_app"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".popularcityactivity.PopularCityActivity" />
-        <activity android:name=".login.LoginActivity">
+        <activity android:name=".popularcityactivity.PopularCityActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
