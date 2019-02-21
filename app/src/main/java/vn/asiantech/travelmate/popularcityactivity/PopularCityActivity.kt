@@ -91,13 +91,13 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         this.menuInflater.inflate(R.menu.main, menu)
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchView = menu.findItem(R.id.actionSearch).actionView as SearchView
-        searchView.apply {
-            setSearchableInfo(searchManager.getSearchableInfo(componentName))
-            setOnQueryTextListener(this@PopularCityActivity)
-            setOnSuggestionListener(this@PopularCityActivity)
-        }
+//        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+//        val searchView = menu.findItem(R.id.actionSearch).actionView as SearchView
+//        searchView.apply {
+//            setSearchableInfo(searchManager.getSearchableInfo(componentName))
+//            setOnQueryTextListener(this@PopularCityActivity)
+//            setOnSuggestionListener(this@PopularCityActivity)
+//        }
 
         return super.onCreateOptionsMenu(menu)
     }
