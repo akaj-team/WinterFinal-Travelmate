@@ -42,11 +42,11 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
         val path = fireBaseUser?.email
         database = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
         database?.addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(readable: DatabaseError) {
+            override fun onCancelled(dataSnapshot: DatabaseError) {
             }
 
-            override fun onDataChange(readable: DataSnapshot) {
-                user = path?.let { ValidationUtil.getValuePathChild(it) }?.let { readable.child(it).getValue(User::class.java) }
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                user = path?.let { ValidationUtil.getValuePathChild(it) }?.let { dataSnapshot.child(it).getValue(User::class.java) }
                 val itemViewHeader = navView.getHeaderView(0)
                 val imgAvatar = itemViewHeader.imgAvatar
                 Glide.with(applicationContext).load(user?.avatar).into(imgAvatar)

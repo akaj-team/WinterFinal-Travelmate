@@ -37,13 +37,13 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
             (activity as PopularCityActivity).showProgressbarDialog()
             database = firebase?.getReference(Constant.KEY_TRAVEL)
             database?.addValueEventListener(object : ValueEventListener {
-                override fun onCancelled(readable: DatabaseError) {
+                override fun onCancelled(dataSnapshot: DatabaseError) {
                     Toast.makeText(context, getString(R.string.checkInternet), Toast.LENGTH_SHORT).show()
                     (activity as PopularCityActivity).progressDialog?.dismiss()
                 }
 
-                override fun onDataChange(readable: DataSnapshot) {
-                    for (image in readable.children) {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    for (image in dataSnapshot.children) {
                         val city = image.getValue(Travel::class.java)
                         city?.let { listCity.add(it) }
                     }
