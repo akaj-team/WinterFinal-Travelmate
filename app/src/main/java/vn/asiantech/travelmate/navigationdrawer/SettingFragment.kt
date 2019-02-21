@@ -96,40 +96,45 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
     private fun uploadImageToFirebase() {
 
-        var progressDialog = ProgressDialog(context)
-        progressDialog.setTitle("Uploading ...")
-        progressDialog.show()
-
-        storage = FirebaseStorage.getInstance()
+        /*storage = FirebaseStorage.getInstance()
         storageReference = storage?.getReference()
         Log.i("bbbb", filePath.toString())
         if (filePath != null) {
-            val ref = storageReference?.child("images/"+ UUID.randomUUID().toString())
-            ref?.putFile(filePath!!)
-                ?.addOnSuccessListener{ object : OnSuccessListener<UploadTask.TaskSnapshot>{
-                    override fun onSuccess(p0: UploadTask.TaskSnapshot?) {
-                        progressDialog.dismiss()
+            val ref = storageReference?.child("images/"+ UUID.randomUUID().toString())!!
+            ref.putFile(filePath!!)
+                .addOnSuccessListener{ object : OnSuccessListener<UploadTask.TaskSnapshot>{
+                    override fun onSuccess(taskSnapshot: UploadTask.TaskSnapshot?) {
+//                        progressDialog.dismiss()
                         Toast.makeText(context, "success", Toast.LENGTH_SHORT).show()
                         Log.i("bbbb", "success")
 //                        var imageUrl = p0?.uploadSessionUri
                     } } }
-                ?.addOnFailureListener { object : OnFailureListener{
-                    override fun onFailure(p0: Exception) {
-                        progressDialog.dismiss()
+                .addOnFailureListener { object : OnFailureListener{
+                    override fun onFailure(exception : Exception) {
+//                        progressDialog.dismiss()
                         Log.i("bbbb", "faile")
                     }
 
                 } }
-                ?.addOnProgressListener {
+                .addOnProgressListener {
                     object : OnProgressListener<UploadTask.TaskSnapshot>{
-                        override fun onProgress(p0: UploadTask.TaskSnapshot?) {
-                            var process = (100.0 * p0!!.bytesTransferred / p0.totalByteCount)
-                            progressDialog.setMessage("Upload " + process + "%")
+                        override fun onProgress(taskSnapshot : UploadTask.TaskSnapshot?) {
+                            var process = (100.0 * taskSnapshot!!.bytesTransferred / taskSnapshot.totalByteCount)
+//                            progressDialog.setMessage("Upload " + process + "%")
                         }
 
                     }
                 }
-        }
+            storageReference?.child(ref.path)?.downloadUrl?.addOnSuccessListener { object : OnSuccessListener<Uri>{
+                override fun onSuccess(p0: Uri?) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+
+            } }
+//            Log.i("bbbb", ref)
+        }*/
+
+
     }
 
     private fun chooseImage() {
