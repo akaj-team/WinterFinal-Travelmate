@@ -16,16 +16,21 @@ class HotelAdapter(private val listHotel: ArrayList<Hotel>, val onClickListener:
             val hotel: Hotel = listHotel[adapterPosition]
             with(itemView) {
                 with(hotel) {
-                    tvDistance.text = context.getString(R.string.itemHotelKilometerPerSecond, distance)
+                    tvDistance.text = context.getString(R.string.itemHotelKilometer, distance)
                     tvHotelName.text = hotelName
                     tvAddress.text = address
-                    tvMoreDetail.setOnClickListener {
-                        if (llMoreDetail.visibility == View.GONE) {
-                            llMoreDetail.visibility = View.VISIBLE
-                        } else {
-                            llMoreDetail.visibility = View.GONE
-                        }
+                    tvTapForMoreDetail.setOnClickListener {
+                        onClickListener.onTapForMoreClicked(adapterPosition)
                     }
+                    itemView.isSelected = isChecked
+                    if (isChecked) {
+                        llMoreDetail.visibility = View.VISIBLE
+                    } else {
+                        llMoreDetail.visibility = View.GONE
+                    }
+                    imgCall.setOnClickListener { onClickListener.onCallClicked(adapterPosition) }
+                    imgLocation.setOnClickListener { onClickListener.onLocationClicked(adapterPosition) }
+                    tvMoreDetail.setOnClickListener { onClickListener.onMoreClicked(adapterPosition) }
                 }
             }
         }
@@ -46,7 +51,10 @@ class HotelAdapter(private val listHotel: ArrayList<Hotel>, val onClickListener:
     }
 
     interface OnItemClickListener {
-        fun onClicked(position: Int)
+        fun onCallClicked(position: Int)
+        fun onLocationClicked(position: Int)
+        fun onMoreClicked(position: Int)
+        fun onTapForMoreClicked(position: Int)
     }
 }
 

@@ -1,9 +1,10 @@
 package vn.asiantech.travelmate.navigationdrawer
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
-import android.util.Log
+import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,16 +15,12 @@ import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.Hotel
 
 class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAdapter.OnItemClickListener {
-    override fun onClicked(position: Int) {
-
-    }
 
     private var adapterHotel: HotelAdapter? = null
     private var listHotel: List<Hotel> = arrayListOf()
     private var suggestionAdapter: ArrayAdapter<String>? = null
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        Log.w("xxxxxx", "position: ${actvSearchHotel.text.toString().trim()}")
         (listHotel as ArrayList).apply {
             clear()
             mockDataHotel()
@@ -50,32 +47,52 @@ class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAd
         adapterHotel = HotelAdapter((listHotel as ArrayList<Hotel>), this)
         recyclerViewHotel.apply {
             setHasFixedSize(true)
-            layoutManager = GridLayoutManager(context, 2)
+            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             adapter = adapterHotel
         }
-        Log.w("xxxxxx",2.5F.toString())
     }
 
     private fun mockData(): List<String> {
         val list = arrayListOf<String>()
         list.apply {
-            add("Phuc")
-            add("Dinh")
-            add("Phu")
-            add("Le")
-            add("Luc")
+            add("Hue")
+            add("Da Nang")
+            add("Quang Nam")
+            add("Quang Ngai")
+            add("Binh Dinh")
         }
         return list
     }
 
     private fun mockDataHotel(): List<Hotel> {
         (listHotel as ArrayList).apply {
-            add(Hotel("Galaxy", 2.5F, "Hue", 962908124L, "2520"))
-            add(Hotel("MinhToan", 2.5F, "Danang", 962908124L, "2520"))
-            add(Hotel("GreenHotel", 2.5F, "Hue", 962908124L, "2520"))
-            add(Hotel("Novotel", 2.5F, "Hue", 962908124L, "2520"))
-            add(Hotel("KingHotel", 2.5F, "Hue", 962908124L, "2520"))
+            add(Hotel("Galaxy", 2.5F, "Hue", "0962908124", "2520", false))
+            add(Hotel("MinhToan", 2.5F, "Danang", "0962908124", "2520", false))
+            add(Hotel("GreenHotel", 2.5F, "Hue", "0962908124", "2520", false))
+            add(Hotel("Novotel", 2.5F, "Hue", "0962908124", "2520", false))
+            add(Hotel("KingHotel", 2.5F, "Hue", "0962908124", "2520", false))
+            add(Hotel("KingHotel", 2.5F, "Hue", "0962908124", "2520", false))
         }
         return listHotel
     }
+
+    override fun onLocationClicked(position: Int) {
+        //Todo
+    }
+
+    override fun onMoreClicked(position: Int) {
+        //Todo
+    }
+
+    override fun onCallClicked(position: Int) {
+        val callIntent = Intent(Intent.ACTION_CALL)
+        callIntent.data = Uri.parse(getString(R.string.itemHotelTvMoreValues, listHotel[position].phoneNumber))
+        startActivity(callIntent)
+    }
+
+    override fun onTapForMoreClicked(position: Int) {
+        listHotel[position].isChecked = listHotel[position].isChecked != true
+        adapterHotel?.notifyItemChanged(position)
+    }
+
 }

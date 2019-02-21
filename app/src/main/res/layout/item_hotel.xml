@@ -51,29 +51,29 @@
                 app:layout_constraintRight_toRightOf="parent"/>
 
         <TextView
-                android:id="@+id/tvMoreDetail"
+                android:id="@+id/tvTapForMoreDetail"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:text="@string/itemHotelTvTapForMoreDetail"
                 android:gravity="center"
                 app:layout_constraintTop_toBottomOf="@+id/tvAddress"
                 app:layout_constraintLeft_toLeftOf="parent"
-                android:drawableEnd="@drawable/ic_arrow_drop_down_black_36dp"
+                android:drawableEnd="@drawable/bg_drop_down"
                 app:layout_constraintRight_toRightOf="parent"/>
 
         <LinearLayout
                 android:gravity="center"
                 android:id="@+id/llMoreDetail"
-                android:visibility="gone"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="5dp"
-                app:layout_constraintTop_toBottomOf="@id/tvMoreDetail"
+                app:layout_constraintTop_toBottomOf="@id/tvTapForMoreDetail"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent">
 
             <ImageView
+                    android:id="@+id/imgCall"
                     android:padding="5dp"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
@@ -81,6 +81,7 @@
                     android:background="@drawable/bg_circle"/>
 
             <ImageView
+                    android:id="@+id/imgLocation"
                     android:padding="5dp"
                     android:layout_marginStart="15dp"
                     android:layout_marginEnd="15dp"
@@ -90,6 +91,7 @@
                     android:background="@drawable/bg_circle"/>
 
             <TextView
+                    android:id="@+id/tvMoreDetail"
                     android:gravity="center"
                     android:padding="5dp"
                     android:layout_width="35dp"

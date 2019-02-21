@@ -60,6 +60,8 @@
     <string name="fragmentSettingBtnDone">Done</string>
     <string name="fragmentSettingBtnCancel">Cancel</string>
     <string name="itemHotelTvTapForMoreDetail">Tap for more detail</string>
-    <string name="itemHotelKilometerPerSecond">%.1f km/s</string>
+    <string name="itemHotelKilometer">%.1f km</string>
     <string name="itemHotelTvMore">More</string>
+    <string name="itemHotelTvMoreValues">tel: %s</string>
+    <string name="fragmentSettingTvError">This form must not be empty</string>
 </resources>
