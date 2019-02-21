@@ -8,6 +8,7 @@ import vn.asiantech.travelmate.R
 class LoginActivity : AppCompatActivity() {
 
     var progressDialog: ProgressDialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         progressDialog = ProgressDialog(this)
