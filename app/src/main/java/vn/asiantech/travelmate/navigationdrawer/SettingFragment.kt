@@ -1,6 +1,7 @@
 package vn.asiantech.travelmate.navigationdrawer
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
@@ -94,6 +95,11 @@ class SettingFragment : Fragment(), View.OnClickListener {
     }
 
     private fun uploadImageToFirebase() {
+
+        var progressDialog = ProgressDialog(context)
+        progressDialog.setTitle("Uploading ...")
+        progressDialog.show()
+
         storage = FirebaseStorage.getInstance()
         storageReference = storage?.getReference()
         Log.i("bbbb", filePath.toString())
@@ -102,25 +108,27 @@ class SettingFragment : Fragment(), View.OnClickListener {
             ref?.putFile(filePath!!)
                 ?.addOnSuccessListener{ object : OnSuccessListener<UploadTask.TaskSnapshot>{
                     override fun onSuccess(p0: UploadTask.TaskSnapshot?) {
+                        progressDialog.dismiss()
+                        Toast.makeText(context, "success", Toast.LENGTH_SHORT).show()
                         Log.i("bbbb", "success")
-                        var imageUrl = p0?.uploadSessionUri
-                    }
-                }
-                }
+//                        var imageUrl = p0?.uploadSessionUri
+                    } } }
                 ?.addOnFailureListener { object : OnFailureListener{
                     override fun onFailure(p0: Exception) {
+                        progressDialog.dismiss()
                         Log.i("bbbb", "faile")
                     }
 
                 } }
-                /*?.addOnProgressListener {
+                ?.addOnProgressListener {
                     object : OnProgressListener<UploadTask.TaskSnapshot>{
                         override fun onProgress(p0: UploadTask.TaskSnapshot?) {
-                            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                            var process = (100.0 * p0!!.bytesTransferred / p0.totalByteCount)
+                            progressDialog.setMessage("Upload " + process + "%")
                         }
 
                     }
-                }*/
+                }
         }
     }
 

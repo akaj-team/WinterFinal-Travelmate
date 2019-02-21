@@ -2,7 +2,6 @@ package vn.asiantech.travelmate.popularcityactivity
 
 import android.app.ProgressDialog
 import android.content.Intent
-import android.media.Image
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
@@ -32,8 +31,8 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     }
 
     private fun initHeader() {
-        val navigationView = findViewById(R.id.navView) as NavigationView
-        val imgAvatar = navigationView.getHeaderView(0).imgAvatar
+//        val navigationView = findViewById(R.id.navView) as NavigationView
+        val imgAvatar = navView.getHeaderView(0).imgAvatar
         Glide.with(applicationContext).load(Constant.URL_AVATAR).into(imgAvatar)
     }
 

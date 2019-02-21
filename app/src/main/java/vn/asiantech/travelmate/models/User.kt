@@ -1,12 +1,13 @@
 package vn.asiantech.travelmate.models
 
-/*data class User(
-    var avatar : String,
-    var firstName: String,
-    var lastName: String,
-    var email: String,
-    val password : String
-)*/
+data class User(
+    var avatar : String ? = "",
+    var firstName: String ? = "",
+    var lastName: String ?= "",
+    var email: String ?= "",
+    val password : String ?= ""
+)
+/*
 class User {
     var avatar: String? = null
     var firstName: String? = null
@@ -22,3 +23,4 @@ class User {
         this.password = password
     }
 }
+*/
