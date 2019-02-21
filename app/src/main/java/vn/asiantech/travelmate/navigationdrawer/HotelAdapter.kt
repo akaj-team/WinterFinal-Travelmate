@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import kotlinx.android.synthetic.main.item_hotel.view.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.Hotel
@@ -17,11 +16,15 @@ class HotelAdapter(private val listHotel: ArrayList<Hotel>, val onClickListener:
             val hotel: Hotel = listHotel[adapterPosition]
             with(itemView) {
                 with(hotel) {
-                    tvDistance.text = distance.toString()
+                    tvDistance.text = context.getString(R.string.itemHotelKilometerPerSecond, distance)
                     tvHotelName.text = hotelName
                     tvAddress.text = address
-                    tvMoreDetail.setOnClickListener { view ->
-                        Toast.makeText(context,"Position: $adapterPosition", Toast.LENGTH_LONG).show()
+                    tvMoreDetail.setOnClickListener {
+                        if (llMoreDetail.visibility == View.GONE) {
+                            llMoreDetail.visibility = View.VISIBLE
+                        } else {
+                            llMoreDetail.visibility = View.GONE
+                        }
                     }
                 }
             }

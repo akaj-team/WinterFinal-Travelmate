@@ -26,7 +26,7 @@ class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAd
         Log.w("xxxxxx", "position: ${actvSearchHotel.text.toString().trim()}")
         (listHotel as ArrayList).apply {
             clear()
-            addAll(mockDataHotel())
+            mockDataHotel()
         }
         adapterHotel?.notifyDataSetChanged()
     }
@@ -53,6 +53,7 @@ class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAd
             layoutManager = GridLayoutManager(context, 2)
             adapter = adapterHotel
         }
+        Log.w("xxxxxx",2.5F.toString())
     }
 
     private fun mockData(): List<String> {
