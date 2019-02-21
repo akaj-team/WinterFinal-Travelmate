@@ -24,6 +24,10 @@ android {
         abortOnError false
         lintConfig file('lint.xml')
     }
+
+    androidExtensions {
+        experimental = true
+    }
 }
 
 dependencies {
@@ -34,7 +38,6 @@ dependencies {
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.google.firebase:firebase-database:16.0.6'
     implementation 'com.firebaseui:firebase-ui-database:4.3.1'
-    implementation 'com.squareup.picasso:picasso:2.71828'
     implementation "com.google.firebase:firebase-auth:16.1.0"
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     implementation 'com.google.firebase:firebase-database:16.0.6'
