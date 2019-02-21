@@ -37,8 +37,7 @@ class HotelAdapter(private val listHotel: ArrayList<Hotel>, val onClickListener:
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, p1: Int): HotelAdapter.SuggestViewHolder {
-        val layoutInflater: LayoutInflater = LayoutInflater.from(viewGroup.context)
-        val view: View = layoutInflater.inflate(R.layout.item_hotel, viewGroup, false)
+        val view: View = LayoutInflater.from(viewGroup.context).inflate(R.layout.item_hotel, viewGroup, false)
         return SuggestViewHolder(view)
     }
 
