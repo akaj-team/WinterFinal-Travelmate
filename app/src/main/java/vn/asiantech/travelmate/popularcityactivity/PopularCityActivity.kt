@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_popular_city.*
+import kotlinx.android.synthetic.main.nav_header_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.User
@@ -47,10 +48,12 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 user = path?.let { ValidationUtil.getValuePathChild(it) }?.let { dataSnapshot.child(it).getValue(User::class.java) }
-                val itemViewHeader = navView.getHeaderView(0)
-                val imgAvatar = itemViewHeader.imgAvatar
-                Glide.with(applicationContext).load(user?.avatar).into(imgAvatar)
-                itemViewHeader.tvName.text = user?.lastName
+                user?.let {
+                    with(it) {
+                        Glide.with(this@PopularCityActivity).load(avatar).into(imgAvatar)
+                        tvName.text = lastName
+                    }
+                }
             }
         })
     }
