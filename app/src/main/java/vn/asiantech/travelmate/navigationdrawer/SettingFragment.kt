@@ -14,31 +14,44 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Toast
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.OnProgressListener
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.fragment_setting.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.login.LoginActivity
 import vn.asiantech.travelmate.popularcityactivity.PopularCityActivity
 import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.utils.ValidationUtil
+import java.io.IOException
+import java.lang.Exception
+import java.util.*
 
+
+@Suppress("DEPRECATED_IDENTITY_EQUALS")
 class SettingFragment : Fragment(), View.OnClickListener {
     private val firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
     private val fireBaseUser: FirebaseUser? = firebaseAuth?.currentUser
     private var password: String = ""
-    private var selectedPhotoUri : Uri ?= null
+    private var filePath : Uri ?= null
+    private var storage : FirebaseStorage ?= null
+    private var storageReference : StorageReference ?= null
     private lateinit var oldPassword: String
     private lateinit var newPassword: String
     private lateinit var confirmPassword: String
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnChangePassword -> {
-                val database = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
+                /*val database = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
                 val path = ValidationUtil.getValueChild(fireBaseUser!!.email!!)
                 if (checkUserPassEmail() == Constant.CHECK_SIGNUP && !oldPassword.isEmpty() && !newPassword.isEmpty() && !confirmPassword.isEmpty()) {
                     if (activity is PopularCityActivity) {
@@ -55,7 +68,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
                                 })
 
 
-//                                uploadImageToFirebase()
+                                uploadImageToFirebase()
 
 
                                 firebaseAuth?.signOut()
@@ -71,25 +84,68 @@ class SettingFragment : Fragment(), View.OnClickListener {
                     }
                 } else {
                     showMessage(checkUserPassEmail())
-                }
+                }*/
+                uploadImageToFirebase()
             }
             R.id.imgAvatar -> {
-                val intent = Intent(Intent.ACTION_PICK)
-                intent.type = "image/*"
-                startActivityForResult(intent, 0)
+                chooseImage()
             }
         }
     }
 
-    /*private fun uploadImageToFirebase() {
-        if (selectedPhotoUri == null) return
-        val filename = UUID.randomUUID().toString()
-        val ref = FirebaseStorage.getInstance().getReference("/image/$filename")
-        ref.putFile(selectedPhotoUri!!)
-            .addOnSuccessListener {
-                Log.i("bbbb", "success : ${it.metadata?.path}")
+    private fun uploadImageToFirebase() {
+        storage = FirebaseStorage.getInstance()
+        storageReference = storage?.getReference()
+        Log.i("bbbb", filePath.toString())
+        if (filePath != null) {
+            val ref = storageReference?.child("images/"+ UUID.randomUUID().toString())
+            ref?.putFile(filePath!!)
+                ?.addOnSuccessListener{ object : OnSuccessListener<UploadTask.TaskSnapshot>{
+                    override fun onSuccess(p0: UploadTask.TaskSnapshot?) {
+                        Log.i("bbbb", "success")
+                        var imageUrl = p0?.uploadSessionUri
+                    }
+                }
+                }
+                ?.addOnFailureListener { object : OnFailureListener{
+                    override fun onFailure(p0: Exception) {
+                        Log.i("bbbb", "faile")
+                    }
+
+                } }
+                /*?.addOnProgressListener {
+                    object : OnProgressListener<UploadTask.TaskSnapshot>{
+                        override fun onProgress(p0: UploadTask.TaskSnapshot?) {
+                            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        }
+
+                    }
+                }*/
+        }
+    }
+
+    private fun chooseImage() {
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), Constant.PICK_IMAGE_REQUEST)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode === Constant.PICK_IMAGE_REQUEST && resultCode === Activity.RESULT_OK
+            && data != null && data.data != null
+        ) {
+            filePath = data.data
+            try {
+                val bitmap = MediaStore.Images.Media.getBitmap(activity?.contentResolver, filePath)
+                imgAvatar.setImageBitmap(bitmap)
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
-    }*/
+
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (activity is PopularCityActivity) {
@@ -113,18 +169,6 @@ class SettingFragment : Fragment(), View.OnClickListener {
             !ValidationUtil.isValidPassword(newPassword) -> getString(R.string.signupTvPasswordFormatWrong)
             newPassword != confirmPassword -> getString(R.string.signupTvConfirmPasswordWrong)
             else -> Constant.CHECK_SIGNUP
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
-            Log.i("bbbb", "selected")
-            selectedPhotoUri = data.data
-            val bitmap = MediaStore.Images.Media.getBitmap(activity?.contentResolver, selectedPhotoUri)
-            val bitmapDrawable = BitmapDrawable(resources ,bitmap)
-            Log.i("bbbb", bitmapDrawable.toString())
-            imgAvatar?.setImageDrawable(bitmapDrawable)
         }
     }
 
