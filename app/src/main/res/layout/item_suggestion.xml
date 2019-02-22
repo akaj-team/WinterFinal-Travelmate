@@ -7,5 +7,4 @@
         android:text="@string/loading"
         android:gravity="start|center"
         android:textSize="30dp"
-        android:paddingLeft="10dp"
-/>
+        android:paddingLeft="10dp"/>

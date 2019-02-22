@@ -37,5 +37,4 @@ class SuggestionAdapter(private val listSuggestion: ArrayList<String>, private v
     interface OnItemClickListener {
         fun onClicked(position: Int)
     }
-
 }
