@@ -1,17 +1,17 @@
 package vn.asiantech.travelmate.popularcityactivity
 
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.SearchView
-import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import com.bumptech.glide.Glide
@@ -21,19 +21,31 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_popular_city.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.detailactivity.DetailActivity
+import vn.asiantech.travelmate.login.LoginActivity
 import vn.asiantech.travelmate.models.User
+import vn.asiantech.travelmate.navigationdrawer.SearchHotelFragment
+import vn.asiantech.travelmate.navigationdrawer.SettingFragment
 import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.utils.ValidationUtil
 
 class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener,
-    SuggestionAdapter.OnItemClickListener {
+    AdapterView.OnItemClickListener {
+
     private var database: DatabaseReference? = null
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
     private var fireBaseUser: FirebaseUser? = firebaseAuth?.currentUser
     var progressDialog: ProgressDialog? = null
     var user: User? = null
     private var listData: MutableList<String> = mutableListOf()
-    private var adapter: ArrayAdapter<String>? = null
+    private var suggestionAdapter: ArrayAdapter<String>? = null
+    private var autoCompleteTextView: AutoCompleteTextView? = null
+
+    override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        val intent = Intent(this, DetailActivity::class.java)
+        intent.putExtra(Constant.DATA_FROM_POPULAR_ACTIVITY_TO_DETAIL_ACTIVITY, Constant.MOCK_CITY)
+        startActivity(intent)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +55,16 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
         initDrawer()
         initView()
         initFragment()
-        mockData()
+    }
+
+    private fun initSuggestion() {
+        applicationContext?.let { suggestionAdapter = ArrayAdapter(it, R.layout.item_suggestion, mockData()) }
+        autoCompleteTextView?.apply {
+            setAdapter(suggestionAdapter)
+            threshold = 1
+            width = maxWidth
+            onItemClickListener = this@PopularCityActivity
+        }
     }
 
     private fun getInforUser() {
@@ -90,15 +111,17 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         this.menuInflater.inflate(R.menu.main, menu)
-        val autoCompleteTextView = menu.findItem(R.id.actionSearch).actionView as AutoCompleteTextView
-        autoCompleteTextView.apply {
+        autoCompleteTextView = menu.findItem(R.id.actionSearch).actionView as AutoCompleteTextView
+        autoCompleteTextView?.apply {
             maxLines = 1
+            hint = "  Search ..."
         }
+        initSuggestion()
         return super.onCreateOptionsMenu(menu)
     }
 
-    private fun mockData(): List<String> {
-        (listData as ArrayList<String>).apply {
+    private fun mockData(): MutableList<String> {
+        listData.apply {
             add("Dana")
             add("Hue")
             add("Quang Binh")
@@ -120,18 +143,33 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        val fragment = supportFragmentManager.findFragmentById(R.id.frameLayoutDrawer)
         when (item.itemId) {
             R.id.navDestination -> {
-
+                if (fragment is PopularCityFragment) {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                } else {
+                    val intent = Intent(this, PopularCityActivity::class.java)
+                    startActivity(intent)
+                }
             }
             R.id.navHotel -> {
-
+                if (fragment is SearchHotelFragment) {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                } else {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.frameLayoutDrawer, SearchHotelFragment())
+                        .commit()
+                }
             }
             R.id.navLogout -> {
-
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
             }
             R.id.navSetting -> {
-
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.frameLayoutDrawer, SettingFragment())
+                    .commit()
             }
         }
         drawerLayout.closeDrawer(GravityCompat.START)
@@ -158,9 +196,5 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
             setMessage(getString(R.string.note))
             show()
         }
-    }
-
-    override fun onClicked(position: Int) {
-
     }
 }

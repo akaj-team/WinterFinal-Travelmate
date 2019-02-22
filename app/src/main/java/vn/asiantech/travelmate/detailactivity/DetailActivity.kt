@@ -2,10 +2,12 @@ package vn.asiantech.travelmate.detailactivity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import kotlinx.android.synthetic.main.activity_detail.*
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.utils.Constant
 
 class DetailActivity : AppCompatActivity() {
     var progressBar: ProgressBar? = null
@@ -15,6 +17,8 @@ class DetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_detail)
         initFragment()
         initProgressBar()
+        val name = intent.getStringExtra(Constant.DATA_FROM_POPULAR_ACTIVITY_TO_DETAIL_ACTIVITY)
+        Log.w("xxxxxx",name)
     }
 
     private fun initProgressBar() {

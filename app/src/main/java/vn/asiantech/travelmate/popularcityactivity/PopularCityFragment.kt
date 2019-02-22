@@ -12,12 +12,12 @@ import android.widget.Toast
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.fragment_popular_city.*
 import vn.asiantech.travelmate.R
-import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.detailactivity.DetailActivity
+import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.utils.Constant
 
 class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
-    private var database: DatabaseReference ?= null
+    private var database: DatabaseReference? = null
     private var firebase: FirebaseDatabase? = FirebaseDatabase.getInstance()
     private var listCity: ArrayList<Travel> = arrayListOf()
     private var popularCityAdapter: PopularCityAdapter? = null
@@ -32,7 +32,7 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
         initData()
     }
 
-    private fun initData(){
+    private fun initData() {
         if (activity is PopularCityActivity) {
             (activity as PopularCityActivity).showProgressbarDialog()
             database = firebase?.getReference(Constant.KEY_TRAVEL)
@@ -66,7 +66,8 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
     }
 
     override fun onClicked(position: Int) {
-        val intent = Intent(activity,DetailActivity::class.java)
+        val intent = Intent(activity, DetailActivity::class.java)
+        intent.putExtra(Constant.DATA_FROM_POPULAR_ACTIVITY_TO_DETAIL_ACTIVITY, Constant.MOCK_CITY)
         startActivity(intent)
     }
 }
