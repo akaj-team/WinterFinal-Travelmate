@@ -120,8 +120,6 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     }
 
     private fun initView() {
-        val actionBar = supportActionBar
-        actionBar?.title = getString(R.string.populatFragmentTravelMate)
         supportActionBar?.title = getString(R.string.travelMate)
     }
 

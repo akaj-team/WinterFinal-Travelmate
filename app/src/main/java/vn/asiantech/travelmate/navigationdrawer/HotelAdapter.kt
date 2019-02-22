@@ -11,6 +11,19 @@ import vn.asiantech.travelmate.models.Hotel
 class HotelAdapter(private val listHotel: ArrayList<Hotel>, val onClickListener: OnItemClickListener) :
     RecyclerView.Adapter<HotelAdapter.SuggestViewHolder>() {
 
+    override fun onCreateViewHolder(viewGroup: ViewGroup, p1: Int): HotelAdapter.SuggestViewHolder {
+        val view: View = LayoutInflater.from(viewGroup.context).inflate(R.layout.item_hotel, viewGroup, false)
+        return SuggestViewHolder(view)
+    }
+
+    override fun getItemCount(): Int {
+        return listHotel.size
+    }
+
+    override fun onBindViewHolder(viewHolder: SuggestViewHolder, position: Int) {
+        viewHolder.onBind()
+    }
+
     inner class SuggestViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun onBind() {
             val hotel: Hotel = listHotel[adapterPosition]
@@ -34,19 +47,6 @@ class HotelAdapter(private val listHotel: ArrayList<Hotel>, val onClickListener:
                 }
             }
         }
-    }
-
-    override fun onCreateViewHolder(viewGroup: ViewGroup, p1: Int): HotelAdapter.SuggestViewHolder {
-        val view: View = LayoutInflater.from(viewGroup.context).inflate(R.layout.item_hotel, viewGroup, false)
-        return SuggestViewHolder(view)
-    }
-
-    override fun getItemCount(): Int {
-        return listHotel.size
-    }
-
-    override fun onBindViewHolder(viewHolder: SuggestViewHolder, position: Int) {
-        viewHolder.onBind()
     }
 
     interface OnItemClickListener {

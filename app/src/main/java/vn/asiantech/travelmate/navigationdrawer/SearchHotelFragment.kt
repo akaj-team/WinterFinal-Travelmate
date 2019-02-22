@@ -17,13 +17,13 @@ import vn.asiantech.travelmate.models.Hotel
 class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAdapter.OnItemClickListener {
 
     private var adapterHotel: HotelAdapter? = null
-    private var listHotel: List<Hotel> = arrayListOf()
+    private var listHotel: MutableList<Hotel> = mutableListOf()
     private var suggestionAdapter: ArrayAdapter<String>? = null
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        (listHotel as ArrayList).apply {
+        listHotel.apply {
             clear()
-            mockDataHotel()
+            addAll(mockDataHotel())
         }
         adapterHotel?.notifyDataSetChanged()
     }
@@ -53,19 +53,20 @@ class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAd
     }
 
     private fun mockData(): List<String> {
-        val list = arrayListOf<String>()
-        list.apply {
+        val listCity = mutableListOf<String>()
+        listCity.apply {
             add("Hue")
             add("Da Nang")
             add("Quang Nam")
             add("Quang Ngai")
             add("Binh Dinh")
         }
-        return list
+        return listCity
     }
 
-    private fun mockDataHotel(): List<Hotel> {
-        (listHotel as ArrayList).apply {
+    private fun mockDataHotel(): MutableList<Hotel> {
+        val listHotel = mutableListOf<Hotel>()
+        listHotel.apply {
             add(Hotel("Galaxy", 2.5F, "Hue", "0962908124", "2520", false))
             add(Hotel("MinhToan", 2.5F, "Danang", "0962908124", "2520", false))
             add(Hotel("GreenHotel", 2.5F, "Hue", "0962908124", "2520", false))
@@ -94,5 +95,4 @@ class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAd
         listHotel[position].isChecked = listHotel[position].isChecked != true
         adapterHotel?.notifyItemChanged(position)
     }
-
 }
