@@ -56,5 +56,3 @@ class HotelAdapter(private val listHotel: ArrayList<Hotel>, val onClickListener:
         fun onTapForMoreClicked(position: Int)
     }
 }
-
-
