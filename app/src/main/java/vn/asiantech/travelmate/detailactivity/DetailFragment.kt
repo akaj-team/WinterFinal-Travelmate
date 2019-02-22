@@ -7,39 +7,31 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.bumptech.glide.Glide
-import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.fragment_detail.*
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.models.WeatherResponse
+import vn.asiantech.travelmate.utils.APIUtil
 import vn.asiantech.travelmate.utils.Constant
-import kotlin.math.ceil
 
 
 class DetailFragment : Fragment(), View.OnClickListener {
 
-    lateinit var travel: Travel
-    private var service: SOService? = null
+    private var travel: Travel? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (activity is DetailActivity) {
             travel = (activity as DetailActivity).getCity()
         }
-        setUpApi()
-        weatherData(travel.province.toString())
-        val view = inflater.inflate(R.layout.fragment_detail, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_detail, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getWeatherData(travel?.province.toString())
         cvWeather.setOnClickListener(this)
     }
 
@@ -57,41 +49,24 @@ class DetailFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun setUpApi() {
-        val logging = HttpLoggingInterceptor()
-        logging.level = HttpLoggingInterceptor.Level.BODY
-        val httpClient = OkHttpClient.Builder()
-        httpClient.addInterceptor(logging)
-        val gson = GsonBuilder().setLenient().create()
-        val getImagesRetrofit = Retrofit.Builder()
-            .baseUrl(Constant.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .client(httpClient.build())
-            .build()
-        service = getImagesRetrofit.create<SOService>(SOService::class.java)
-    }
-
-    private fun weatherData(city: String) {
+    private fun getWeatherData(city: String) {
         if (activity is DetailActivity) {
             (activity as DetailActivity).showProgressbarDialog()
-
-            service?.getCity(city, Constant.UNITS, Constant.APP_ID)?.enqueue(object : Callback<WeatherResponse> {
+            val service = APIUtil.setUpApi(Constant.BASE_URL)
+            service.getCity(city, Constant.UNITS, Constant.APP_ID)?.enqueue(object : Callback<WeatherResponse> {
                 override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>?) {
                     val cityWeather: WeatherResponse? = response?.body()
-                    tvTemperature.text =
-                        (cityWeather?.main?.temp?.let { ceil(it) }?.toInt().toString() + "°" + getString(R.string.metric))
-                    tvHumidity.text =
-                        (cityWeather?.main?.humidity?.let { ceil(it) }?.toInt().toString() + " " + getString(R.string.percent))
-                    tvWind.text = (cityWeather?.wind?.speed.toString() + " " + getString(R.string.meterOverSecond))
-
-                    context?.let {
-                        Glide.with(it).load(travel.image).into(imgCity)
-                    }
-                    tvDescription.text = travel.description
-                    tvNamePlace.text = travel.name
-                    context?.let {
-                        Glide.with(it).load("http://openweathermap.org/img/w/${cityWeather?.weather?.get(0)?.icon}.png")
-                            .into(imgIconWeather)
+                    cityWeather?.let {
+                        with(it) {
+                            tvTemperature.text = getString(R.string.degreeC, tempDisplay)
+                            tvHumidity.text = getString(R.string.percent, humidityDisplay)
+                            tvWind.text = getString(R.string.meterOverSecond, speedDisplay)
+                            tvDescription.text = travel?.description
+                            tvNamePlace.text = travel?.name
+                            Glide.with(this@DetailFragment).load(travel?.image).into(imgCity)
+                            Glide.with(this@DetailFragment).load("${Constant.URL_ICON}$iconDisplay.png")
+                                .into(imgIconWeather)
+                        }
                     }
                     (activity as DetailActivity).progressDialog?.dismiss()
                 }
