@@ -8,15 +8,18 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_weather.view.*
 import kotlinx.android.synthetic.main.item_weather_top.view.*
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.extensions.toDateFormat
 import vn.asiantech.travelmate.models.WeatherSevenDay
-import java.text.SimpleDateFormat
+import vn.asiantech.travelmate.utils.Constant
 import java.util.*
-import kotlin.math.ceil
 
 class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>, var city : String) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val viewTypeItemTop = 0
-    private val viewTypeItem = 1
+    companion object {
+        const val viewTypeItemTop = 0
+        const val viewTypeItem = 1
+    }
+
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater: LayoutInflater = LayoutInflater.from(viewGroup.context)
         if (viewType == viewTypeItemTop) {
@@ -46,40 +49,34 @@ class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>, var c
         }
     }
 
-    open inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-
-    open inner class ItemViewHolder(itemView: View) : ViewHolder(itemView) {
+    inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun onBind() {
-            val cityWeather = weatherItems[adapterPosition]
             if (adapterPosition > 0) {
-                itemView.tvTemperatureItem.text = (cityWeather.temp.day.let {
-                    ceil(it).toInt().toString()
-                } + "°" + itemView.context.getString(R.string.metric))
-                itemView.tvDayItem.text = formatDate(cityWeather.dt)
-                itemView.context?.let {
-                    Glide.with(it).load("http://openweathermap.org/img/w/${cityWeather.weather.get(0).icon}.png").into(itemView.imgIcon)
+                val cityWeather = weatherItems[adapterPosition]
+                with(itemView) {
+                    with(cityWeather) {
+                        Glide.with(context).load("${Constant.URL_ICON}${weather[0].icon}.png").into(imgIcon)
+                        tvDayItem.text = dt.toDateFormat()
+                        tvTemperatureItem.text = context.getString(R.string.degreeC, tempDisplay)
+                    }
                 }
             }
         }
     }
 
-    inner class ItemTopViewHolder(itemView: View) : ViewHolder(itemView) {
+    inner class ItemTopViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun onBind() {
-            val cityWeather = weatherItems[0]
-            itemView.tvCity.text = city
-            itemView.tvDescriptionWeather.text = cityWeather.weather.get(0).description
-            itemView.tvTemperature.text =
-                (cityWeather.temp.day.let {
-                    ceil(it).toInt().toString()
-                } + "°" + itemView.context.getString(R.string.metric))
-            itemView.tvDay.text = formatDate(cityWeather.dt)
+            if (adapterPosition == 0) {
+                val cityWeather = weatherItems[0]
+                with(itemView) {
+                    with(cityWeather) {
+                        tvDay.text = dt.toDateFormat()
+                        tvCity.text = city
+                        tvDescriptionWeather.text = weather[0].description
+                        tvTemperature.text = context.getString(R.string.degreeC, tempDisplay)
+                    }
+                }
+            }
         }
-    }
-
-    fun formatDate(day: Int): String? {
-        val dayFormat = day.toLong()
-        val date: Date? = Date(dayFormat.times(1000L))
-        val simpleDateFormat = SimpleDateFormat("EEEE", Locale.US)
-        return simpleDateFormat.format(date)
     }
 }

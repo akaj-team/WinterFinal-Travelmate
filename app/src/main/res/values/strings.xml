@@ -2,16 +2,54 @@
     <string name="app_name">WinterFinal-Travelmate</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="mostPopularCities">Most Popular Cities</string>
-    <string name="hue">Hue</string>
     <string name="todo">TODO</string>
+    <string name="checkInternet">please check the internet</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="notRegisteredYetCreateANewAccount">Not registered yet? Create a new account</string>
+    <string name="travelMate">Travel Mate</string>
+    <string name="firstName">First Name</string>
+    <string name="lastName">Last Name</string>
+    <string name="confirmPassword">Confirm Password</string>
+    <string name="signUp">Signup</string>
+    <string name="signupTvAlreadyAMemberLogin">Already A Member? Login</string>
+    <string name="signupEmailFormatWrong">Email Format Wrong!</string>
+    <string name="signupTvPasswordFormatWrong">Password Should Have !</string>
+    <string name="signupTvFirstNameFormatWrong">First Name Just Have Alphabet!</string>
+    <string name="signupTvConfirmPasswordWrong">Confirm Password Wrong!</string>
+    <string name="signupTvLastNameFormatWrong">Last Name Just Have Alphabet!</string>
+    <string name="loginFragmentSuccessful">Successful</string>
+    <string name="successful">thanh cong</string>
+    <string name="error">please check email or password</string>
+    <string name="note">please wait ...</string>
+    <string name="inputAccount">please input email and password</string>
+    <string name="loginfragmentCannotLogin">Can not login</string>
+    <string name="signUpFragmentOk">OK</string>
+    <!--Detail Activity-->
     <string name="temperature">Temperature</string>
     <string name="humidity">Humidity</string>
     <string name="wind">Wind</string>
     <string name="daNang">Da nang</string>
-    <string name="percent">%</string>
     <string name="metric">C</string>
-    <string name="meterOverSecond">m/s</string>
-    <string name="note">Please wait ...</string>
-    <string name="checkInternet">Please check the internet</string>
+    <string name="percent">%s %%</string>
+    <string name="meterOverSecond">%s m/s</string>
+    <string name="degreeC">%s°C</string>
+    <string name="noCaseSatisfied">No case satisfied</string>
+    <string name="loading">Loading</string>
+    <!--MostPopularActivity-->
+    <string name="mostPopularCities">Most Popular Cities</string>
+    <string name="hue">Hue</string>
+    <string name="popularCityTvTravelmate">TravelMate</string>
+    <!--navigation-->
+    <string name="navigationDrawerOpen">Open navigation drawer</string>
+    <string name="navigationDrawerClose">Close navigation drawer</string>
+    <string name="navigationHeaderSubtitle">android.studio@android.com</string>
+    <string name="navigationHeaderDesc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="navigationDrawerDestination">Destination</string>
+    <string name="navigationDrawerHotel">Hotel</string>
+    <string name="navigationDrawerCommunicate">Communicate</string>
+    <string name="navigationDrawerLogout">Logout</string>
+    <string name="navigationDrawerSetting">Setting</string>
 </resources>

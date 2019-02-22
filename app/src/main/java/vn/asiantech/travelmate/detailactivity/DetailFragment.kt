@@ -2,7 +2,6 @@ package vn.asiantech.travelmate.detailactivity
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.CardView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,26 +41,26 @@ class DetailFragment : Fragment(), View.OnClickListener {
         setUpApi()
         weatherData(travel.province.toString())
         val view = inflater.inflate(R.layout.fragment_detail, container, false)
-        addListener(view)
         return view
     }
 
-    private fun addListener(view: View?) {
-        val cvWeather = view?.findViewById<CardView>(R.id.cvWeather)
-        cvWeather?.setOnClickListener(this)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        cvWeather.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
-        val fragmentTransaction = fragmentManager?.beginTransaction()
-        fragmentTransaction?.setCustomAnimations(
-            R.anim.right_to_left1,
-            R.anim.right_to_left2,
-            R.anim.left_to_right1,
-            R.anim.left_to_right2
-        )
-        fragmentTransaction?.replace(R.id.fragment_container, WeatherFragment())
-        fragmentTransaction?.addToBackStack(null)
-        fragmentTransaction?.commit()
+        fragmentManager?.beginTransaction()?.apply {
+            setCustomAnimations(
+                R.anim.right_to_left1,
+                R.anim.right_to_left2,
+                R.anim.left_to_right1,
+                R.anim.left_to_right2
+            )
+            replace(R.id.fragment_container, WeatherFragment())
+            addToBackStack(null)
+            commit()
+        }
     }
 
     private fun setUpApi() {

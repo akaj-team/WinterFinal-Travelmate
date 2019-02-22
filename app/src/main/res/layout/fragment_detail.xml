@@ -6,6 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".detailactivity.DetailFragment">
+
     <ImageView
             android:id="@+id/imgCity"
             android:layout_width="match_parent"
@@ -15,6 +16,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:contentDescription="@string/todo"/>
+
     <TextView
             android:id="@+id/tvNamePlace"
             android:layout_width="match_parent"
@@ -26,6 +28,7 @@
             android:textColor="@color/colorWhite"
             android:padding="10dp"
             app:layout_constraintBottom_toBottomOf="@+id/imgCity"/>
+
     <android.support.v7.widget.CardView
             android:id="@+id/cvWeather"
             android:layout_width="match_parent"
@@ -34,6 +37,7 @@
             app:layout_constraintTop_toBottomOf="@id/imgCity"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent">
+
         <android.support.constraint.ConstraintLayout
                 android:background="@drawable/bg_weather_one_day"
                 android:padding="10dp"
@@ -137,7 +141,9 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:textAlignment="center"
                     app:layout_constraintHorizontal_bias="0.5"/>
+
         </android.support.constraint.ConstraintLayout>
+
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
@@ -149,6 +155,7 @@
             app:layout_constraintTop_toBottomOf="@+id/cvWeather"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent">
+
         <android.support.constraint.ConstraintLayout
                 android:padding="10dp"
                 android:layout_width="match_parent"
@@ -164,6 +171,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
+
             <ImageView
                     android:layout_margin="10dp"
                     android:id="@+id/imgMap"

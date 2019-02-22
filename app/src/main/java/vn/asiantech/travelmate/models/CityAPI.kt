@@ -1,6 +1,7 @@
 package vn.asiantech.travelmate.models
 
 import com.google.gson.annotations.SerializedName
+import kotlin.math.ceil
 
 data class WeatherResponse(
 
@@ -36,7 +37,16 @@ data class WeatherResponse(
 
     @SerializedName("cod")
     var cod: Float
-)
+) {
+    val tempDisplay: Int
+        get() = ceil(main.temp).toInt()
+    val humidityDisplay: Int
+        get() = main.humidity.toInt()
+    val speedDisplay: Int
+        get() = wind.speed.toInt()
+    val iconDisplay: String
+        get() = weather[0].icon
+}
 
 data class Weather(
     @SerializedName("id")
@@ -81,10 +91,10 @@ data class Main(
     var pressure: Float,
 
     @SerializedName("temp_min")
-    var temp_min: Float,
+    var tempMin: Float,
 
     @SerializedName("temp_max")
-    var temp_max: Float
+    var tempMax: Float
 )
 
 data class Sys(

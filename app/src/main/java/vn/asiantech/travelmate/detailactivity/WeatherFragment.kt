@@ -20,14 +20,16 @@ import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.models.WeatherList
 import vn.asiantech.travelmate.models.WeatherSevenDay
+import vn.asiantech.travelmate.utils.APIUtil
+import vn.asiantech.travelmate.utils.Constant
 
 class WeatherFragment : Fragment() {
     private lateinit var travel : Travel
     private var service: SOService? = null
+    private lateinit var viewManager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
     private lateinit var weatherAdapter: WeatherAdapter
-    private lateinit var viewManager: LinearLayoutManager
-    private lateinit var weatherItems: ArrayList<WeatherSevenDay>
+    private var weatherItems: ArrayList<WeatherSevenDay> = arrayListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if(activity is DetailActivity) {
