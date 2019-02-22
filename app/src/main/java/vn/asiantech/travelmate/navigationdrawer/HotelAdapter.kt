@@ -36,11 +36,7 @@ class HotelAdapter(private val listHotel: ArrayList<Hotel>, val onClickListener:
                         onClickListener.onTapForMoreClicked(adapterPosition)
                     }
                     itemView.isSelected = isChecked
-                    if (isChecked) {
-                        llMoreDetail.visibility = View.VISIBLE
-                    } else {
-                        llMoreDetail.visibility = View.GONE
-                    }
+                    llMoreDetail.visibility = if (isChecked) View.VISIBLE else View.GONE
                     imgCall.setOnClickListener { onClickListener.onCallClicked(adapterPosition) }
                     imgLocation.setOnClickListener { onClickListener.onLocationClicked(adapterPosition) }
                     tvMoreDetail.setOnClickListener { onClickListener.onMoreClicked(adapterPosition) }
