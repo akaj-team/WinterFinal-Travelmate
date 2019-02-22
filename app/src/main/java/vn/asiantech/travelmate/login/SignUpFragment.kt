@@ -1,7 +1,6 @@
 package vn.asiantech.travelmate.login
 
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +16,7 @@ import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.extensions.getInputText
 import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.utils.Constant
+import vn.asiantech.travelmate.utils.ErrorUtil
 import vn.asiantech.travelmate.utils.ValidationUtil
 
 class SignUpFragment : Fragment(), View.OnClickListener {
@@ -64,7 +64,9 @@ class SignUpFragment : Fragment(), View.OnClickListener {
                         }
                 }
             } else {
-                showMessage(checkUserPassEmail())
+                val slideUp = AnimationUtils.loadAnimation(context, R.anim.slide_up)
+                val slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down)
+                ErrorUtil.showMessage(tvMessageError,checkUserPassEmail(),slideUp,slideDown)
             }
         } else {
             fragmentManager?.beginTransaction()?.apply {
@@ -97,22 +99,5 @@ class SignUpFragment : Fragment(), View.OnClickListener {
         edtEmail?.setText("")
         edtPassword?.setText("")
         edtConfirmPassword?.setText("")
-    }
-
-    private fun showMessage(message: String) {
-        val slideUp = AnimationUtils.loadAnimation(context, R.anim.slide_up)
-        val slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down)
-        val handler = Handler()
-        tvMessageError.apply {
-            if (visibility == View.INVISIBLE) {
-                visibility = View.VISIBLE
-                text = message
-                startAnimation(slideUp)
-                handler.postDelayed({
-                    startAnimation(slideDown)
-                    visibility = View.INVISIBLE
-                }, 3000)
-            }
-        }
     }
 }
