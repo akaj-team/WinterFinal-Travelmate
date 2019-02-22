@@ -119,21 +119,21 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
 
     //------Search----------
     override fun onQueryTextSubmit(query: String): Boolean {
+        Log.w("xxxxSubmit----", query)
+        return false
+    }
+
+    override fun onQueryTextChange(query: String): Boolean {
         Log.w("xxxx----", query)
         return false
     }
 
-    override fun onQueryTextChange(newText: String): Boolean {
-        adapter?.filter?.filter(newText)
-        return false
-    }
-
-    override fun onSuggestionSelect(p0: Int): Boolean {
+    override fun onSuggestionSelect(position: Int): Boolean {
 
         return true
     }
 
-    override fun onSuggestionClick(p0: Int): Boolean {
+    override fun onSuggestionClick(position: Int): Boolean {
 
         return true
     }
