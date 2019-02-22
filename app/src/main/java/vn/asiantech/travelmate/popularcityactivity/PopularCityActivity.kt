@@ -1,5 +1,6 @@
 package vn.asiantech.travelmate.popularcityactivity
 
+import android.content.Intent
 import android.app.ProgressDialog
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -17,6 +18,9 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_popular_city.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.login.LoginActivity
+import vn.asiantech.travelmate.navigationdrawer.SearchHotelFragment
+import vn.asiantech.travelmate.navigationdrawer.SettingFragment
 import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.utils.ValidationUtil
@@ -86,18 +90,29 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        val fragment = supportFragmentManager.findFragmentById(R.id.frameLayoutDrawer)
         when (item.itemId) {
             R.id.navDestination -> {
-
+                if (fragment is PopularCityFragment) {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                } else {
+                    val intent = Intent(this, PopularCityActivity::class.java)
+                    startActivity(intent)
+                }
             }
             R.id.navHotel -> {
-
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.frameLayoutDrawer, SearchHotelFragment())
+                    .commit()
             }
             R.id.navLogout -> {
-
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
             }
             R.id.navSetting -> {
-
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.frameLayoutDrawer, SettingFragment())
+                    .commit()
             }
         }
         drawerLayout.closeDrawer(GravityCompat.START)

@@ -37,11 +37,10 @@ class WeatherFragment : Fragment() {
     }
 
     private fun initView() {
-        val viewManager = LinearLayoutManager(context)
         weatherAdapter = WeatherAdapter(weatherItems, travel.province.toString())
         recyclerViewWeather.apply {
             setHasFixedSize(true)
-            layoutManager = viewManager
+            layoutManager = LinearLayoutManager(context)
             adapter = weatherAdapter
         }
     }

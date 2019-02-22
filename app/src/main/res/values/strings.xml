@@ -41,7 +41,7 @@
     <string name="mostPopularCities">Most Popular Cities</string>
     <string name="hue">Hue</string>
     <string name="popularCityTvTravelmate">TravelMate</string>
-    <!--navigation-->
+    <!--Navigation-->
     <string name="navigationDrawerOpen">Open navigation drawer</string>
     <string name="navigationDrawerClose">Close navigation drawer</string>
     <string name="navigationHeaderSubtitle">android.studio@android.com</string>
@@ -52,4 +52,18 @@
     <string name="navigationDrawerCommunicate">Communicate</string>
     <string name="navigationDrawerLogout">Logout</string>
     <string name="navigationDrawerSetting">Setting</string>
+    <!--ActionBar-->
+    <string name="populatFragmentTravelMate">TravelMate</string>
+    <!--Fragment Setting-->
+    <string name="search">Search</string>
+    <string name="fragmentSettingEdtOldPassword">Old Password</string>
+    <string name="fragmentSettingEdtNewPassword">New Password</string>
+    <string name="fragmentSettingEdtconfirmPassword">Confirm Password</string>
+    <string name="fragmentSettingBtnDone">Done</string>
+    <string name="fragmentSettingBtnCancel">Cancel</string>
+    <string name="itemHotelTvTapForMoreDetail">Tap for more detail</string>
+    <string name="itemHotelKilometer">%.1f km</string>
+    <string name="itemHotelTvMore">More</string>
+    <string name="itemHotelTvMoreValues">tel: %s</string>
+    <string name="fragmentSettingTvError">This form must not be empty</string>
 </resources>
