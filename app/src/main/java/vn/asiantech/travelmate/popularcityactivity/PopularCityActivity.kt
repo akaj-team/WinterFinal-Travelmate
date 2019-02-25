@@ -30,7 +30,7 @@ import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.utils.ValidationUtil
 
 class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener,
-    AdapterView.OnItemClickListener {
+    AdapterView.OnItemClickListener{
 
     private var database: DatabaseReference? = null
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
@@ -122,15 +122,11 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
 
     private fun mockData(): MutableList<String> {
         listData.apply {
-            add("Dana")
-            add("Hue")
-            add("Quang Binh")
-            add("Quang Tri")
-            add("Quang Nam")
-            add("Quang Ngai")
-            add("Ha Noi")
-            add("Dak lak")
-            add("Dong Nai")
+         add("Hue")
+         add("Dannag")
+         add("Quangbinh")
+         add("QuangNam")
+         add("Quangngai")
         }
         return listData
     }

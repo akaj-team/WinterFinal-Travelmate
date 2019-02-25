@@ -8,4 +8,3 @@
         android:gravity="start|center"
         android:background="@color/colorDarkCream"
         android:paddingStart="10dp"/>
-
