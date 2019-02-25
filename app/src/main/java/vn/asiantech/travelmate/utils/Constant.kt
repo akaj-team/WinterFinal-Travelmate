@@ -5,6 +5,7 @@ object Constant {
     const val CHECK_SIGNUP = "OK"
     const val KEY_ACCOUNT = "account"
     const val KEY_PASSWORD = "password"
+    const val KEY_IMAGE = "avatar"
     const val MOCK_IMAGE = "https://danangz.vn/wp-content/uploads/2016/12/phaohoa-1.jpg"
     const val MOCK_CITY = "Danang"
     const val BASE_URL = "http://api.openweathermap.org/data/2.5/"

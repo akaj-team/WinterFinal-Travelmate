@@ -3,6 +3,7 @@ package vn.asiantech.travelmate.navigationdrawer
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -54,11 +55,11 @@ class SettingFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnChangePassword -> {
-                /*val database = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
+               /* val database = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
                 val path = ValidationUtil.getValueChild(fireBaseUser!!.email!!)*/
-                /*if (checkUserPassEmail() == Constant.CHECK_SIGNUP && !oldPassword.isEmpty() && !newPassword.isEmpty() && !confirmPassword.isEmpty()) {
+                if (checkUserPassEmail() == Constant.CHECK_SIGNUP && !oldPassword.isEmpty() && !newPassword.isEmpty() && !confirmPassword.isEmpty()) {
                     uploadImageToFirebase()
-                    *//*if (activity is PopularCityActivity) {
+                    /*if (activity is PopularCityActivity) {
                         (activity as PopularCityActivity).showProgressbarDialog()
                         fireBaseUser.updatePassword(newPassword).addOnCompleteListener { task ->
                             if (task.isSuccessful) {
@@ -68,7 +69,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
                                     override fun onDataChange(p0: DataSnapshot) {
 
-                                        p0.ref.child(Constant.KEY_PASSWORD).setValue(*//**//*newPassword*//**//*urlImage)
+                                        p0.ref.child(Constant.KEY_PASSWORD).setValue("phuga123")
                                     }
                                 })
                                 firebaseAuth?.signOut()
@@ -81,11 +82,11 @@ class SettingFragment : Fragment(), View.OnClickListener {
                                 (activity as PopularCityActivity).progressDialog?.dismiss()
                             }
                         }
-                    }*//*
+                    }*/
                 } else {
                     showMessage(checkUserPassEmail())
-                }*/
-                uploadImageToFirebase()
+                }
+//                uploadImageToFirebase()
             }
             R.id.imgAvatar -> {
                 chooseImage()
@@ -97,7 +98,6 @@ class SettingFragment : Fragment(), View.OnClickListener {
         val progressDialog = ProgressDialog(context)
         progressDialog.setTitle("Uploading ...")
         progressDialog.show()
-
         storage = FirebaseStorage.getInstance()
         storageReference = storage?.getReference()
         if (filePath != null) {
@@ -106,12 +106,15 @@ class SettingFragment : Fragment(), View.OnClickListener {
                 .addOnSuccessListener( object : OnSuccessListener<UploadTask.TaskSnapshot>{
                     override fun onSuccess(taskSnapshot: UploadTask.TaskSnapshot?) {
                         progressDialog.dismiss()
-                        urlImage = taskSnapshot?.metadata?.reference?.downloadUrl.toString()
-//                        changePass()
-                        Log.i("bbbb", urlImage)
-//                        val url = storageReference?.child("image/"+ ref.path)
-                        Toast.makeText(context, urlImage, Toast.LENGTH_SHORT).show()
-//                        var imageUrl = p0?.uploadSessionUri
+                        ref.downloadUrl.addOnSuccessListener(
+                            object :OnSuccessListener <Uri>{
+                                override fun onSuccess(p0: Uri?) {
+                                    urlImage = p0.toString()
+                                    changePass()
+                                    Toast.makeText(context, p0.toString(), Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        )
                     } } )
                 .addOnFailureListener ( object : OnFailureListener{
                     override fun onFailure(exception : Exception) {
@@ -131,7 +134,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
                 }
     }
 
-   /* private fun changePass() {
+    private fun changePass() {
         val database = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
         val path = ValidationUtil.getValueChild(fireBaseUser!!.email!!)
         if (activity is PopularCityActivity) {
@@ -143,8 +146,8 @@ class SettingFragment : Fragment(), View.OnClickListener {
                         }
 
                         override fun onDataChange(p0: DataSnapshot) {
-
-                            p0.ref.child(Constant.KEY_PASSWORD).setValue(*//*newPassword*//*urlImage)
+                            p0.ref.child(Constant.KEY_IMAGE).setValue(urlImage)
+                            p0.ref.child(Constant.KEY_PASSWORD).setValue(newPassword)
                         }
                     })
                     firebaseAuth?.signOut()
@@ -158,7 +161,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
-    }*/
+    }
 
     private fun chooseImage() {
         val intent = Intent()
@@ -173,12 +176,6 @@ class SettingFragment : Fragment(), View.OnClickListener {
             && data != null && data.data != null
         ) {
             filePath = data.data
-            /*try {
-                val bitmap = MediaStore.Images.Media.getBitmap(activity?.contentResolver, filePath)
-                imgAvatar.setImageBitmap(bitmap)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }*/
             val bitmap = MediaStore.Images.Media.getBitmap(activity?.contentResolver, filePath)
             imgAvatar.setImageBitmap(bitmap)
         }
