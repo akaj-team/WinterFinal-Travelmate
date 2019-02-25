@@ -45,29 +45,29 @@ class LoginFragment : Fragment(), View.OnClickListener {
         } else {
             val emailLogin = edtEmail.getInputText()
             val passwordLogin = edtPassword.getInputText()
-            if(!emailLogin.isEmpty() && !passwordLogin.isEmpty()){
-                if(activity is LoginActivity) {
-                    (activity as LoginActivity).showProgressbarDialog()
-                    firebaseAuth?.signInWithEmailAndPassword(emailLogin, passwordLogin)
-                        ?.addOnCompleteListener { task: Task<AuthResult> ->
-                            if (task.isSuccessful) {
-                                Toast.makeText(context, getString(R.string.loginFragmentSuccessful), Toast.LENGTH_SHORT)
-                                    .show()
-                                activity?.finish()
-                                val intent = Intent(activity, PopularCityActivity::class.java)
-                                intent.putExtra(Constant.KEY_PASSWORD, passwordLogin)
-                                startActivity(intent)
-                                (activity as LoginActivity).progressDialog?.dismiss()
-                            } else {
-                                Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
-                                (activity as LoginActivity).progressDialog?.dismiss()
+            if (!emailLogin.isEmpty() && !passwordLogin.isEmpty()) {
+                if (!emailLogin.isEmpty() && !passwordLogin.isEmpty()) {
+                    if (activity is LoginActivity) {
+                        (activity as LoginActivity).showProgressbarDialog()
+                        firebaseAuth?.signInWithEmailAndPassword(emailLogin, passwordLogin)
+                            ?.addOnCompleteListener { task: Task<AuthResult> ->
+                                if (task.isSuccessful) {
+                                    Toast.makeText(context, getString(R.string.loginFragmentSuccessful), Toast.LENGTH_SHORT).show()
+                                    activity?.finish()
+                                    val intent = Intent(activity, PopularCityActivity::class.java)
+                                    intent.putExtra(Constant.KEY_PASSWORD, passwordLogin)
+                                    startActivity(intent)
+                                    (activity as LoginActivity).progressDialog?.dismiss()
+                                } else {
+                                    Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
+                                    (activity as LoginActivity).progressDialog?.dismiss()
+                                }
                             }
-                        }
+                    }
+                } else {
+                    Toast.makeText(context, getString(R.string.inputAccount), Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toast.makeText(context, getString(R.string.inputAccount), Toast.LENGTH_SHORT).show()
             }
         }
     }
-
 }

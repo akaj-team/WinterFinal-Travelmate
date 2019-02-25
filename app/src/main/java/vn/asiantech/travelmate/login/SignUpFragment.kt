@@ -14,21 +14,23 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_sign_up.*
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.extensions.getInputText
 import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.utils.Constant
+import vn.asiantech.travelmate.utils.ErrorUtil
 import vn.asiantech.travelmate.utils.ValidationUtil
 import vn.asiantech.travelmate.extensions.getInputText
 
 class SignUpFragment : Fragment(), View.OnClickListener {
-    private lateinit var fireBaseAuth: FirebaseAuth
-    private lateinit var firstName: String
-    private lateinit var lastName: String
-    private lateinit var email: String
-    private lateinit var password: String
-    private lateinit var confirmPassword: String
+    private var fireBaseAuth: FirebaseAuth? = null
+    private var firstName: String = ""
+    private var lastName: String = ""
+    private var email: String = ""
+    private var password: String = ""
+    private var confirmPassword: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        this.fireBaseAuth = FirebaseAuth.getInstance()
+        fireBaseAuth = FirebaseAuth.getInstance()
         return inflater.inflate(R.layout.fragment_sign_up, container, false)
     }
 
@@ -43,10 +45,10 @@ class SignUpFragment : Fragment(), View.OnClickListener {
             if (checkUserPassEmail() == Constant.CHECK_SIGNUP && !firstName.isEmpty() && !lastName.isEmpty() && !email.isEmpty() && !password.isEmpty() && !confirmPassword.isEmpty()) {
                 if(activity is LoginActivity) {
                     (activity as LoginActivity).showProgressbarDialog()
-                    fireBaseAuth.createUserWithEmailAndPassword(edtEmail?.text.toString(), edtPassword?.text.toString())
-                        .addOnCompleteListener { task: Task<AuthResult> ->
+                    fireBaseAuth?.createUserWithEmailAndPassword(edtEmail?.text.toString(), edtPassword?.text.toString())
+                        ?.addOnCompleteListener { task: Task<AuthResult> ->
                             if (task.isSuccessful) {
-                                val path = ValidationUtil.getValueChild(email)
+                                val path = ValidationUtil.getValuePathChild(email)
                                 val db = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
                                 val courseId = db.push().key
                                 val user = User(Constant.URL_AVATAR, firstName, lastName, email, password)
@@ -62,6 +64,9 @@ class SignUpFragment : Fragment(), View.OnClickListener {
                 }
             } else {
                 showMessage(checkUserPassEmail())
+//                val slideUp = AnimationUtils.loadAnimation(context, R.anim.slide_up)
+//                val slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down)
+//                ErrorUtil.showMessage(tvMessageError,checkUserPassEmail(),slideUp,slideDown)
             }
         } else {
             fragmentManager?.beginTransaction()?.apply {

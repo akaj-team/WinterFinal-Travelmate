@@ -7,39 +7,65 @@ import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.view.*
+import android.util.Log
+import android.view.Gravity
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_popular_city.*
+import kotlinx.android.synthetic.main.nav_header_main.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.login.LoginActivity
 import vn.asiantech.travelmate.navigationdrawer.SearchHotelFragment
 import vn.asiantech.travelmate.navigationdrawer.SettingFragment
 import vn.asiantech.travelmate.utils.Constant
-import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.nav_header_main.view.*
-
+import vn.asiantech.travelmate.models.User
+import vn.asiantech.travelmate.utils.ValidationUtil
 
 class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+    private var database: DatabaseReference? = null
+    private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
+    private var fireBaseUser: FirebaseUser? = firebaseAuth?.currentUser
     var progressDialog: ProgressDialog? = null
+    var user: User? = null
+    private var password: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_popular_city)
+        progressDialog = ProgressDialog(this)
+        getInforUser()
         initDrawer()
-        initHeader()
         initView()
         initFragment()
     }
 
-    private fun initHeader() {
-        val imgAvatar = navView.getHeaderView(0).imgAvatar
-        Glide.with(applicationContext).load(Constant.URL_AVATAR).into(imgAvatar)
+    private fun getInforUser() {
+        val path = fireBaseUser?.email
+        database = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
+        database?.addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(dataSnapshot: DatabaseError) {
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                user = path?.let { ValidationUtil.getValuePathChild(it) }?.let { dataSnapshot.child(it).getValue(User::class.java) }
+                user?.let {
+                    with(it) {
+                        Glide.with(this@PopularCityActivity).load(avatar).into(imgAvatar)
+                        tvName.text = lastName
+                    }
+                }
+            }
+        })
     }
 
     private fun initDrawer() {
         setSupportActionBar(toolbar)
-        val toggle = ActionBarDrawerToggle(
-            this, drawerLayout, toolbar, R.string.navigationDrawerOpen, R.string.navigationDrawerClose
-        )
+        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigationDrawerOpen, R.string.navigationDrawerClose)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         navView.setNavigationItemSelectedListener(this)
@@ -82,13 +108,16 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                     .commit()
             }
             R.id.navLogout -> {
+                firebaseAuth?.signOut()
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
             }
             R.id.navSetting -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.frameLayoutDrawer, SettingFragment())
-                    .commit()
+                user?.let { SettingFragment.newInstance(it) }?.let {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.frameLayoutDrawer, it)
+                        .commit()
+                }
             }
         }
         drawerLayout.closeDrawer(GravityCompat.START)
@@ -96,8 +125,6 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     }
 
     private fun initView() {
-        val actionBar = supportActionBar
-        actionBar?.title = getString(R.string.populatFragmentTravelMate)
         supportActionBar?.title = getString(R.string.travelMate)
     }
 
@@ -111,18 +138,11 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
             .commit()
     }
 
-    fun getPassLogin(): String {
-        intent.getStringExtra(Constant.KEY_PASSWORD)?.let {
-            val password = intent.getStringExtra(Constant.KEY_PASSWORD)
-            return password
-        }
-        return ""
-    }
-
     fun showProgressbarDialog() {
-        progressDialog = ProgressDialog(this)
-        progressDialog?.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-        progressDialog?.setMessage(getString(R.string.note))
-        progressDialog?.show()
+        progressDialog?.apply {
+            setProgressStyle(ProgressDialog.STYLE_SPINNER)
+            setMessage(getString(R.string.note))
+            show()
+        }
     }
 }

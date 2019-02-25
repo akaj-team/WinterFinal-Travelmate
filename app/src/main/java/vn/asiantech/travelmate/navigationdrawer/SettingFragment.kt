@@ -14,8 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Toast
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
@@ -23,12 +22,11 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.OnProgressListener
 import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.fragment_setting.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.login.LoginActivity
+import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.popularcityactivity.PopularCityActivity
 import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.utils.ValidationUtil
@@ -40,12 +38,14 @@ class SettingFragment : Fragment(), View.OnClickListener {
     private val fireBaseUser: FirebaseUser? = firebaseAuth?.currentUser
     private var password: String = ""
     private var urlImage: String = ""
+    private var oldPassword: String = ""
+    private var newPassword: String = ""
+    private var confirmPassword: String = ""
     private var filePath: Uri? = null
+    private var user: User? = null
     private var storage: FirebaseStorage? = null
     private var storageReference: StorageReference? = null
-    private lateinit var oldPassword: String
-    private lateinit var newPassword: String
-    private lateinit var confirmPassword: String
+
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnChangePassword -> {
@@ -61,60 +61,56 @@ class SettingFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    companion object {
+        private const val account: String = "account"
+        fun newInstance(user: User): SettingFragment {
+            val bundle = Bundle()
+            bundle.putParcelable(account, user)
+            val fragment = SettingFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
+
     private fun uploadImageToFirebase() {
         val progressDialog = ProgressDialog(context)
         progressDialog.setTitle("Uploading ...")
         progressDialog.show()
         storage = FirebaseStorage.getInstance()
-        storageReference = storage?.getReference()
-        if (filePath != null) {
-            val ref = storageReference?.child("images/" + UUID.randomUUID().toString())!!
-            ref.putFile(filePath!!)
-                .addOnSuccessListener(object : OnSuccessListener<UploadTask.TaskSnapshot> {
-                    override fun onSuccess(taskSnapshot: UploadTask.TaskSnapshot?) {
-                        progressDialog.dismiss()
-                        ref.downloadUrl.addOnSuccessListener(
-                            object : OnSuccessListener<Uri> {
-                                override fun onSuccess(p0: Uri?) {
-                                    urlImage = p0.toString()
-                                    changePass()
-                                }
-                            }
-                        )
+        storageReference = storage?.reference
+        filePath?.let { temp ->
+            val ref = storageReference?.child("images/" + UUID.randomUUID().toString())
+            ref?.putFile(temp)
+                ?.addOnSuccessListener {
+                    progressDialog.dismiss()
+                    ref.downloadUrl.addOnSuccessListener { taskSnapShot ->
+                        urlImage = taskSnapShot.toString()
+                        changePassAndAvatar()
+                        Toast.makeText(context, taskSnapShot.toString(), Toast.LENGTH_SHORT).show()
                     }
-                })
-                .addOnFailureListener(object : OnFailureListener {
-                    override fun onFailure(exception: Exception) {
-                        progressDialog.dismiss()
-                        Log.i("bbbb", "fail")
-                    }
-
-                })
-                .addOnProgressListener(
-                    object : OnProgressListener<UploadTask.TaskSnapshot> {
-                        override fun onProgress(taskSnapshot: UploadTask.TaskSnapshot?) {
-                            val process = (100 * taskSnapshot!!.bytesTransferred / taskSnapshot.totalByteCount)
-                            progressDialog.setMessage("Upload " + process + "%")
-                        }
-                    }
-                )
+                }
+                ?.addOnFailureListener { progressDialog.dismiss() }
+                ?.addOnProgressListener { taskSnapshot ->
+                    val process = (100 * taskSnapshot!!.bytesTransferred / taskSnapshot.totalByteCount)
+                    progressDialog.setMessage(getString(R.string.upload) + process + getString(R.string.percent))
+                }
         }
     }
 
-    private fun changePass() {
+    private fun changePassAndAvatar() {
         val database = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
-        val path = ValidationUtil.getValueChild(fireBaseUser!!.email!!)
+        val path = ValidationUtil.getValuePathChild(fireBaseUser!!.email!!)
         if (activity is PopularCityActivity) {
             (activity as PopularCityActivity).showProgressbarDialog()
             fireBaseUser.updatePassword(newPassword).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     database.child(path).addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onCancelled(p0: DatabaseError) {
+                        override fun onCancelled(databaseError: DatabaseError) {
                         }
 
-                        override fun onDataChange(p0: DataSnapshot) {
-                            p0.ref.child(Constant.KEY_IMAGE).setValue(urlImage)
-                            p0.ref.child(Constant.KEY_PASSWORD).setValue(newPassword)
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            dataSnapshot.ref.child(Constant.KEY_IMAGE).setValue(urlImage)
+                            dataSnapshot.ref.child(Constant.KEY_PASSWORD).setValue(newPassword)
                         }
                     })
                     firebaseAuth?.signOut()
@@ -149,14 +145,17 @@ class SettingFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (activity is PopularCityActivity) {
-            password = (activity as PopularCityActivity).getPassLogin()
+
+        arguments?.let {
+            user = arguments?.getParcelable(account)
+            password = user?.password.toString()
         }
         return inflater.inflate(R.layout.fragment_setting, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        context?.let { Glide.with(it).load(user?.avatar).into(imgAvatar) }
         btnChangePassword.setOnClickListener(this)
         imgAvatar.setOnClickListener(this)
     }
