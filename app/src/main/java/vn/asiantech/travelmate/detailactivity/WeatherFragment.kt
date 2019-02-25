@@ -19,25 +19,36 @@ import vn.asiantech.travelmate.utils.APIUtil
 import vn.asiantech.travelmate.utils.Constant
 
 class WeatherFragment : Fragment() {
-    private lateinit var travel: Travel
-    private lateinit var weatherAdapter: WeatherAdapter
+    private var travel: Travel? = null
+    private var weatherAdapter: WeatherAdapter? = null
     private var weatherItems: ArrayList<WeatherSevenDay> = arrayListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (activity is DetailActivity) {
-            travel = (activity as DetailActivity).getCity()
+        arguments?.let {
+            travel = arguments?.getParcelable(keyTravel)
         }
         return inflater.inflate(R.layout.fragment_weather, container, false)
+    }
+
+    companion object {
+        private const val keyTravel: String = "travel"
+        fun newInstance(travel: Travel): WeatherFragment {
+            val args = Bundle()
+            args.putParcelable(Constant.KEY_TRAVEL, travel)
+            val fragment = WeatherFragment()
+            fragment.arguments = args
+            return fragment
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        getWeatherData(travel.province.toString())
+        getWeatherData(travel?.province.toString())
     }
 
     private fun initView() {
-        weatherAdapter = WeatherAdapter(weatherItems, travel.province.toString())
+        weatherAdapter = WeatherAdapter(weatherItems, travel?.province.toString())
         recyclerViewWeather.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
@@ -53,7 +64,7 @@ class WeatherFragment : Fragment() {
                 ?.enqueue(object : Callback<WeatherList> {
                     override fun onResponse(call: Call<WeatherList>, response: Response<WeatherList>?) {
                         response?.body()?.list?.let { weatherItems.addAll(it) }
-                        weatherAdapter.notifyDataSetChanged()
+                        weatherAdapter?.notifyDataSetChanged()
                         (activity as DetailActivity).progressDialog?.dismiss()
                     }
 

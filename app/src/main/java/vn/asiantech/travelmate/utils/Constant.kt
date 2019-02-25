@@ -1,7 +1,8 @@
 package vn.asiantech.travelmate.utils
 
 object Constant {
-    val keyTravel = "travel"
+    const val VIEW_TYPE_ITEM_TOP = 0
+    const val VIEW_TYPE_ITEM = 1
     const val CHECK_SIGNUP = "OK"
     const val KEY_ACCOUNT = "account"
     const val BASE_URL = "http://api.openweathermap.org/data/2.5/"

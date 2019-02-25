@@ -17,16 +17,26 @@ import vn.asiantech.travelmate.models.WeatherResponse
 import vn.asiantech.travelmate.utils.APIUtil
 import vn.asiantech.travelmate.utils.Constant
 
-
 class DetailFragment : Fragment(), View.OnClickListener {
 
     private var travel: Travel? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (activity is DetailActivity) {
-            travel = (activity as DetailActivity).getCity()
+        arguments?.let {
+            travel = arguments?.getParcelable(keyTravel)
         }
         return inflater.inflate(R.layout.fragment_detail, container, false)
+    }
+
+    companion object {
+        private const val keyTravel: String = "travel"
+        fun newInstance(travel: Travel): DetailFragment {
+            val args = Bundle()
+            args.putParcelable("travel", travel)
+            val fragment = DetailFragment()
+            fragment.arguments = args
+            return fragment
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,7 +53,7 @@ class DetailFragment : Fragment(), View.OnClickListener {
                 R.anim.left_to_right1,
                 R.anim.left_to_right2
             )
-            replace(R.id.fragment_container, WeatherFragment())
+            travel?.let { WeatherFragment.newInstance(it) }?.let { replace(R.id.fragment_container, it) }
             addToBackStack(null)
             commit()
         }
