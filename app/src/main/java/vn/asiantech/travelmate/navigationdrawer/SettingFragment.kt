@@ -3,8 +3,6 @@ package vn.asiantech.travelmate.navigationdrawer
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -34,11 +32,7 @@ import vn.asiantech.travelmate.login.LoginActivity
 import vn.asiantech.travelmate.popularcityactivity.PopularCityActivity
 import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.utils.ValidationUtil
-import java.io.IOException
-import java.lang.Exception
 import java.util.*
-import kotlin.math.roundToInt
-
 
 @Suppress("DEPRECATED_IDENTITY_EQUALS")
 class SettingFragment : Fragment(), View.OnClickListener {
@@ -46,47 +40,20 @@ class SettingFragment : Fragment(), View.OnClickListener {
     private val fireBaseUser: FirebaseUser? = firebaseAuth?.currentUser
     private var password: String = ""
     private var urlImage: String = ""
-    private var filePath : Uri ?= null
-    private var storage : FirebaseStorage ?= null
-    private var storageReference : StorageReference ?= null
+    private var filePath: Uri? = null
+    private var storage: FirebaseStorage? = null
+    private var storageReference: StorageReference? = null
     private lateinit var oldPassword: String
     private lateinit var newPassword: String
     private lateinit var confirmPassword: String
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnChangePassword -> {
-               /* val database = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
-                val path = ValidationUtil.getValueChild(fireBaseUser!!.email!!)*/
                 if (checkUserPassEmail() == Constant.CHECK_SIGNUP && !oldPassword.isEmpty() && !newPassword.isEmpty() && !confirmPassword.isEmpty()) {
                     uploadImageToFirebase()
-                    /*if (activity is PopularCityActivity) {
-                        (activity as PopularCityActivity).showProgressbarDialog()
-                        fireBaseUser.updatePassword(newPassword).addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                database.child(path).addListenerForSingleValueEvent(object : ValueEventListener {
-                                    override fun onCancelled(p0: DatabaseError) {
-                                    }
-
-                                    override fun onDataChange(p0: DataSnapshot) {
-
-                                        p0.ref.child(Constant.KEY_PASSWORD).setValue("phuga123")
-                                    }
-                                })
-                                firebaseAuth?.signOut()
-                                Toast.makeText(context, getString(R.string.successful), Toast.LENGTH_SHORT).show()
-                                val intent = Intent(activity, LoginActivity::class.java)
-                                startActivity(intent)
-                                (activity as PopularCityActivity).progressDialog?.dismiss()
-                            } else {
-                                Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
-                                (activity as PopularCityActivity).progressDialog?.dismiss()
-                            }
-                        }
-                    }*/
                 } else {
                     showMessage(checkUserPassEmail())
                 }
-//                uploadImageToFirebase()
             }
             R.id.imgAvatar -> {
                 chooseImage()
@@ -101,37 +68,37 @@ class SettingFragment : Fragment(), View.OnClickListener {
         storage = FirebaseStorage.getInstance()
         storageReference = storage?.getReference()
         if (filePath != null) {
-            val ref = storageReference?.child("images/"+ UUID.randomUUID().toString())!!
+            val ref = storageReference?.child("images/" + UUID.randomUUID().toString())!!
             ref.putFile(filePath!!)
-                .addOnSuccessListener( object : OnSuccessListener<UploadTask.TaskSnapshot>{
+                .addOnSuccessListener(object : OnSuccessListener<UploadTask.TaskSnapshot> {
                     override fun onSuccess(taskSnapshot: UploadTask.TaskSnapshot?) {
                         progressDialog.dismiss()
                         ref.downloadUrl.addOnSuccessListener(
-                            object :OnSuccessListener <Uri>{
+                            object : OnSuccessListener<Uri> {
                                 override fun onSuccess(p0: Uri?) {
                                     urlImage = p0.toString()
                                     changePass()
-                                    Toast.makeText(context, p0.toString(), Toast.LENGTH_SHORT).show()
                                 }
                             }
                         )
-                    } } )
-                .addOnFailureListener ( object : OnFailureListener{
-                    override fun onFailure(exception : Exception) {
+                    }
+                })
+                .addOnFailureListener(object : OnFailureListener {
+                    override fun onFailure(exception: Exception) {
                         progressDialog.dismiss()
                         Log.i("bbbb", "fail")
                     }
 
-                } )
-                .addOnProgressListener (
+                })
+                .addOnProgressListener(
                     object : OnProgressListener<UploadTask.TaskSnapshot> {
                         override fun onProgress(taskSnapshot: UploadTask.TaskSnapshot?) {
                             val process = (100 * taskSnapshot!!.bytesTransferred / taskSnapshot.totalByteCount)
                             progressDialog.setMessage("Upload " + process + "%")
                         }
                     }
-                        )
-                }
+                )
+        }
     }
 
     private fun changePass() {

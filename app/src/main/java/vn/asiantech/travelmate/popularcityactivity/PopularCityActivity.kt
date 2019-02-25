@@ -31,7 +31,6 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     }
 
     private fun initHeader() {
-//        val navigationView = findViewById(R.id.navView) as NavigationView
         val imgAvatar = navView.getHeaderView(0).imgAvatar
         Glide.with(applicationContext).load(Constant.URL_AVATAR).into(imgAvatar)
     }
