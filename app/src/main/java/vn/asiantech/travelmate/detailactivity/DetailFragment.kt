@@ -32,7 +32,7 @@ class DetailFragment : Fragment(), View.OnClickListener {
         private const val keyTravel: String = "travel"
         fun newInstance(travel: Travel): DetailFragment {
             val args = Bundle()
-            args.putParcelable("travel", travel)
+            args.putParcelable(keyTravel, travel)
             val fragment = DetailFragment()
             fragment.arguments = args
             return fragment
