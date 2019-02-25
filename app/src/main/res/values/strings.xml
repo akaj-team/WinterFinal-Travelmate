@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">WinterFinal-Travelmate</string>
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="todo">TODO</string>
+    <string name="checkInternet">please check the internet</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
@@ -9,7 +12,6 @@
     <string name="firstName">First Name</string>
     <string name="lastName">Last Name</string>
     <string name="confirmPassword">Confirm Password</string>
-    <!--Signup Fragment-->
     <string name="signUp">Signup</string>
     <string name="signupTvAlreadyAMemberLogin">Already A Member? Login</string>
     <string name="signupEmailFormatWrong">Email Format Wrong!</string>
@@ -18,10 +20,13 @@
     <string name="signupTvConfirmPasswordWrong">Confirm Password Wrong!</string>
     <string name="signupTvLastNameFormatWrong">Last Name Just Have Alphabet!</string>
     <string name="loginFragmentSuccessful">Successful</string>
+    <string name="successful">thanh cong</string>
+    <string name="error">please check email or password</string>
+    <string name="note">please waiting ...</string>
+    <string name="inputAccount">please input email and password</string>
     <string name="loginfragmentCannotLogin">Can not login</string>
     <string name="signUpFragmentOk">OK</string>
     <!--Detail Activity-->
-    <string name="todo">TODO</string>
     <string name="temperature">Temperature</string>
     <string name="humidity">Humidity</string>
     <string name="wind">Wind</string>
@@ -35,10 +40,9 @@
     <string name="mostPopularCities">Most Popular Cities</string>
     <string name="hue">Hue</string>
     <string name="popularCityTvTravelmate">TravelMate</string>
-    <!--navigation-->
+    <!--Navigation-->
     <string name="navigationDrawerOpen">Open navigation drawer</string>
     <string name="navigationDrawerClose">Close navigation drawer</string>
-    <string name="navigationHeaderTitle">Android Studio</string>
     <string name="navigationHeaderSubtitle">android.studio@android.com</string>
     <string name="navigationHeaderDesc">Navigation header</string>
     <string name="action_settings">Settings</string>
@@ -47,4 +51,18 @@
     <string name="navigationDrawerCommunicate">Communicate</string>
     <string name="navigationDrawerLogout">Logout</string>
     <string name="navigationDrawerSetting">Setting</string>
+    <!--ActionBar-->
+    <string name="populatFragmentTravelMate">TravelMate</string>
+    <!--Fragment Setting-->
+    <string name="search">Search</string>
+    <string name="fragmentSettingEdtOldPassword">Old Password</string>
+    <string name="fragmentSettingEdtNewPassword">New Password</string>
+    <string name="fragmentSettingEdtconfirmPassword">Confirm Password</string>
+    <string name="fragmentSettingBtnDone">Done</string>
+    <string name="fragmentSettingBtnCancel">Cancel</string>
+    <string name="itemHotelTvTapForMoreDetail">Tap for more detail</string>
+    <string name="itemHotelKilometer">%.1f km</string>
+    <string name="itemHotelTvMore">More</string>
+    <string name="itemHotelTvMoreValues">tel: %s</string>
+    <string name="fragmentSettingTvError">This form must not be empty</string>
 </resources>
