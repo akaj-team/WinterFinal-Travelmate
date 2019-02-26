@@ -117,22 +117,9 @@ class SettingFragment : Fragment(), View.OnClickListener {
         return true
     }
 
-    /*private fun checkPermissionForGallery(): Boolean {
-        if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) } != PackageManager.PERMISSION_GRANTED) {
-            activity?.let { ActivityCompat.requestPermissions(it, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), requestAskPermissionGallery) }
-            return false
-        }
-        return true
-    }*/
     private fun checkPermissionForGallery(): Boolean {
         if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) } != PackageManager.PERMISSION_GRANTED) {
-            activity?.let {
-                ActivityCompat.requestPermissions(
-                    it,
-                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                    requestAskPermissionGallery
-                )
-            }
+            activity?.let { ActivityCompat.requestPermissions(it, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), requestAskPermissionGallery) }
             return false
         }
         return true
@@ -200,6 +187,34 @@ class SettingFragment : Fragment(), View.OnClickListener {
                     (activity as PopularCityActivity).progressDialog?.dismiss()
                 }
             }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        val isShowRationaleWrite: Boolean
+        when (requestCode) {
+            requestAskPermissionCamera -> {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    chooseCamera()
+                } else {
+                    val isShowRationaleCamera = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)
+                    isShowRationaleWrite = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    if (!isShowRationaleWrite || !isShowRationaleCamera) {
+                        showSettingsAlert(getString(R.string.noteCamera))
+                    }
+                }
+            }
+            requestAskPermissionGallery -> {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    chooseGallery()
+                } else {
+                    isShowRationaleWrite = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    if (!isShowRationaleWrite) {
+                        showSettingsAlert(getString(R.string.noteGallery))
+                    }
+                }
+            }
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
 
