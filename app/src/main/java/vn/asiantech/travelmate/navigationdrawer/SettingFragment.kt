@@ -1,13 +1,18 @@
 package vn.asiantech.travelmate.navigationdrawer
 
+import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +50,12 @@ class SettingFragment : Fragment(), View.OnClickListener {
     private var user: User? = null
     private var storage: FirebaseStorage? = null
     private var storageReference: StorageReference? = null
+    private val onClickGallery = 0
+    private val onClickCamera = 1
+    private val gallery = 111
+    private val camera = 222
+    private val requestAskPermissionCamera = 333
+    private val requestAskPermissionGallery = 444
 
     override fun onClick(v: View?) {
         when (v?.id) {
@@ -56,9 +67,75 @@ class SettingFragment : Fragment(), View.OnClickListener {
                 }
             }
             R.id.imgAvatar -> {
-                chooseImage()
+                eventHandle()
+//                chooseImage()
+            }
+            R.id.btnCancel -> {
+
             }
         }
+    }
+
+    private fun eventHandle() {
+        val pictureDialog = AlertDialog.Builder(context)
+        pictureDialog.setTitle("please choose")
+        val pictureDialogItems = arrayOf("gallery", "camera")
+        pictureDialog.setItems(pictureDialogItems
+        ) { _, which ->
+            when (which) {
+                onClickGallery -> if (checkPermissionForGallery()) {
+                    chooseGallery()
+                }
+                onClickCamera -> if (checkPermissionForCamera()) {
+                    chooseCamera()
+                }
+            }
+        }
+        pictureDialog.show()
+    }
+
+    private fun chooseCamera() {
+        if (checkPermissionForCamera()) {
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(intent, camera)
+        }
+    }
+
+    private fun chooseGallery() {
+        if (checkPermissionForGallery()) {
+            val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(galleryIntent, gallery)
+        }
+    }
+
+    private fun checkPermissionForCamera(): Boolean {
+        if (!(context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) } == PackageManager.PERMISSION_GRANTED
+                    || context?.let { ContextCompat.checkSelfPermission(it , Manifest.permission.CAMERA) } == PackageManager.PERMISSION_GRANTED)) {
+            activity?.let { ActivityCompat.requestPermissions(it, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA), requestAskPermissionCamera) }
+            return false
+        }
+        return true
+    }
+
+    /*private fun checkPermissionForGallery(): Boolean {
+        if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) } != PackageManager.PERMISSION_GRANTED) {
+            activity?.let { ActivityCompat.requestPermissions(it, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), requestAskPermissionGallery) }
+            return false
+        }
+        return true
+    }*/
+    private fun checkPermissionForGallery(): Boolean {
+        if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) } != PackageManager.PERMISSION_GRANTED) {
+            activity?.let {
+                ActivityCompat.requestPermissions(
+                    it,
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    requestAskPermissionGallery
+                )
+            }
+            return false
+        }
+        return true
     }
 
     companion object {
@@ -74,7 +151,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
     private fun uploadImageToFirebase() {
         val progressDialog = ProgressDialog(context)
-        progressDialog.setTitle("Uploading ...")
+        progressDialog.setTitle(getString(R.string.uploading))
         progressDialog.show()
         storage = FirebaseStorage.getInstance()
         storageReference = storage?.reference
