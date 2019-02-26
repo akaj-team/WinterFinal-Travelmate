@@ -1,5 +1,6 @@
 package vn.asiantech.travelmate.popularcityactivity
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -21,6 +22,7 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
     private var firebase: FirebaseDatabase? = FirebaseDatabase.getInstance()
     private var listCity: ArrayList<Travel> = arrayListOf()
     private var popularCityAdapter: PopularCityAdapter? = null
+    private val keyTravel = "travel"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_popular_city, container, false)
@@ -66,7 +68,9 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
     }
 
     override fun onClicked(position: Int) {
-        val intent = Intent(activity,DetailActivity::class.java)
+        val travel = listCity.get(position)
+        val intent = Intent(activity, DetailActivity::class.java)
+        intent.putExtra(keyTravel, travel)
         startActivity(intent)
     }
 }
