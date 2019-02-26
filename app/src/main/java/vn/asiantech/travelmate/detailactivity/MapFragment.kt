@@ -14,6 +14,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import vn.asiantech.travelmate.R
@@ -52,9 +53,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
 
     private fun checkAndRequestPermission(): Boolean {
         if (context?.let {
-                ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) } != PackageManager.PERMISSION_GRANTED) {
+                ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION)
+            } != PackageManager.PERMISSION_GRANTED) {
             activity?.let { temp ->
-                ActivityCompat.requestPermissions(temp, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), Constant.REQUEST_CODE_ASK_PERMISSIONS_LOCATION)
+                ActivityCompat.requestPermissions(
+                    temp,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    Constant.REQUEST_CODE_ASK_PERMISSIONS_LOCATION
+                )
             }
             return false
         }
@@ -65,13 +71,21 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
         mapGoogle = googleMap
         val daNang = LatLng(16.078400, 108.234618)
         mapGoogle?.let {
-            with(it){
+            with(it) {
                 addMarker(MarkerOptions().position(daNang).title(Constant.MOCK_CITY))
+                  .setIcon(
+                    BitmapDescriptorFactory.fromResource(
+                        R.drawable.ic_building_24
+                    )
+                )
                 moveCamera(CameraUpdateFactory.newLatLng(daNang))
-                uiSettings?.isZoomControlsEnabled = true
-                uiSettings?.isCompassEnabled = true
-                if (context?.let {temp ->
-                        ContextCompat.checkSelfPermission(temp, Manifest.permission.ACCESS_FINE_LOCATION) } == PackageManager.PERMISSION_GRANTED) {
+                uiSettings?.let {temp->
+                    temp.isZoomControlsEnabled = true
+                    temp.isCompassEnabled = true
+                }
+                if (context?.let { temp ->
+                        ContextCompat.checkSelfPermission(temp, Manifest.permission.ACCESS_FINE_LOCATION)
+                    } == PackageManager.PERMISSION_GRANTED) {
                     isMyLocationEnabled = true
                 }
                 setOnMyLocationButtonClickListener(this@MapFragment)
