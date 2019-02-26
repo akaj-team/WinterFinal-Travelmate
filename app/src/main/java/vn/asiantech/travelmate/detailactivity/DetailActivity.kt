@@ -9,12 +9,15 @@ import vn.asiantech.travelmate.models.Travel
 class DetailActivity : AppCompatActivity() {
     var progressDialog: ProgressDialog? = null
     private var travel: Travel ?= null
-    private val keyTravel: String = "travel"
+
+    companion object {
+        private const val KEY_TRAVEL: String = "travel"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
-        travel = intent.getParcelableExtra(keyTravel) as Travel
+        travel = intent.getParcelableExtra(KEY_TRAVEL) as Travel
         progressDialog = ProgressDialog(this)
         initFragment()
     }

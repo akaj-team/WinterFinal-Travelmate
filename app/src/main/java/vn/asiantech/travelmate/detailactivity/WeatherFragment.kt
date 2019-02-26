@@ -23,22 +23,22 @@ class WeatherFragment : Fragment() {
     private var weatherAdapter: WeatherAdapter? = null
     private var weatherItems: ArrayList<WeatherSevenDay> = arrayListOf()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        arguments?.let {
-            travel = arguments?.getParcelable(keyTravel)
-        }
-        return inflater.inflate(R.layout.fragment_weather, container, false)
-    }
-
     companion object {
-        private const val keyTravel: String = "travel"
+        private const val KEY_TRAVEL: String = "travel"
         fun newInstance(travel: Travel): WeatherFragment {
-            val args = Bundle()
-            args.putParcelable(Constant.KEY_TRAVEL, travel)
+            val bundle = Bundle()
+            bundle.putParcelable(KEY_TRAVEL, travel)
             val fragment = WeatherFragment()
-            fragment.arguments = args
+            fragment.arguments = bundle
             return fragment
         }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        arguments?.let {
+            travel = arguments?.getParcelable(KEY_TRAVEL)
+        }
+        return inflater.inflate(R.layout.fragment_weather, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
