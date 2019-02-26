@@ -10,10 +10,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
+import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -80,7 +80,8 @@ class SettingFragment : Fragment(), View.OnClickListener {
         val pictureDialog = AlertDialog.Builder(context)
         pictureDialog.setTitle("please choose")
         val pictureDialogItems = arrayOf("gallery", "camera")
-        pictureDialog.setItems(pictureDialogItems
+        pictureDialog.setItems(
+            pictureDialogItems
         ) { _, which ->
             when (which) {
                 onClickGallery -> if (checkPermissionForGallery()) {
@@ -109,17 +110,44 @@ class SettingFragment : Fragment(), View.OnClickListener {
     }
 
     private fun checkPermissionForCamera(): Boolean {
-        if (!(context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) } == PackageManager.PERMISSION_GRANTED
-                    || context?.let { ContextCompat.checkSelfPermission(it , Manifest.permission.CAMERA) } == PackageManager.PERMISSION_GRANTED)) {
-            activity?.let { ActivityCompat.requestPermissions(it, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA), requestAskPermissionCamera) }
+        if (!(context?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+            } == PackageManager.PERMISSION_GRANTED
+                    || context?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.CAMERA
+                )
+            } == PackageManager.PERMISSION_GRANTED)) {
+            activity?.let {
+                ActivityCompat.requestPermissions(
+                    it,
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA),
+                    requestAskPermissionCamera
+                )
+            }
             return false
         }
         return true
     }
 
     private fun checkPermissionForGallery(): Boolean {
-        if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) } != PackageManager.PERMISSION_GRANTED) {
-            activity?.let { ActivityCompat.requestPermissions(it, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), requestAskPermissionGallery) }
+        if (context?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+            } != PackageManager.PERMISSION_GRANTED) {
+            activity?.let {
+                ActivityCompat.requestPermissions(
+                    it,
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    requestAskPermissionGallery
+                )
+            }
             return false
         }
         return true
@@ -197,9 +225,21 @@ class SettingFragment : Fragment(), View.OnClickListener {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     chooseCamera()
                 } else {
-                    val isShowRationaleCamera = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)
-                    isShowRationaleWrite = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    if (!isShowRationaleWrite || !isShowRationaleCamera) {
+                    val isShowRationaleCamera =
+                        activity?.let {
+                            ActivityCompat.shouldShowRequestPermissionRationale(
+                                it,
+                                Manifest.permission.CAMERA
+                            )
+                        }
+                    isShowRationaleWrite =
+                        activity?.let {
+                            ActivityCompat.shouldShowRequestPermissionRationale(
+                                it,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                            )
+                        }!!
+                    if (!isShowRationaleWrite || !isShowRationaleCamera!!) {
                         showSettingsAlert(getString(R.string.noteCamera))
                     }
                 }
@@ -208,7 +248,13 @@ class SettingFragment : Fragment(), View.OnClickListener {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     chooseGallery()
                 } else {
-                    isShowRationaleWrite = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    isShowRationaleWrite =
+                        activity?.let {
+                            ActivityCompat.shouldShowRequestPermissionRationale(
+                                it,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                            )
+                        }!!
                     if (!isShowRationaleWrite) {
                         showSettingsAlert(getString(R.string.noteGallery))
                     }
@@ -216,6 +262,36 @@ class SettingFragment : Fragment(), View.OnClickListener {
             }
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
+    }
+
+    private fun showSettingsAlert(message: String) {
+        val alertDialog = AlertDialog.Builder(context).create()
+        alertDialog.setTitle(getString(R.string.optionChoose))
+        alertDialog.setMessage(getString(R.string.noteAccess) + " " + message)
+        alertDialog.setButton(
+            AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel)
+        ) { dialog, _ -> dialog.dismiss() }
+        alertDialog.setButton(
+            AlertDialog.BUTTON_POSITIVE, getString(R.string.setting)
+        ) { dialog, _ ->
+            dialog.dismiss()
+            startInstalledAppDetailsActivity(activity)
+        }
+        alertDialog.show()
+    }
+
+    private fun startInstalledAppDetailsActivity(context: Activity?) {
+        if (context == null) {
+            return
+        }
+        val intent = Intent()
+        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+        intent.addCategory(Intent.CATEGORY_DEFAULT)
+        intent.data = Uri.parse("package:" + context.packageName)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+        context.startActivity(intent)
     }
 
     private fun chooseImage() {

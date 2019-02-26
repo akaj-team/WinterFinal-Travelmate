@@ -69,4 +69,11 @@
     <string name="fragmentSettingTvError">This form must not be empty</string>
     <string name="upload">Upload</string>
     <string name="uploading">Uploading ...</string>
+    <!--permission-->
+    <string name="noteGallery">gallery</string>
+    <string name="noteCamera">camera</string>
+    <string name="optionChoose">Please choose</string>
+    <string name="noteAccess">App needs to access the </string>
+    <string name="setting">SETTINGS</string>
+    <string name="cancel">don\'t allow</string>
 </resources>
