@@ -23,12 +23,10 @@ class DetailFragment : Fragment(), View.OnClickListener {
 
     companion object {
         private const val KEY_TRAVEL: String = "travel"
-        fun newInstance(travel: Travel): DetailFragment {
-            val bundle = Bundle()
-            bundle.putParcelable(KEY_TRAVEL, travel)
-            val fragment = DetailFragment()
-            fragment.arguments = bundle
-            return fragment
+        fun sendData(travel: Travel) = DetailFragment().apply {
+            arguments = Bundle().apply {
+                putParcelable(KEY_TRAVEL, travel)
+            }
         }
     }
 
@@ -53,7 +51,7 @@ class DetailFragment : Fragment(), View.OnClickListener {
                 R.anim.left_to_right1,
                 R.anim.left_to_right2
             )
-            travel?.let { WeatherFragment.newInstance(it) }?.let { replace(R.id.fragment_container, it) }
+            travel?.let { WeatherFragment.sendData(it) }?.let { replace(R.id.fragment_container, it) }
             addToBackStack(null)
             commit()
         }

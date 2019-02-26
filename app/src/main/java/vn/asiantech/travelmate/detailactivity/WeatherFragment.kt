@@ -25,12 +25,10 @@ class WeatherFragment : Fragment() {
 
     companion object {
         private const val KEY_TRAVEL: String = "travel"
-        fun newInstance(travel: Travel): WeatherFragment {
-            val bundle = Bundle()
-            bundle.putParcelable(KEY_TRAVEL, travel)
-            val fragment = WeatherFragment()
-            fragment.arguments = bundle
-            return fragment
+        fun sendData(travel: Travel) = WeatherFragment().apply {
+            arguments = Bundle().apply {
+                putParcelable(KEY_TRAVEL, travel)
+            }
         }
     }
 

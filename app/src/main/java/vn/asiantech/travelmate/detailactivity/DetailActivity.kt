@@ -23,7 +23,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun initFragment() {
-        travel?.let { DetailFragment.newInstance(it) }?.let {
+        travel?.let { DetailFragment.sendData(it) }?.let {
             supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.fragment_container, it)
