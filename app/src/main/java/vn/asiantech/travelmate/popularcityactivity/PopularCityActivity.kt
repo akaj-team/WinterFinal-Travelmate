@@ -1,13 +1,19 @@
 package vn.asiantech.travelmate.popularcityactivity
 
+import android.Manifest
+import android.app.Activity
+import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.support.design.widget.NavigationView
+import android.support.v4.app.ActivityCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -32,16 +38,17 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     private var fireBaseUser: FirebaseUser? = firebaseAuth?.currentUser
     var progressDialog: ProgressDialog? = null
     var user: User? = null
-    private var password: String = ""
+    private var fragment: SettingFragment ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_popular_city)
         progressDialog = ProgressDialog(this)
-        getInforUser()
         initDrawer()
         initView()
         initFragment()
+        fragment = SettingFragment()
+        getInforUser()
     }
 
     private fun getInforUser() {
@@ -52,11 +59,13 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
             }
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                user = path?.let { ValidationUtil.getValuePathChild(it) }?.let { dataSnapshot.child(it).getValue(User::class.java) }
-                user?.let {
-                    with(it) {
-                        Glide.with(this@PopularCityActivity).load(avatar).into(imgAvatar)
-                        tvName.text = lastName
+                navView.post {
+                    user = path?.let { ValidationUtil.getValuePathChild(it) }?.let { dataSnapshot.child(it).getValue(User::class.java) }
+                    user?.let {
+                        with(it) {
+                            Glide.with(this@PopularCityActivity).load(avatar).into(imgAvatar)
+                            tvName.text = lastName
+                        }
                     }
                 }
             }
@@ -115,7 +124,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
             R.id.navSetting -> {
                 user?.let { SettingFragment.newInstance(it) }?.let {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.frameLayoutDrawer, it)
+                        .add(R.id.frameLayoutDrawer, it)
                         .commit()
                 }
             }
@@ -143,6 +152,71 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
             setProgressStyle(ProgressDialog.STYLE_SPINNER)
             setMessage(getString(R.string.note))
             show()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        val isShowRationaleWrite: Boolean
+        when (requestCode) {
+            Constant.REQUEST_ASK_PERMISSION_CAMERA -> {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    fragment?.chooseCamera()
+                } else {
+                    val isShowRationaleCamera =
+                        ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)
+                    isShowRationaleWrite = ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                    if (!isShowRationaleWrite || !isShowRationaleCamera) {
+                        showSettingsAlert(getString(R.string.noteCamera))
+                    }
+                }
+            }
+            Constant.REQUEST_ASK_PERMISSION_GALLERY -> {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    fragment?.chooseGallery()
+                } else {
+                    isShowRationaleWrite = ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                    if (!isShowRationaleWrite) {
+                        showSettingsAlert(getString(R.string.noteGallery))
+                    }
+                }
+            }
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
+
+        private fun showSettingsAlert(message: String) {
+            val alertDialog = AlertDialog.Builder(this).create()
+            alertDialog.apply {
+                setTitle(getString(R.string.optionChoose))
+                setMessage(getString(R.string.noteAccess) + " " + message)
+                setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel)) { dialog, _ -> dialog.dismiss() }
+                setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.setting)) { dialog, _ ->
+                    dialog.dismiss()
+                    startInstalledAppDetailsActivity(this@PopularCityActivity)
+                }
+                show()
+            }
+        }
+
+    private fun startInstalledAppDetailsActivity(context: Activity?) {
+        if (context == null) {
+            return
+        }
+        val intent = Intent()
+        intent.apply {
+            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            addCategory(Intent.CATEGORY_DEFAULT)
+            data = Uri.parse("package:" + context.packageName)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+            addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+            context.startActivity(this)
         }
     }
 }

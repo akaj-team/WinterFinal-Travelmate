@@ -12,9 +12,9 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_login.*
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.extensions.getInputText
 import vn.asiantech.travelmate.popularcityactivity.PopularCityActivity
 import vn.asiantech.travelmate.utils.Constant
-import vn.asiantech.travelmate.extensions.getInputText
 
 class LoginFragment : Fragment(), View.OnClickListener {
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
@@ -46,24 +46,22 @@ class LoginFragment : Fragment(), View.OnClickListener {
             val emailLogin = edtEmail.getInputText()
             val passwordLogin = edtPassword.getInputText()
             if (!emailLogin.isEmpty() && !passwordLogin.isEmpty()) {
-                if (!emailLogin.isEmpty() && !passwordLogin.isEmpty()) {
-                    if (activity is LoginActivity) {
-                        (activity as LoginActivity).showProgressbarDialog()
-                        firebaseAuth?.signInWithEmailAndPassword(emailLogin, passwordLogin)
-                            ?.addOnCompleteListener { task: Task<AuthResult> ->
-                                if (task.isSuccessful) {
-                                    Toast.makeText(context, getString(R.string.loginFragmentSuccessful), Toast.LENGTH_SHORT).show()
-                                    activity?.finish()
-                                    val intent = Intent(activity, PopularCityActivity::class.java)
-                                    intent.putExtra(Constant.KEY_PASSWORD, passwordLogin)
-                                    startActivity(intent)
-                                    (activity as LoginActivity).progressDialog?.dismiss()
-                                } else {
-                                    Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
-                                    (activity as LoginActivity).progressDialog?.dismiss()
-                                }
+                if (activity is LoginActivity) {
+                    (activity as LoginActivity).showProgressbarDialog()
+                    firebaseAuth?.signInWithEmailAndPassword(emailLogin, passwordLogin)
+                        ?.addOnCompleteListener { task: Task<AuthResult> ->
+                            if (task.isSuccessful) {
+                                Toast.makeText(context, getString(R.string.loginFragmentSuccessful), Toast.LENGTH_SHORT).show()
+                                activity?.finish()
+                                val intent = Intent(activity, PopularCityActivity::class.java)
+                                intent.putExtra(Constant.KEY_PASSWORD, passwordLogin)
+                                startActivity(intent)
+                                (activity as LoginActivity).progressDialog?.dismiss()
+                            } else {
+                                Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
+                                (activity as LoginActivity).progressDialog?.dismiss()
                             }
-                    }
+                        }
                 } else {
                     Toast.makeText(context, getString(R.string.inputAccount), Toast.LENGTH_SHORT).show()
                 }

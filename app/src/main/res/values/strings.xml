@@ -51,7 +51,7 @@
     <string name="navigationDrawerHotel">Hotel</string>
     <string name="navigationDrawerCommunicate">Communicate</string>
     <string name="navigationDrawerLogout">Logout</string>
-    <string name="navigationDrawerSetting">Setting</string>
+    <string name="navigationDrawerSetting">Change password and avatar</string>
     <!--ActionBar-->
     <string name="populatFragmentTravelMate">TravelMate</string>
     <!--Fragment Setting-->
@@ -77,4 +77,9 @@
     <string name="noteAccess">App needs to access the </string>
     <string name="setting">SETTINGS</string>
     <string name="cancel">don\'t allow</string>
+    <string name="data">data</string>
+    <string name="gallery">Select photo from gallery</string>
+    <string name="camera">Capture photo from camera</string>
+    <string name="action">Select Action</string>
+    <string name="percentProcess">%</string>
 </resources>

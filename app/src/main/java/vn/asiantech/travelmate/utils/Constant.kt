@@ -14,4 +14,10 @@ object Constant {
     const val KEY_TRAVEL = "travel"
     const val URL_ICON = "http://openweathermap.org/img/w/"
     const val URL_AVATAR = "https://firebasestorage.googleapis.com/v0/b/travelmate-54563.appspot.com/o/user.jpg?alt=media&token=8fc39414-2e94-4ba5-aefa-cececedaebbc"
+    const val ONCLICK_GALLERY = 0
+    const val ONCLICK_CAMERA = 1
+    const val GALLERY = 111
+    const val CAMERA = 222
+    const val REQUEST_ASK_PERMISSION_CAMERA = 333
+    const val REQUEST_ASK_PERMISSION_GALLERY = 444
 }

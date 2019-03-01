@@ -1,6 +1,5 @@
 package vn.asiantech.travelmate.popularcityactivity
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -50,7 +49,7 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
                         city?.let { listCity.add(it) }
                     }
                     popularCityAdapter?.notifyDataSetChanged()
-                    (activity as PopularCityActivity).progressDialog?.dismiss()
+                    (activity as? PopularCityActivity)?.progressDialog?.dismiss()
                 }
             })
         }

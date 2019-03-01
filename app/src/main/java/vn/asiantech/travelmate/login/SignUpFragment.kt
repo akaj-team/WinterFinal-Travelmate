@@ -17,9 +17,7 @@ import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.extensions.getInputText
 import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.utils.Constant
-import vn.asiantech.travelmate.utils.ErrorUtil
 import vn.asiantech.travelmate.utils.ValidationUtil
-import vn.asiantech.travelmate.extensions.getInputText
 
 class SignUpFragment : Fragment(), View.OnClickListener {
     private var fireBaseAuth: FirebaseAuth? = null
@@ -64,9 +62,6 @@ class SignUpFragment : Fragment(), View.OnClickListener {
                 }
             } else {
                 showMessage(checkUserPassEmail())
-//                val slideUp = AnimationUtils.loadAnimation(context, R.anim.slide_up)
-//                val slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down)
-//                ErrorUtil.showMessage(tvMessageError,checkUserPassEmail(),slideUp,slideDown)
             }
         } else {
             fragmentManager?.beginTransaction()?.apply {
@@ -105,14 +100,16 @@ class SignUpFragment : Fragment(), View.OnClickListener {
         val slideUp = AnimationUtils.loadAnimation(context, R.anim.slide_up)
         val slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down)
         val handler = Handler()
-        if (tvMessageError.visibility == View.INVISIBLE) {
-            tvMessageError.visibility = View.VISIBLE
-            tvMessageError.text = message
-            tvMessageError.startAnimation(slideUp)
-            handler.postDelayed({
-                tvMessageError.startAnimation(slideDown)
-                tvMessageError.visibility = View.INVISIBLE
-            }, 3000)
+        tvMessageError.apply {
+            if (visibility == View.INVISIBLE) {
+                visibility = View.VISIBLE
+                text = message
+                startAnimation(slideUp)
+                handler.postDelayed({
+                    startAnimation(slideDown)
+                    visibility = View.INVISIBLE
+                }, 3000)
+            }
         }
     }
 }
