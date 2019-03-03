@@ -32,6 +32,7 @@ import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.login.LoginActivity
 import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.popularcityactivity.PopularCityActivity
+import vn.asiantech.travelmate.popularcityactivity.PopularCityFragment
 import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.utils.ValidationUtil
 import java.util.*
@@ -40,6 +41,7 @@ import java.util.*
 class SettingFragment : Fragment(), View.OnClickListener {
     private val firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
     private val fireBaseUser: FirebaseUser? = firebaseAuth?.currentUser
+    private val auth: FirebaseAuth ?= null
     private var password: String = ""
     private var urlImage: String = ""
     private var urlImageNew: String = ""
@@ -74,6 +76,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
         context?.let { Glide.with(it).load(user?.avatar).into(imgAvatar) }
         btnChangePassword.setOnClickListener(this)
         imgAvatar.setOnClickListener(this)
+        btnCancel.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -85,10 +88,15 @@ class SettingFragment : Fragment(), View.OnClickListener {
                     showMessage(checkUserPassEmail())
                 }
             }
+
             R.id.imgAvatar -> {
                 eventHandle()
             }
+
             R.id.btnCancel -> {
+                fragmentManager?.beginTransaction()
+                    ?.replace(R.id.frameLayoutDrawer, PopularCityFragment())
+                    ?.commit()
             }
         }
     }
@@ -179,7 +187,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
                         dataSnapshot.ref.child(Constant.KEY_PASSWORD).setValue(newPassword)
                     }
                 })
-                firebaseAuth?.signOut()
+                auth?.signOut()
                 val intent = Intent(activity, LoginActivity::class.java)
                 startActivity(intent)
                 Toast.makeText(context, getString(R.string.successful), Toast.LENGTH_SHORT).show()
