@@ -22,7 +22,7 @@
     <string name="loginFragmentSuccessful">Successful</string>
     <string name="successful">thanh cong</string>
     <string name="error">please check email or password</string>
-    <string name="note">please waiting ...</string>
+    <string name="note">please wait ...</string>
     <string name="inputAccount">please input email and password</string>
     <string name="loginfragmentCannotLogin">Can not login</string>
     <string name="signUpFragmentOk">OK</string>
@@ -31,6 +31,7 @@
     <string name="humidity">Humidity</string>
     <string name="wind">Wind</string>
     <string name="daNang">Da nang</string>
+    <string name="metric">C</string>
     <string name="percent">%s %%</string>
     <string name="meterOverSecond">%s m/s</string>
     <string name="degreeC">%s°C</string>

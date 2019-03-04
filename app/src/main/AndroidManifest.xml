@@ -26,5 +26,4 @@
         <activity android:name=".login.LoginActivity"/>
         <activity android:name=".popularcityactivity.PopularCityActivity"/>
     </application>
-
 </manifest>

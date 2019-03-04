@@ -13,16 +13,17 @@ import vn.asiantech.travelmate.models.WeatherSevenDay
 import vn.asiantech.travelmate.utils.Constant
 import java.util.*
 
-class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>) :
+class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>, var city: String) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
     companion object {
-        const val viewTypeItemTop = 0
-        const val viewTypeItem = 1
+        const val VIEW_TYPE_ITEM_TOP = 0
+        const val VIEW_TYPE_ITEM = 1
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater: LayoutInflater = LayoutInflater.from(viewGroup.context)
-        if (viewType == viewTypeItemTop) {
+        if (viewType == VIEW_TYPE_ITEM_TOP) {
             val view: View = layoutInflater.inflate(R.layout.item_weather_top, viewGroup, false)
             return ItemTopViewHolder(view)
         }
@@ -36,9 +37,9 @@ class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>) :
 
     override fun getItemViewType(position: Int): Int {
         if (position == 0) {
-            return viewTypeItemTop
+            return VIEW_TYPE_ITEM_TOP
         }
-        return viewTypeItem
+        return VIEW_TYPE_ITEM
     }
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
@@ -71,7 +72,7 @@ class WeatherAdapter(private var weatherItems: ArrayList<WeatherSevenDay>) :
                 with(itemView) {
                     with(cityWeather) {
                         tvDay.text = dt.toDateFormat()
-                        tvCity.text = Constant.MOCK_CITY
+                        tvCity.text = city
                         tvDescriptionWeather.text = weather[0].description
                         tvTemperature.text = context.getString(R.string.degreeC, tempDisplay)
                     }
