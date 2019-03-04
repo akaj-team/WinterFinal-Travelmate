@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.utils.Constant
 
 
@@ -25,6 +26,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
     GoogleMap.OnMyLocationClickListener {
 
     private var supportMapFragment: SupportMapFragment? = null
+    private var travel: Travel? = null
+
+    companion object {
+        fun newInstance(travel: Travel) = MapFragment().apply {
+            arguments = Bundle().apply {
+                putParcelable(WeatherFragment.KEY_TRAVEL, travel)
+            }
+        }
+    }
 
     override fun onMyLocationClick(location: Location) {
         // TO DO
@@ -38,10 +48,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
     private var mapGoogle: GoogleMap? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_map, container, false)
+        arguments?.let {
+            travel = arguments?.getParcelable(WeatherFragment.KEY_TRAVEL)
+        }
         checkAndRequestPermission()
         initViews()
-        return view
+        return inflater.inflate(R.layout.fragment_map, container, false)
     }
 
     private fun initViews() {
@@ -73,7 +85,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
         val daNang = LatLng(16.078400, 108.234618)
         mapGoogle?.let {
             with(it) {
-                addMarker(MarkerOptions().position(daNang).title(Constant.MOCK_CITY))
+                addMarker(MarkerOptions().position(daNang).title(travel?.name))
                     .setIcon(
                         BitmapDescriptorFactory.fromResource(
                             R.drawable.ic_building_24

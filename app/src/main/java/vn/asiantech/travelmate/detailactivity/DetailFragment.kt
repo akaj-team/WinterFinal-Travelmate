@@ -57,7 +57,7 @@ class DetailFragment : Fragment(), View.OnClickListener {
                     travel?.let { WeatherFragment.newInstance(it) }?.let { replace(R.id.fragment_container, it) }
                 }
                 R.id.imgMap -> {
-                    replace(R.id.fragment_container, MapFragment())
+                    travel?.let { MapFragment.newInstance(it) }?.let { replace(R.id.fragment_container, it) }
                 }
             }
             addToBackStack(null)

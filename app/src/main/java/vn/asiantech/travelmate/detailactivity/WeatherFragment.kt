@@ -24,7 +24,7 @@ class WeatherFragment : Fragment() {
     private var weatherItems: ArrayList<WeatherSevenDay> = arrayListOf()
 
     companion object {
-        private const val KEY_TRAVEL: String = "travel"
+        const val KEY_TRAVEL: String = "travel"
         fun newInstance(travel: Travel) = WeatherFragment().apply {
             arguments = Bundle().apply {
                 putParcelable(KEY_TRAVEL, travel)

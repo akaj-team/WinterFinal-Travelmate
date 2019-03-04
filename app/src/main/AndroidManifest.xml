@@ -16,7 +16,7 @@
         <meta-data
                 android:name="com.google.android.maps.v2.API_KEY"
                 android:value="AIzaSyCiMf71TFLlMcSJ76IbmDTitjdT25fP-pQ"/>
-        <activity android:name=".detailactivity.DetailActivity">
+        <activity android:name=".popularcityactivity.PopularCityActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -24,6 +24,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".login.LoginActivity"/>
-        <activity android:name=".popularcityactivity.PopularCityActivity"/>
+        <activity android:name=".detailactivity.DetailActivity"/>
     </application>
 </manifest>
