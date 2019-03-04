@@ -7,7 +7,7 @@ import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.Travel
 
 class DetailActivity : AppCompatActivity() {
-    var progressDialog: ProgressDialog? = null
+    private var progressDialog: ProgressDialog? = null
     private var travel: Travel ?= null
 
     companion object {
@@ -37,5 +37,9 @@ class DetailActivity : AppCompatActivity() {
             setMessage(getString(R.string.note))
             show()
         }
+    }
+
+    fun dismissProgressbarDialog(){
+        progressDialog?.dismiss()
     }
 }

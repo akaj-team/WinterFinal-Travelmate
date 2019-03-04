@@ -41,24 +41,21 @@ class SignUpFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         if (v?.id == R.id.btnSignUp) {
             if (checkUserPassEmail() == Constant.CHECK_SIGNUP && !firstName.isEmpty() && !lastName.isEmpty() && !email.isEmpty() && !password.isEmpty() && !confirmPassword.isEmpty()) {
-                if(activity is LoginActivity) {
-                    (activity as LoginActivity).showProgressbarDialog()
-                    fireBaseAuth?.createUserWithEmailAndPassword(edtEmail?.text.toString(), edtPassword?.text.toString())
-                        ?.addOnCompleteListener { task: Task<AuthResult> ->
-                            if (task.isSuccessful) {
-                                val path = ValidationUtil.getValuePathChild(email)
-                                val db = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
-                                val courseId = db.push().key
-                                val user = User(Constant.URL_AVATAR, firstName, lastName, email, password)
-                                courseId?.let { db.child(path).setValue(user) }
-                                Toast.makeText(context, getString(R.string.successful), Toast.LENGTH_SHORT).show()
-                                resetInputdata()
-                                (activity as LoginActivity).progressDialog?.dismiss()
-                            } else {
-                                Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
-                                (activity as LoginActivity).progressDialog?.dismiss()
-                            }
-                        }
+                (activity as? LoginActivity)?.showProgressbarDialog()
+                fireBaseAuth?.createUserWithEmailAndPassword(email, password)?.addOnCompleteListener { task: Task<AuthResult> ->
+                    if (task.isSuccessful) {
+                        (activity as? LoginActivity)?.dismissProgressbarDialog()
+                        val path = ValidationUtil.getValuePathChild(email)
+                        val db = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
+                        val courseId = db.push().key
+                        val user = User(Constant.URL_AVATAR, firstName, lastName, email, password)
+                        courseId?.let { db.child(path).setValue(user) }
+                        Toast.makeText(context, getString(R.string.successful), Toast.LENGTH_SHORT).show()
+                        resetInputdata()
+                    } else {
+                        (activity as? LoginActivity)?.dismissProgressbarDialog()
+                        Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
+                    }
                 }
             } else {
                 showMessage(checkUserPassEmail())
@@ -79,7 +76,7 @@ class SignUpFragment : Fragment(), View.OnClickListener {
         password = edtPassword.getInputText()
         confirmPassword = edtConfirmPassword.getInputText()
         return when {
-            edtPassword.getInputText() != confirmPassword -> getString(R.string.signupTvConfirmPasswordWrong)
+            password != confirmPassword -> getString(R.string.signupTvConfirmPasswordWrong)
             !ValidationUtil.isValidEmail(email) -> getString(R.string.signupEmailFormatWrong)
             !ValidationUtil.isValidFirstName(firstName) -> getString(R.string.signupTvFirstNameFormatWrong)
             !ValidationUtil.isValidLastName(lastName) -> getString(R.string.signupTvLastNameFormatWrong)
@@ -97,16 +94,14 @@ class SignUpFragment : Fragment(), View.OnClickListener {
     }
 
     private fun showMessage(message: String) {
-        val slideUp = AnimationUtils.loadAnimation(context, R.anim.slide_up)
-        val slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down)
         val handler = Handler()
         tvMessageError.apply {
             if (visibility == View.INVISIBLE) {
                 visibility = View.VISIBLE
                 text = message
-                startAnimation(slideUp)
+                startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_up))
                 handler.postDelayed({
-                    startAnimation(slideDown)
+                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down))
                     visibility = View.INVISIBLE
                 }, 3000)
             }

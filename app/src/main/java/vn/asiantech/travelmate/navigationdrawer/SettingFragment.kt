@@ -29,6 +29,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_setting.*
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.extensions.getInputText
 import vn.asiantech.travelmate.login.LoginActivity
 import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.popularcityactivity.PopularCityActivity
@@ -102,33 +103,32 @@ class SettingFragment : Fragment(), View.OnClickListener {
     }
 
     private fun eventHandle() {
-        val pictureDialog = AlertDialog.Builder(context)
-        pictureDialog.setTitle(getString(R.string.action))
         val pictureDialogItems = arrayOf(getString(R.string.gallery), getString(R.string.camera))
-        pictureDialog.setItems(pictureDialogItems) { _, which ->
-            when (which) {
-                Constant.ONCLICK_GALLERY -> if (checkPermissionForGallery()) {
-                    chooseGallery()
-                }
-                Constant.ONCLICK_CAMERA -> if (checkPermissionForCamera()) {
-                    chooseCamera()
+        AlertDialog.Builder(context).apply {
+            setTitle(getString(R.string.action))
+            setItems(pictureDialogItems) { _, which ->
+                when (which) {
+                    Constant.ONCLICK_GALLERY -> if (checkPermissionForGallery()) {
+                        chooseGallery()
+                    }
+                    Constant.ONCLICK_CAMERA -> if (checkPermissionForCamera()) {
+                        chooseCamera()
+                    }
                 }
             }
+            show()
         }
-        pictureDialog.show()
     }
 
     fun chooseCamera() {
         if (checkPermissionForCamera()) {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(intent, Constant.CAMERA)
+            startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), Constant.CAMERA)
         }
     }
 
     fun chooseGallery() {
         if (checkPermissionForGallery()) {
-            val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(galleryIntent, Constant.GALLERY)
+            startActivityForResult(Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI), Constant.GALLERY)
         }
     }
     private fun checkPermissionForCamera(): Boolean {
@@ -149,27 +149,26 @@ class SettingFragment : Fragment(), View.OnClickListener {
     }
 
     private fun uploadImageToFirebase() {
-        if (activity is PopularCityActivity) {
-            (activity as PopularCityActivity).showProgressbarDialog()
-            storage = FirebaseStorage.getInstance()
-            storageReference = storage?.reference
-            filePath?.let { temp ->
-                val ref = storageReference?.child("images/" + UUID.randomUUID().toString())
-                ref?.putFile(temp)
-                    ?.addOnSuccessListener {
-                        ref.downloadUrl.addOnSuccessListener { taskSnapShot ->
-                            (activity as PopularCityActivity).progressDialog?.dismiss()
-                            urlImageNew = taskSnapShot.toString()
-                            changePassAndAvatar()
-                        }
+        (activity as? PopularCityActivity)?.showProgressbarDialog()
+        storage = FirebaseStorage.getInstance()
+        storageReference = storage?.reference
+        filePath?.let { temp ->
+            val ref = storageReference?.child("images/" + UUID.randomUUID().toString())
+            ref?.putFile(temp)
+                ?.addOnSuccessListener {
+                    ref.downloadUrl.addOnSuccessListener { taskSnapShot ->
+                        (activity as? PopularCityActivity)?.dismissProgressbarDialog()
+                        urlImageNew = taskSnapShot.toString()
+                        changePassAndAvatar()
                     }
-                    ?.addOnFailureListener { }
-            }
-            if (urlImageNew == "") {
-                urlImageNew = urlImage
-                changePassAndAvatar()
-            }
+                }
+                ?.addOnFailureListener { }
         }
+        if (urlImageNew == "") {
+            urlImageNew = urlImage
+            changePassAndAvatar()
+        }
+
     }
 
     private fun changePassAndAvatar() {
@@ -179,17 +178,17 @@ class SettingFragment : Fragment(), View.OnClickListener {
             if (task.isSuccessful) {
                 database.child(path).addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onCancelled(databaseError: DatabaseError) {
+                        (activity as? PopularCityActivity)?.dismissProgressbarDialog()
                     }
 
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        (activity as PopularCityActivity).progressDialog?.dismiss()
+                        (activity as? PopularCityActivity)?.dismissProgressbarDialog()
                         dataSnapshot.ref.child(Constant.KEY_IMAGE).setValue(urlImageNew)
                         dataSnapshot.ref.child(Constant.KEY_PASSWORD).setValue(newPassword)
                     }
                 })
                 auth?.signOut()
-                val intent = Intent(activity, LoginActivity::class.java)
-                startActivity(intent)
+                startActivity(Intent(activity, LoginActivity::class.java))
                 Toast.makeText(context, getString(R.string.successful), Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
@@ -211,23 +210,19 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
     private fun openGallery(data: Intent?) {
         filePath = data?.data
-        val bitmap = MediaStore.Images.Media.getBitmap(activity?.contentResolver, filePath)
-        imgAvatar.setImageBitmap(bitmap)
+        imgAvatar.setImageBitmap(MediaStore.Images.Media.getBitmap(activity?.contentResolver, data?.data))
     }
 
     private fun openCamera(data: Intent?) {
-        val bundle = data?.extras
-        val imageBitmap: Bitmap?
-        imageBitmap = bundle?.get(getString(R.string.data)) as Bitmap
-        val path = MediaStore.Images.Media.insertImage(activity?.contentResolver, imageBitmap, "Title", null)
-        filePath = Uri.parse(path)
+        val imageBitmap: Bitmap? = data?.extras?.get(getString(R.string.data)) as Bitmap
+        filePath = Uri.parse(MediaStore.Images.Media.insertImage(activity?.contentResolver, imageBitmap, "Title", null))
         imgAvatar.setImageBitmap(imageBitmap)
     }
 
     private fun checkUserPassEmail(): String {
-        oldPassword = edtOldPassword.text.toString().trim()
-        newPassword = edtNewPassword.text.toString().trim()
-        confirmPassword = edtConfirmPassword.text.toString().trim()
+        oldPassword = edtOldPassword.getInputText()
+        newPassword = edtNewPassword.getInputText()
+        confirmPassword = edtConfirmPassword.getInputText()
         return when {
             password != oldPassword -> getString(R.string.passwordWrong)
             !ValidationUtil.isValidPassword(newPassword) -> getString(R.string.signupTvPasswordFormatWrong)
@@ -237,16 +232,14 @@ class SettingFragment : Fragment(), View.OnClickListener {
     }
 
     private fun showMessage(message: String) {
-        val slideUp = AnimationUtils.loadAnimation(context, R.anim.slide_up)
-        val slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down)
         val handler = Handler()
         tvMessageError.apply {
             if (visibility == View.INVISIBLE) {
                 visibility = View.VISIBLE
                 text = message
-                startAnimation(slideUp)
+                startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_up))
                 handler.postDelayed({
-                    startAnimation(slideDown)
+                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down))
                     visibility = View.INVISIBLE
                 }, 3000)
             }

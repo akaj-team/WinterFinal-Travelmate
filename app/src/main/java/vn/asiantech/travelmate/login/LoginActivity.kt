@@ -7,7 +7,7 @@ import vn.asiantech.travelmate.R
 
 class LoginActivity : AppCompatActivity() {
 
-    var progressDialog: ProgressDialog? = null
+    private var progressDialog: ProgressDialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         progressDialog = ProgressDialog(this)
@@ -27,5 +27,8 @@ class LoginActivity : AppCompatActivity() {
             setMessage(getString(R.string.note))
             show()
         }
+    }
+    fun dismissProgressbarDialog(){
+        progressDialog?.dismiss()
     }
 }

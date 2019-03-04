@@ -36,7 +36,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     private var database: DatabaseReference? = null
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
     private var fireBaseUser: FirebaseUser? = firebaseAuth?.currentUser
-    var progressDialog: ProgressDialog? = null
+    private var progressDialog: ProgressDialog? = null
     var user: User? = null
     private var fragment: SettingFragment ?= null
 
@@ -107,8 +107,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                 if (fragment is PopularCityFragment) {
                     drawerLayout.closeDrawer(GravityCompat.START)
                 } else {
-                    val intent = Intent(this, PopularCityActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, PopularCityActivity::class.java))
                 }
             }
             R.id.navHotel -> {
@@ -118,8 +117,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
             }
             R.id.navLogout -> {
                 firebaseAuth?.signOut()
-                val intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
+                startActivity(Intent(this, LoginActivity::class.java))
             }
             R.id.navSetting -> {
                 user?.let { SettingFragment.newInstance(it) }?.let {
@@ -153,6 +151,10 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
             setMessage(getString(R.string.note))
             show()
         }
+    }
+
+    fun dismissProgressbarDialog(){
+        progressDialog?.dismiss()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -190,33 +192,30 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
         }
     }
 
-        private fun showSettingsAlert(message: String) {
-            val alertDialog = AlertDialog.Builder(this).create()
-            alertDialog.apply {
-                setTitle(getString(R.string.optionChoose))
-                setMessage(getString(R.string.noteAccess) + " " + message)
-                setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel)) { dialog, _ -> dialog.dismiss() }
-                setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.setting)) { dialog, _ ->
-                    dialog.dismiss()
-                    startInstalledAppDetailsActivity(this@PopularCityActivity)
-                }
-                show()
+    private fun showSettingsAlert(message: String) {
+        AlertDialog.Builder(this).create().apply {
+            setTitle(getString(R.string.optionChoose))
+            setMessage(getString(R.string.noteAccess) + " " + message)
+            setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel)) { dialog, _ -> dialog.dismiss() }
+            setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.setting)) { dialog, _ ->
+                dialog.dismiss()
+                startInstalledAppDetailsActivity(this@PopularCityActivity)
             }
+            show()
         }
+    }
 
     private fun startInstalledAppDetailsActivity(context: Activity?) {
-        if (context == null) {
-            return
-        }
-        val intent = Intent()
-        intent.apply {
-            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-            addCategory(Intent.CATEGORY_DEFAULT)
-            data = Uri.parse("package:" + context.packageName)
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-            addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
-            context.startActivity(this)
+        context?.let {
+            Intent().apply {
+                action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                addCategory(Intent.CATEGORY_DEFAULT)
+                data = Uri.parse("package:" + context.packageName)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+                context.startActivity(this)
+            }
         }
     }
 }
