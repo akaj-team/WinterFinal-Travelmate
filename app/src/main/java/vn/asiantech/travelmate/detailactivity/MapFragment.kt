@@ -36,6 +36,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
     }
 
     private var mapGoogle: GoogleMap? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_map, container, false)
         checkAndRequestPermission()
@@ -73,13 +74,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
         mapGoogle?.let {
             with(it) {
                 addMarker(MarkerOptions().position(daNang).title(Constant.MOCK_CITY))
-                  .setIcon(
-                    BitmapDescriptorFactory.fromResource(
-                        R.drawable.ic_building_24
+                    .setIcon(
+                        BitmapDescriptorFactory.fromResource(
+                            R.drawable.ic_building_24
+                        )
                     )
-                )
                 moveCamera(CameraUpdateFactory.newLatLng(daNang))
-                uiSettings?.let {temp->
+                uiSettings?.let { temp ->
                     temp.isZoomControlsEnabled = true
                     temp.isCompassEnabled = true
                 }
