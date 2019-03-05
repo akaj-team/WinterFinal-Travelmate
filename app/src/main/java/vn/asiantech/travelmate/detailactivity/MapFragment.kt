@@ -23,7 +23,6 @@ import vn.asiantech.travelmate.utils.Constant
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
     GoogleMap.OnMyLocationClickListener {
-
     private var supportMapFragment: SupportMapFragment? = null
     private var travel: Travel? = null
     private var mapGoogle: GoogleMap? = null
@@ -60,7 +59,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
             fragmentManager?.beginTransaction()?.replace(R.id.flMap, it)?.commit()
             it.getMapAsync(this)
         }
-
     }
 
     private fun checkAndRequestPermission(): Boolean {
