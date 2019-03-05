@@ -12,18 +12,34 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.models.WeatherResponse
 import vn.asiantech.travelmate.utils.APIUtil
 import vn.asiantech.travelmate.utils.Constant
 
 class DetailFragment : Fragment(), View.OnClickListener {
+
+    private var travel: Travel? = null
+
+    companion object {
+        private const val KEY_TRAVEL: String = "travel"
+        fun newInstance(travel: Travel) = DetailFragment().apply {
+            arguments = Bundle().apply {
+                putParcelable(KEY_TRAVEL, travel)
+            }
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        arguments?.let {
+            travel = arguments?.getParcelable(KEY_TRAVEL)
+        }
         return inflater.inflate(R.layout.fragment_detail, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getWeatherData(Constant.MOCK_CITY)
+        getWeatherData(travel?.province.toString())
         cvWeather.setOnClickListener(this)
     }
 
@@ -35,7 +51,7 @@ class DetailFragment : Fragment(), View.OnClickListener {
                 R.anim.left_to_right1,
                 R.anim.left_to_right2
             )
-            replace(R.id.fragment_container, WeatherFragment())
+            travel?.let { WeatherFragment.newInstance(it) }?.let { replace(R.id.fragment_container, it) }
             addToBackStack(null)
             commit()
         }
@@ -43,26 +59,27 @@ class DetailFragment : Fragment(), View.OnClickListener {
 
     private fun getWeatherData(city: String) {
         if (activity is DetailActivity) {
-            (activity as DetailActivity).progressBar?.visibility = View.VISIBLE
+            (activity as DetailActivity).showProgressbarDialog()
             val service = APIUtil.setUpApi(Constant.BASE_URL)
             service.getCity(city, Constant.UNITS, Constant.APP_ID)?.enqueue(object : Callback<WeatherResponse> {
                 override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>?) {
-                    val cityWeather: WeatherResponse? = response?.body()
-                    cityWeather?.let {
+                    (activity as? DetailActivity)?.dismissProgressbarDialog()
+                    response?.body()?.let {
                         with(it) {
                             tvTemperature.text = getString(R.string.degreeC, tempDisplay)
                             tvHumidity.text = getString(R.string.percent, humidityDisplay)
                             tvWind.text = getString(R.string.meterOverSecond, speedDisplay)
-                            Glide.with(this@DetailFragment).load(Constant.MOCK_IMAGE).into(imgCity)
+                            tvDescription.text = travel?.description
+                            tvNamePlace.text = travel?.name
+                            Glide.with(this@DetailFragment).load(travel?.image).into(imgCity)
                             Glide.with(this@DetailFragment).load("${Constant.URL_ICON}$iconDisplay.png")
                                 .into(imgIconWeather)
                         }
                     }
-                    (activity as DetailActivity).progressBar?.visibility = View.GONE
                 }
 
                 override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
-                    (activity as DetailActivity).progressBar?.visibility = View.GONE
+                    (activity as? DetailActivity)?.dismissProgressbarDialog()
                     Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
                 }
             })
