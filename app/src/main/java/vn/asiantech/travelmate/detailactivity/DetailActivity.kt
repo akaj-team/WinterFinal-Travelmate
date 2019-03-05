@@ -1,16 +1,16 @@
 package vn.asiantech.travelmate.detailactivity
 
-import android.content.pm.PackageManager
 import android.app.ProgressDialog
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import vn.asiantech.travelmate.R
-import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.models.Travel
+import vn.asiantech.travelmate.utils.Constant
 
 class DetailActivity : AppCompatActivity() {
-    var progressDialog: ProgressDialog? = null
-    private var travel: Travel ?= null
+    private var progressDialog: ProgressDialog? = null
+    private var travel: Travel? = null
 
     companion object {
         private const val KEY_TRAVEL: String = "travel"
@@ -39,6 +39,10 @@ class DetailActivity : AppCompatActivity() {
             setMessage(getString(R.string.note))
             show()
         }
+    }
+
+    fun dismissProgressbarDialog() {
+        progressDialog?.dismiss()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
