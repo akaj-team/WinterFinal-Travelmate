@@ -10,11 +10,11 @@ import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import vn.asiantech.travelmate.R
@@ -24,9 +24,9 @@ import vn.asiantech.travelmate.utils.Constant
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
     GoogleMap.OnMyLocationClickListener {
-
     private var supportMapFragment: SupportMapFragment? = null
     private var travel: Travel? = null
+    private var mapGoogle: GoogleMap? = null
 
     companion object {
         fun newInstance(travel: Travel) = MapFragment().apply {
@@ -44,8 +44,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
         //TO DO
         return false
     }
-
-    private var mapGoogle: GoogleMap? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         arguments?.let {
@@ -82,32 +80,44 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
 
     override fun onMapReady(googleMap: GoogleMap?) {
         mapGoogle = googleMap
-        val daNang = LatLng(16.078400, 108.234618)
-        mapGoogle?.let {
-            with(it) {
-                addMarker(MarkerOptions().position(daNang).title(travel?.name))
-                    .setIcon(
-                        BitmapDescriptorFactory.fromResource(
-                            R.drawable.ic_building_24
-                        )
-                    )
-                moveCamera(CameraUpdateFactory.newLatLng(daNang))
-                uiSettings?.let { temp ->
-                    temp.isZoomControlsEnabled = true
-                    temp.isCompassEnabled = true
-                }
-                if (context?.let { temp ->
-                        ContextCompat.checkSelfPermission(temp, Manifest.permission.ACCESS_FINE_LOCATION)
-                    } == PackageManager.PERMISSION_GRANTED) {
-                    isMyLocationEnabled = true
-                }
-                setOnMyLocationButtonClickListener(this@MapFragment)
-                setOnMyLocationClickListener(this@MapFragment)
+        val daNang = travel?.location?.split(",")?.let {
+            LatLng(
+                it[0].trim().toDouble(),
+                it[1].trim().toDouble()
+            )
+        }
+        mapGoogle?.run {
+            addMarker(daNang?.let { temp -> MarkerOptions().position(temp).title(travel?.name) })
+//                .setIcon(
+//                    BitmapDescriptorFactory.fromResource(
+//                        R.drawable.ic_building_24
+//                    )
+//                )
+            moveCamera(CameraUpdateFactory.newLatLng(daNang))
+            uiSettings?.let { temp ->
+                temp.isZoomControlsEnabled = true
+                temp.isCompassEnabled = true
             }
+            if (context?.let { temp ->
+                    ContextCompat.checkSelfPermission(temp, Manifest.permission.ACCESS_FINE_LOCATION)
+                } == PackageManager.PERMISSION_GRANTED) {
+                isMyLocationEnabled = true
+            }
+            customMyLocation()
+            setOnMyLocationButtonClickListener(this@MapFragment)
+            setOnMyLocationClickListener(this@MapFragment)
         }
     }
 
     fun updateViewFragment() {
         supportMapFragment?.getMapAsync(this)
+    }
+
+    private fun customMyLocation() {
+        (supportMapFragment?.view?.findViewById<View>("2".toInt())?.layoutParams as RelativeLayout.LayoutParams).apply {
+            addRule(RelativeLayout.ALIGN_PARENT_TOP, 0)
+            addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
+            setMargins(0, 180, 180, 0)
+        }
     }
 }
