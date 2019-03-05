@@ -55,22 +55,20 @@ class WeatherFragment : Fragment() {
     }
 
     private fun getWeatherData(city: String) {
-        if (activity is DetailActivity) {
-            (activity as DetailActivity).showProgressbarDialog()
-            val service = APIUtil.setUpApi(Constant.URL_LIST_SEVEN_DAYS)
-            service.getWeatherList(city, Constant.UNITS, 7, Constant.APP_ID)
-                ?.enqueue(object : Callback<WeatherList> {
-                    override fun onResponse(call: Call<WeatherList>, response: Response<WeatherList>?) {
-                        response?.body()?.list?.let { weatherItems.addAll(it) }
-                        weatherAdapter?.notifyDataSetChanged()
-                        (activity as DetailActivity).progressDialog?.dismiss()
-                    }
+        (activity as? DetailActivity)?.showProgressbarDialog()
+        val service = APIUtil.setUpApi(Constant.URL_LIST_SEVEN_DAYS)
+        service.getWeatherList(city, Constant.UNITS, 7, Constant.APP_ID)
+            ?.enqueue(object : Callback<WeatherList> {
+                override fun onResponse(call: Call<WeatherList>, response: Response<WeatherList>?) {
+                    (activity as? DetailActivity)?.dismissProgressbarDialog()
+                    response?.body()?.list?.let { weatherItems.addAll(it) }
+                    weatherAdapter?.notifyDataSetChanged()
+                }
 
-                    override fun onFailure(call: Call<WeatherList>, t: Throwable) {
-                        (activity as DetailActivity).progressDialog?.dismiss()
-                        Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
-                    }
-                })
-        }
+                override fun onFailure(call: Call<WeatherList>, t: Throwable) {
+                    (activity as? DetailActivity)?.dismissProgressbarDialog()
+                    Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                }
+            })
     }
 }

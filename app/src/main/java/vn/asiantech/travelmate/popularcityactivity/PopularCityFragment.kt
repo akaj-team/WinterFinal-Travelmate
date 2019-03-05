@@ -1,6 +1,5 @@
 package vn.asiantech.travelmate.popularcityactivity
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -35,25 +34,23 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
     }
 
     private fun initData(){
-        if (activity is PopularCityActivity) {
-            (activity as PopularCityActivity).showProgressbarDialog()
-            database = firebase?.getReference(Constant.KEY_TRAVEL)
-            database?.addValueEventListener(object : ValueEventListener {
-                override fun onCancelled(dataSnapshot: DatabaseError) {
-                    Toast.makeText(context, getString(R.string.checkInternet), Toast.LENGTH_SHORT).show()
-                    (activity as PopularCityActivity).progressDialog?.dismiss()
-                }
+        (activity as? PopularCityActivity)?.showProgressbarDialog()
+        database = firebase?.getReference(Constant.KEY_TRAVEL)
+        database?.addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(dataSnapshot: DatabaseError) {
+                Toast.makeText(context, getString(R.string.checkInternet), Toast.LENGTH_SHORT).show()
+                (activity as? PopularCityActivity)?.dismissProgressbarDialog()
+            }
 
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    for (image in dataSnapshot.children) {
-                        val city = image.getValue(Travel::class.java)
-                        city?.let { listCity.add(it) }
-                    }
-                    popularCityAdapter?.notifyDataSetChanged()
-                    (activity as PopularCityActivity).progressDialog?.dismiss()
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (image in dataSnapshot.children) {
+                    val city = image.getValue(Travel::class.java)
+                    city?.let { listCity.add(it) }
                 }
-            })
-        }
+                popularCityAdapter?.notifyDataSetChanged()
+                (activity as? PopularCityActivity)?.dismissProgressbarDialog()
+            }
+        })
     }
 
     private fun initRecyclerView() {
@@ -68,9 +65,9 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
     }
 
     override fun onClicked(position: Int) {
-        val travel = listCity.get(position)
-        val intent = Intent(activity, DetailActivity::class.java)
-        intent.putExtra(keyTravel, travel)
+        val intent = Intent(activity, DetailActivity::class.java).apply {
+            putExtra(keyTravel, listCity.get(position))
+        }
         startActivity(intent)
     }
 }

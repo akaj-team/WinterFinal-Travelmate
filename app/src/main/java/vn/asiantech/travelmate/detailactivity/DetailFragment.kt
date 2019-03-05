@@ -63,8 +63,8 @@ class DetailFragment : Fragment(), View.OnClickListener {
             val service = APIUtil.setUpApi(Constant.BASE_URL)
             service.getCity(city, Constant.UNITS, Constant.APP_ID)?.enqueue(object : Callback<WeatherResponse> {
                 override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>?) {
-                    val cityWeather: WeatherResponse? = response?.body()
-                    cityWeather?.let {
+                    (activity as? DetailActivity)?.dismissProgressbarDialog()
+                    response?.body()?.let {
                         with(it) {
                             tvTemperature.text = getString(R.string.degreeC, tempDisplay)
                             tvHumidity.text = getString(R.string.percent, humidityDisplay)
@@ -76,12 +76,11 @@ class DetailFragment : Fragment(), View.OnClickListener {
                                 .into(imgIconWeather)
                         }
                     }
-                    (activity as DetailActivity).progressDialog?.dismiss()
                 }
 
                 override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
+                    (activity as? DetailActivity)?.dismissProgressbarDialog()
                     Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
-                    (activity as DetailActivity).progressDialog?.dismiss()
                 }
             })
         }

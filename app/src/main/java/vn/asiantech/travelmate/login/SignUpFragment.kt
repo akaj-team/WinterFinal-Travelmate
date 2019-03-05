@@ -1,6 +1,7 @@
 package vn.asiantech.travelmate.login
 
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +17,6 @@ import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.extensions.getInputText
 import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.utils.Constant
-import vn.asiantech.travelmate.utils.ErrorUtil
 import vn.asiantech.travelmate.utils.ValidationUtil
 
 class SignUpFragment : Fragment(), View.OnClickListener {
@@ -41,32 +41,24 @@ class SignUpFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         if (v?.id == R.id.btnSignUp) {
             if (checkUserPassEmail() == Constant.CHECK_SIGNUP && !firstName.isEmpty() && !lastName.isEmpty() && !email.isEmpty() && !password.isEmpty() && !confirmPassword.isEmpty()) {
-                if (activity is LoginActivity) {
-                    (activity as LoginActivity).showProgressbarDialog()
-                    fireBaseAuth?.createUserWithEmailAndPassword(
-                        edtEmail?.text.toString(),
-                        edtPassword?.text.toString()
-                    )
-                        ?.addOnCompleteListener { task: Task<AuthResult> ->
-                            if (task.isSuccessful) {
-                                val path = ValidationUtil.getValuePathChild(email)
-                                val db = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
-                                val courseId = db.push().key
-                                val user = User(Constant.URL_AVATAR, firstName, lastName, email, password)
-                                courseId?.let { db.child(path).setValue(user) }
-                                Toast.makeText(context, getString(R.string.successful), Toast.LENGTH_SHORT).show()
-                                resetInputdata()
-                                (activity as LoginActivity).progressDialog?.dismiss()
-                            } else {
-                                Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
-                                (activity as LoginActivity).progressDialog?.dismiss()
-                            }
-                        }
+                (activity as? LoginActivity)?.showProgressbarDialog()
+                fireBaseAuth?.createUserWithEmailAndPassword(email, password)?.addOnCompleteListener { task: Task<AuthResult> ->
+                    if (task.isSuccessful) {
+                        (activity as? LoginActivity)?.dismissProgressbarDialog()
+                        val path = ValidationUtil.getValuePathChild(email)
+                        val db = FirebaseDatabase.getInstance().getReference(Constant.KEY_ACCOUNT)
+                        val courseId = db.push().key
+                        val user = User(Constant.URL_AVATAR, firstName, lastName, email, password)
+                        courseId?.let { db.child(path).setValue(user) }
+                        Toast.makeText(context, getString(R.string.successful), Toast.LENGTH_SHORT).show()
+                        resetInputdata()
+                    } else {
+                        (activity as? LoginActivity)?.dismissProgressbarDialog()
+                        Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
+                    }
                 }
             } else {
-                val slideUp = AnimationUtils.loadAnimation(context, R.anim.slide_up)
-                val slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down)
-                ErrorUtil.showMessage(tvMessageError,checkUserPassEmail(),slideUp,slideDown)
+                showMessage(checkUserPassEmail())
             }
         } else {
             fragmentManager?.beginTransaction()?.apply {
@@ -99,5 +91,20 @@ class SignUpFragment : Fragment(), View.OnClickListener {
         edtEmail?.setText("")
         edtPassword?.setText("")
         edtConfirmPassword?.setText("")
+    }
+
+    private fun showMessage(message: String) {
+        val handler = Handler()
+        tvMessageError.apply {
+            if (visibility == View.INVISIBLE) {
+                visibility = View.VISIBLE
+                text = message
+                startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_up))
+                handler.postDelayed({
+                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down))
+                    visibility = View.INVISIBLE
+                }, 3000)
+            }
+        }
     }
 }
