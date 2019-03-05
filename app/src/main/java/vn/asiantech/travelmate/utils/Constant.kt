@@ -1,7 +1,6 @@
 package vn.asiantech.travelmate.utils
 
 object Constant {
-    const val PICK_IMAGE_REQUEST = 71
     const val CHECK_SIGNUP = "OK"
     const val KEY_ACCOUNT = "account"
     const val KEY_PASSWORD = "password"
