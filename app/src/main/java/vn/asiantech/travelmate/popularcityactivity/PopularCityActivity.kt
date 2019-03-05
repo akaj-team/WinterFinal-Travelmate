@@ -18,6 +18,9 @@ import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -25,6 +28,7 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_popular_city.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.detailactivity.DetailActivity
 import vn.asiantech.travelmate.login.LoginActivity
 import vn.asiantech.travelmate.navigationdrawer.SearchHotelFragment
 import vn.asiantech.travelmate.navigationdrawer.SettingFragment
@@ -32,13 +36,24 @@ import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.utils.ValidationUtil
 
-class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener,
+    AdapterView.OnItemClickListener{
+
     private var database: DatabaseReference? = null
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
     private var fireBaseUser: FirebaseUser? = firebaseAuth?.currentUser
     private var progressDialog: ProgressDialog? = null
     var user: User? = null
+    private var listData: MutableList<String> = mutableListOf()
+    private var suggestionAdapter: ArrayAdapter<String>? = null
+    private var autoCompleteTextView: AutoCompleteTextView? = null
     private var fragment: SettingFragment ?= null
+
+    override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        val intent = Intent(this, DetailActivity::class.java)
+        intent.putExtra(Constant.DATA_FROM_POPULAR_ACTIVITY_TO_DETAIL_ACTIVITY,"danang")
+        startActivity(intent)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +64,16 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
         initFragment()
         fragment = SettingFragment()
         getInforUser()
+    }
+
+    private fun initSuggestion() {
+        applicationContext?.let { suggestionAdapter = ArrayAdapter(it, R.layout.item_suggestion, mockData()) }
+        autoCompleteTextView?.apply {
+            setAdapter(suggestionAdapter)
+            threshold = 1
+            width = maxWidth
+            onItemClickListener = this@PopularCityActivity
+        }
     }
 
     private fun getInforUser() {
@@ -74,7 +99,13 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
 
     private fun initDrawer() {
         setSupportActionBar(toolbar)
-        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigationDrawerOpen, R.string.navigationDrawerClose)
+        val toggle = ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            toolbar,
+            R.string.navigationDrawerOpen,
+            R.string.navigationDrawerClose
+        )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         navView.setNavigationItemSelectedListener(this)
@@ -90,7 +121,24 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         this.menuInflater.inflate(R.menu.main, menu)
-        return true
+        autoCompleteTextView = menu.findItem(R.id.actionSearch).actionView as AutoCompleteTextView
+        autoCompleteTextView?.apply {
+            maxLines = 1
+            hint = "  Search ..."
+        }
+        initSuggestion()
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    private fun mockData(): MutableList<String> {
+        listData.apply {
+         add("Hue")
+         add("Dannag")
+         add("Quangbinh")
+         add("QuangNam")
+         add("Quangngai")
+        }
+        return listData
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -111,9 +159,13 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                 }
             }
             R.id.navHotel -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.frameLayoutDrawer, SearchHotelFragment())
-                    .commit()
+                if (fragment is SearchHotelFragment) {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                } else {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.frameLayoutDrawer, SearchHotelFragment())
+                        .commit()
+                }
             }
             R.id.navLogout -> {
                 firebaseAuth?.signOut()

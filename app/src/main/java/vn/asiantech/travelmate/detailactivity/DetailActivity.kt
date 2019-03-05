@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.models.Travel
 
 class DetailActivity : AppCompatActivity() {

@@ -12,12 +12,12 @@ import android.widget.Toast
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.fragment_popular_city.*
 import vn.asiantech.travelmate.R
-import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.detailactivity.DetailActivity
+import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.utils.Constant
 
 class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
-    private var database: DatabaseReference ?= null
+    private var database: DatabaseReference? = null
     private var firebase: FirebaseDatabase? = FirebaseDatabase.getInstance()
     private var listCity: ArrayList<Travel> = arrayListOf()
     private var popularCityAdapter: PopularCityAdapter? = null

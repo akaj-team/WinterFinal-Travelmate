@@ -6,4 +6,5 @@
         android:layout_height="50dp"
         android:text="@string/loading"
         android:gravity="start|center"
+        android:background="@color/colorDarkCream"
         android:paddingStart="10dp"/>
