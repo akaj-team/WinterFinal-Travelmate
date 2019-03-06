@@ -17,11 +17,13 @@ import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.utils.Constant
 
 class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
-    private var database: DatabaseReference? = null
     private var firebase: FirebaseDatabase? = FirebaseDatabase.getInstance()
     private var listCity: ArrayList<Travel> = arrayListOf()
     private var popularCityAdapter: PopularCityAdapter? = null
 
+    companion object {
+        private const val KEY_TRAVEL = "travel"
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_popular_city, container, false)
     }
@@ -32,26 +34,25 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
         initData()
     }
 
-    private fun initData() {
-        if (activity is PopularCityActivity) {
-            (activity as PopularCityActivity).showProgressbarDialog()
-            database = firebase?.getReference(Constant.KEY_TRAVEL)
-            database?.addValueEventListener(object : ValueEventListener {
-                override fun onCancelled(dataSnapshot: DatabaseError) {
-                    Toast.makeText(context, getString(R.string.checkInternet), Toast.LENGTH_SHORT).show()
-                    (activity as PopularCityActivity).progressDialog?.dismiss()
-                }
+    private fun initData(){
+        (activity as? PopularCityActivity)?.showProgressbarDialog()
+        val query: Query? = firebase?.getReference(Constant.KEY_TRAVEL)?.limitToFirst(Constant.NUMBER_ITEM)
+        query?.addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(dataSnapshot: DatabaseError) {
+                Toast.makeText(context, getString(R.string.checkInternet), Toast.LENGTH_SHORT).show()
+                (activity as? PopularCityActivity)?.dismissProgressbarDialog()
+            }
 
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    for (image in dataSnapshot.children) {
-                        val city = image.getValue(Travel::class.java)
-                        city?.let { listCity.add(it) }
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (image in dataSnapshot.children) {
+                    image.getValue(Travel::class.java)?.let {
+                        listCity.add(it)
                     }
-                    popularCityAdapter?.notifyDataSetChanged()
-                    (activity as PopularCityActivity).progressDialog?.dismiss()
                 }
-            })
-        }
+                popularCityAdapter?.notifyDataSetChanged()
+                (activity as? PopularCityActivity)?.dismissProgressbarDialog()
+            }
+        })
     }
 
     private fun initRecyclerView() {
@@ -66,8 +67,9 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
     }
 
     override fun onClicked(position: Int) {
-        val intent = Intent(activity, DetailActivity::class.java)
-        intent.putExtra(Constant.DATA_FROM_POPULAR_ACTIVITY_TO_DETAIL_ACTIVITY, Constant.MOCK_CITY)
+        val intent = Intent(activity, DetailActivity::class.java).apply {
+            putExtra(KEY_TRAVEL, listCity.get(position))
+        }
         startActivity(intent)
     }
 }

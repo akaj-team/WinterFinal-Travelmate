@@ -12,7 +12,9 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_login.*
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.extensions.getInputText
 import vn.asiantech.travelmate.popularcityactivity.PopularCityActivity
+import vn.asiantech.travelmate.utils.Constant
 
 class LoginFragment : Fragment(), View.OnClickListener {
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
@@ -28,50 +30,41 @@ class LoginFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.btnLogin -> {
-                val emailLogin = edtEmail?.text.toString().trim()
-                val passwordLogin = edtPassword?.text.toString().trim()
-                if (!emailLogin.isEmpty() && !passwordLogin.isEmpty()) {
-                    if (activity is LoginActivity) {
-                        (activity as LoginActivity).showProgressbarDialog()
-                        firebaseAuth?.signInWithEmailAndPassword(emailLogin, passwordLogin)
-                            ?.addOnCompleteListener { task: Task<AuthResult> ->
-                                if (task.isSuccessful) {
-                                    Toast.makeText(
-                                        context,
-                                        getString(R.string.loginFragmentSuccessful),
-                                        Toast.LENGTH_SHORT
-                                    )
-                                        .show()
-                                    activity?.finish()
-                                    val intent = Intent(activity, PopularCityActivity::class.java)
-                                    startActivity(intent)
-                                    (activity as LoginActivity).progressDialog?.dismiss()
-                                } else {
-                                    Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
-                                    (activity as LoginActivity).progressDialog?.dismiss()
-                                }
+        if (v?.id == R.id.tvRegister) {
+            fragmentManager?.beginTransaction()?.apply {
+                setCustomAnimations(
+                    R.anim.right_to_left1,
+                    R.anim.right_to_left2,
+                    R.anim.left_to_right1,
+                    R.anim.left_to_right2
+                )
+                add(R.id.fragment_container, SignUpFragment())
+                addToBackStack(null)
+                commit()
+            }
+        } else {
+            val emailLogin = edtEmail.getInputText()
+            val passwordLogin = edtPassword.getInputText()
+            if (!emailLogin.isEmpty() && !passwordLogin.isEmpty()) {
+                (activity as? LoginActivity)?.showProgressbarDialog()
+                firebaseAuth?.signInWithEmailAndPassword(emailLogin, passwordLogin)
+                    ?.addOnCompleteListener { task: Task<AuthResult> ->
+                        if (task.isSuccessful) {
+                            (activity as? LoginActivity)?.dismissProgressbarDialog()
+                            Toast.makeText(context, getString(R.string.loginFragmentSuccessful), Toast.LENGTH_SHORT).show()
+                            activity?.finish()
+                            val intent = Intent(activity, PopularCityActivity::class.java).apply {
+                                putExtra(Constant.KEY_PASSWORD, passwordLogin)
                             }
+                            startActivity(intent)
+                        } else {
+                            (activity as? LoginActivity)?.dismissProgressbarDialog()
+                            Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
+                        }
                     }
-                } else {
-                    Toast.makeText(context, getString(R.string.inputAccount), Toast.LENGTH_SHORT).show()
-                }
+            } else {
+                Toast.makeText(context, getString(R.string.inputAccount), Toast.LENGTH_SHORT).show()
             }
-            R.id.tvRegister -> {
-                fragmentManager?.beginTransaction()?.apply {
-                    setCustomAnimations(
-                        R.anim.right_to_left1,
-                        R.anim.right_to_left2,
-                        R.anim.left_to_right1,
-                        R.anim.left_to_right2
-                    )
-                    add(R.id.fragment_container, SignUpFragment())
-                    addToBackStack(null)
-                    commit()
-                }
-            }
-            else -> print(getString(R.string.noCaseSatisfied))
         }
     }
 }

@@ -1,9 +1,16 @@
 package vn.asiantech.travelmate.popularcityactivity
 
+import android.Manifest
+import android.app.Activity
+import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.support.design.widget.NavigationView
+import android.support.v4.app.ActivityCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -23,38 +30,66 @@ import kotlinx.android.synthetic.main.nav_header_main.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.detailactivity.DetailActivity
 import vn.asiantech.travelmate.login.LoginActivity
-import vn.asiantech.travelmate.models.User
+import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.navigationdrawer.SearchHotelFragment
 import vn.asiantech.travelmate.navigationdrawer.SettingFragment
 import vn.asiantech.travelmate.utils.Constant
+import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.utils.ValidationUtil
 
-class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener,
-    AdapterView.OnItemClickListener{
-
+class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener{
     private var database: DatabaseReference? = null
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
+    private var firebase: FirebaseDatabase? = FirebaseDatabase.getInstance()
+    private var listCity: ArrayList<Travel> = arrayListOf()
+    private var listPlace: MutableList<String> = mutableListOf()
     private var fireBaseUser: FirebaseUser? = firebaseAuth?.currentUser
-    var progressDialog: ProgressDialog? = null
-    var user: User? = null
-    private var listData: MutableList<String> = mutableListOf()
+    private var progressDialog: ProgressDialog? = null
+    private var user: User? = null
     private var suggestionAdapter: ArrayAdapter<String>? = null
     private var autoCompleteTextView: AutoCompleteTextView? = null
+    private var fragment: SettingFragment ?= null
 
-    override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        val intent = Intent(this, DetailActivity::class.java)
-        intent.putExtra(Constant.DATA_FROM_POPULAR_ACTIVITY_TO_DETAIL_ACTIVITY, Constant.MOCK_CITY)
-        startActivity(intent)
+    companion object {
+        private const val KEY_TRAVEL = "travel"
     }
 
+    override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        val idCity = listPlace.indexOf(parent?.getItemAtPosition(position))
+        val intent = Intent(this, DetailActivity::class.java).apply {
+            putExtra(KEY_TRAVEL, listCity.get(idCity))
+        }
+        startActivity(intent)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_popular_city)
         progressDialog = ProgressDialog(this)
-        getInforUser()
         initDrawer()
         initView()
         initFragment()
+        fragment = SettingFragment()
+        getInforUser()
+    }
+
+    private fun getData() {
+         database = firebase?.getReference(Constant.KEY_TRAVEL)
+         database?.addValueEventListener(object : ValueEventListener {
+             override fun onCancelled(p0: DatabaseError) {
+             }
+
+             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (image in dataSnapshot.children) {
+                    image.getValue(Travel::class.java)?.let {
+                        listCity.add(it)
+                    }
+                    image.child(Constant.KEY_NAME).getValue()?.let {
+                        listPlace.add(it.toString())
+                    }
+                }
+             }
+
+         })
     }
 
     private fun initSuggestion() {
@@ -75,12 +110,13 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
             }
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                user = path?.let { ValidationUtil.getValuePathChild(it) }
-                    ?.let { dataSnapshot.child(it).getValue(User::class.java) }
-                user?.let {
-                    with(it) {
-                        Glide.with(this@PopularCityActivity).load(avatar).into(imgAvatar)
-                        tvName.text = lastName
+                navView.post {
+                    user = path?.let { ValidationUtil.getValuePathChild(it) }?.let { dataSnapshot.child(it).getValue(User::class.java) }
+                    user?.let {
+                        with(it) {
+                            Glide.with(this@PopularCityActivity).load(avatar).into(imgAvatar)
+                            tvName.text = lastName
+                        }
                     }
                 }
             }
@@ -89,13 +125,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
 
     private fun initDrawer() {
         setSupportActionBar(toolbar)
-        val toggle = ActionBarDrawerToggle(
-            this,
-            drawerLayout,
-            toolbar,
-            R.string.navigationDrawerOpen,
-            R.string.navigationDrawerClose
-        )
+        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigationDrawerOpen, R.string.navigationDrawerClose)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         navView.setNavigationItemSelectedListener(this)
@@ -114,21 +144,15 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
         autoCompleteTextView = menu.findItem(R.id.actionSearch).actionView as AutoCompleteTextView
         autoCompleteTextView?.apply {
             maxLines = 1
-            hint = "  Search ..."
+            hint = getString(R.string.search)
         }
         initSuggestion()
         return super.onCreateOptionsMenu(menu)
     }
 
     private fun mockData(): MutableList<String> {
-        listData.apply {
-         add("Hue")
-         add("Dannag")
-         add("Quangbinh")
-         add("QuangNam")
-         add("Quangngai")
-        }
-        return listData
+        getData()
+        return listPlace
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -145,8 +169,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                 if (fragment is PopularCityFragment) {
                     drawerLayout.closeDrawer(GravityCompat.START)
                 } else {
-                    val intent = Intent(this, PopularCityActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, PopularCityActivity::class.java))
                 }
             }
             R.id.navHotel -> {
@@ -159,13 +182,15 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                 }
             }
             R.id.navLogout -> {
-                val intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
+                firebaseAuth?.signOut()
+                startActivity(Intent(this, LoginActivity::class.java))
             }
             R.id.navSetting -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.frameLayoutDrawer, SettingFragment())
-                    .commit()
+                user?.let { SettingFragment.newInstance(it) }?.let {
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.frameLayoutDrawer, it)
+                        .commit()
+                }
             }
         }
         drawerLayout.closeDrawer(GravityCompat.START)
@@ -191,6 +216,72 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
             setProgressStyle(ProgressDialog.STYLE_SPINNER)
             setMessage(getString(R.string.note))
             show()
+        }
+    }
+
+    fun dismissProgressbarDialog(){
+        progressDialog?.dismiss()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        val isShowRationaleWrite: Boolean
+        when (requestCode) {
+            Constant.REQUEST_ASK_PERMISSION_CAMERA -> {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    fragment?.chooseCamera()
+                } else {
+                    val isShowRationaleCamera =
+                        ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)
+                    isShowRationaleWrite = ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                    if (!isShowRationaleWrite || !isShowRationaleCamera) {
+                        showSettingsAlert(getString(R.string.noteCamera))
+                    }
+                }
+            }
+            Constant.REQUEST_ASK_PERMISSION_GALLERY -> {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    fragment?.chooseGallery()
+                } else {
+                    isShowRationaleWrite = ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                    if (!isShowRationaleWrite) {
+                        showSettingsAlert(getString(R.string.noteGallery))
+                    }
+                }
+            }
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
+
+    private fun showSettingsAlert(message: String) {
+        AlertDialog.Builder(this).create().apply {
+            setTitle(getString(R.string.optionChoose))
+            setMessage(getString(R.string.noteAccess) + " " + message)
+            setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel)) { dialog, _ -> dialog.dismiss() }
+            setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.setting)) { dialog, _ ->
+                dialog.dismiss()
+                startInstalledAppDetailsActivity(this@PopularCityActivity)
+            }
+            show()
+        }
+    }
+
+    private fun startInstalledAppDetailsActivity(context: Activity?) {
+        context?.let {
+            Intent().apply {
+                action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                addCategory(Intent.CATEGORY_DEFAULT)
+                data = Uri.parse("package:" + context.packageName)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+                context.startActivity(this)
+            }
         }
     }
 }
