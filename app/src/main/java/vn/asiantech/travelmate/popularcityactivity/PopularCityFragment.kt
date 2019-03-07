@@ -1,10 +1,12 @@
 package vn.asiantech.travelmate.popularcityactivity
 
 import android.content.Intent
+import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.GridLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +17,7 @@ import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.detailactivity.DetailActivity
 import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.utils.Constant
+import java.util.*
 
 class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
     private var firebase: FirebaseDatabase? = FirebaseDatabase.getInstance()

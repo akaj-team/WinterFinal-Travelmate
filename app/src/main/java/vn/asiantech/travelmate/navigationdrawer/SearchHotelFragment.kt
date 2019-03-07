@@ -10,20 +10,29 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.fragment_search_hotel.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.Hotel
+import vn.asiantech.travelmate.models.Travel
+import vn.asiantech.travelmate.popularcityactivity.PopularCityActivity
+import vn.asiantech.travelmate.utils.Constant
 
 class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAdapter.OnItemClickListener {
 
     private var adapterHotel: HotelAdapter? = null
     private var listHotel: MutableList<Hotel> = mutableListOf()
     private var suggestionAdapter: ArrayAdapter<String>? = null
+    private var listCity: ArrayList<Travel> = arrayListOf()
+    private var listPlace: MutableList<String> = mutableListOf()
+    private var firebase: FirebaseDatabase? = FirebaseDatabase.getInstance()
+    private var getHotelByProvince :Query ?= null
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        val idCity = listPlace.indexOf(parent?.getItemAtPosition(position))
         listHotel.apply {
             clear()
-            addAll(mockDataHotel())
+            addAll(mockDataHotel(listCity.get(idCity).province.toString()))
         }
         adapterHotel?.notifyDataSetChanged()
     }
@@ -53,41 +62,40 @@ class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAd
     }
 
     private fun mockData(): List<String> {
-        val listCity = mutableListOf<String>()
-        listCity.apply {
-            add("Hue")
-            add("Da Nang")
-            add("Quang Nam")
-            add("Quang Ngai")
-            add("Binh Dinh")
-        }
-        return listCity
+        (activity as? PopularCityActivity)?.getData(listCity, listPlace)
+        return listPlace
     }
 
-    private fun mockDataHotel(): MutableList<Hotel> {
-        val listHotel = mutableListOf<Hotel>()
-        listHotel.apply {
-            add(Hotel("Galaxy", 2.5F, "Hue", "0962908124", "2520", false))
-            add(Hotel("MinhToan", 2.5F, "Danang", "0962908124", "2520", false))
-            add(Hotel("GreenHotel", 2.5F, "Hue", "0962908124", "2520", false))
-            add(Hotel("Novotel", 2.5F, "Hue", "0962908124", "2520", false))
-            add(Hotel("KingHotel", 2.5F, "Hue", "0962908124", "2520", false))
-            add(Hotel("KingHotel", 2.5F, "Hue", "0962908124", "2520", false))
-        }
+    private fun mockDataHotel(place: String): MutableList<Hotel> {
+        getHotelByProvince = firebase?.getReference(Constant.KEY_HOTEL)?.orderByChild(Constant.KEY_PROVINCE)?.equalTo(place)
+        getDataHotel()
         return listHotel
     }
 
+    private fun getDataHotel() {
+        getHotelByProvince?.addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (hotel in dataSnapshot.children) {
+                    hotel.getValue(Hotel::class.java)?.let {
+                        listHotel.add(it)
+                    }
+                }
+            }
+        })
+    }
+
     override fun onLocationClicked(position: Int) {
-        //Todo
     }
 
     override fun onMoreClicked(position: Int) {
-        //Todo
     }
 
     override fun onCallClicked(position: Int) {
         val callIntent = Intent(Intent.ACTION_CALL)
-        callIntent.data = Uri.parse(getString(R.string.itemHotelTvMoreValues, listHotel[position].phoneNumber))
+        callIntent.data = Uri.parse(getString(R.string.itemHotelTvMoreValues, listHotel[position].phone))
         startActivity(callIntent)
     }
 

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_hotel.view.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.Hotel
+import java.util.*
 
 class HotelAdapter(private val listHotel: ArrayList<Hotel>, val onClickListener: OnItemClickListener) :
     RecyclerView.Adapter<HotelAdapter.SuggestViewHolder>() {
@@ -29,13 +30,13 @@ class HotelAdapter(private val listHotel: ArrayList<Hotel>, val onClickListener:
             val hotel: Hotel = listHotel[adapterPosition]
             with(itemView) {
                 with(hotel) {
-                    tvDistance.text = context.getString(R.string.itemHotelKilometer, distance)
-                    tvHotelName.text = hotelName
-                    tvAddress.text = address
+                    tvDistance.text = price
+                    tvHotelName.text = name
+                    tvAddress.text = province
                     tvTapForMoreDetail.setOnClickListener {
                         onClickListener.onTapForMoreClicked(adapterPosition)
                     }
-                    itemView.isSelected = isChecked
+                    isSelected = isChecked
                     llMoreDetail.visibility = if (isChecked) View.VISIBLE else View.GONE
                     imgCall.setOnClickListener { onClickListener.onCallClicked(adapterPosition) }
                     imgLocation.setOnClickListener { onClickListener.onLocationClicked(adapterPosition) }

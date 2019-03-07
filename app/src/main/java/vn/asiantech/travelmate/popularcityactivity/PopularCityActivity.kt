@@ -72,7 +72,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
         getInforUser()
     }
 
-    private fun getData() {
+    fun getData(citys: ArrayList<Travel>, places: MutableList<String>) {
          database = firebase?.getReference(Constant.KEY_TRAVEL)
          database?.addValueEventListener(object : ValueEventListener {
              override fun onCancelled(p0: DatabaseError) {
@@ -81,14 +81,13 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
              override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (image in dataSnapshot.children) {
                     image.getValue(Travel::class.java)?.let {
-                        listCity.add(it)
+                        citys.add(it)
                     }
-                    image.child(Constant.KEY_NAME).getValue()?.let {
-                        listPlace.add(it.toString())
+                    image.child(Constant.KEY_NAME).value?.let {
+                        places.add(it.toString())
                     }
                 }
              }
-
          })
     }
 
@@ -151,7 +150,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     }
 
     private fun mockData(): MutableList<String> {
-        getData()
+        getData(listCity, listPlace)
         return listPlace
     }
 
