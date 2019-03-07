@@ -19,7 +19,7 @@
             tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <meta-data
                 android:name="com.google.android.maps.v2.API_KEY"
-                android:value="AIzaSyCiMf71TFLlMcSJ76IbmDTitjdT25fP-pQ"/>
+                android:value="AIzaSyAJJIgsmPyumcByLrCgWdQ9tz7mNMcg62g"/>
         <activity android:name=".popularcityactivity.PopularCityActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

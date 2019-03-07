@@ -79,20 +79,26 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
 
     override fun onMapReady(googleMap: GoogleMap?) {
         mapGoogle = googleMap
-        val daNang = travel?.location?.split(",")?.let {
-            LatLng(
-                it[0].trim().toDouble(),
-                it[1].trim().toDouble()
-            )
-        }
+//        val daNang = travel?.location?.split(",")?.let {
+//            LatLng(
+//                it[0].trim().toDouble(),
+//                it[1].trim().toDouble()
+//            )
+//        }
+        val quangNam = LatLng(16.063638, 108.185032)
+        mapGoogle?.addMarker(MarkerOptions().position(quangNam)?.title("Da Nang"))
+        val dienNgoc = LatLng(15.945502, 108.282542)
+        mapGoogle?.addMarker(MarkerOptions().position(dienNgoc)?.title("DienNgoc"))
+
+        mapGoogle?.let { GetDirection(getUrl(quangNam, dienNgoc), it).execute() }
         mapGoogle?.run {
-            addMarker(daNang?.let { temp -> MarkerOptions().position(temp).title(travel?.name) })
+            addMarker(quangNam.let { temp -> MarkerOptions().position(temp).title(travel?.name) })
 //                .setIcon(
 //                    BitmapDescriptorFactory.fromResource(
 //                        R.drawable.ic_building_24
 //                    )
 //                )
-            moveCamera(CameraUpdateFactory.newLatLng(daNang))
+            moveCamera(CameraUpdateFactory.newLatLngZoom(quangNam, Constant.MAP_ZOOM))
             uiSettings?.let { temp ->
                 temp.isZoomControlsEnabled = true
                 temp.isCompassEnabled = true
@@ -118,5 +124,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
             addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
             setMargins(0, 180, 180, 0)
         }
+    }
+
+    private fun getUrl(quangNam: LatLng, dienNgoc: LatLng): String {
+        return "${Constant.URL_API_MAP}origin=${quangNam.latitude},${quangNam.longitude}&destination=${dienNgoc.latitude},${dienNgoc.longitude}"
     }
 }
