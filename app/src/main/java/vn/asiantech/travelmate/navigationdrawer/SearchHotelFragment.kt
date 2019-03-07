@@ -1,9 +1,13 @@
 package vn.asiantech.travelmate.navigationdrawer
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -94,13 +98,24 @@ class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAd
     }
 
     override fun onCallClicked(position: Int) {
-        val callIntent = Intent(Intent.ACTION_CALL)
-        callIntent.data = Uri.parse(getString(R.string.itemHotelTvMoreValues, listHotel[position].phone))
-        startActivity(callIntent)
+        if (checkPermissionForCall()){
+            Intent(Intent.ACTION_CALL).apply {
+                data = Uri.parse(getString(R.string.itemHotelTvMoreValues, listHotel[position].phone))
+                startActivity(this)
+            }
+        }
     }
 
     override fun onTapForMoreClicked(position: Int) {
         listHotel[position].isChecked = listHotel[position].isChecked != true
         adapterHotel?.notifyItemChanged(position)
+    }
+
+    private fun checkPermissionForCall(): Boolean {
+        if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.CALL_PHONE) } != PackageManager.PERMISSION_GRANTED) {
+            activity?.let { ActivityCompat.requestPermissions(it, arrayOf(Manifest.permission.CALL_PHONE), Constant.REQUEST_ASK_PERMISSION_CALL) }
+            return false
+        }
+        return true
     }
 }

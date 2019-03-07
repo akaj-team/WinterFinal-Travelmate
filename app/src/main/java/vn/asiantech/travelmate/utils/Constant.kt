@@ -22,5 +22,6 @@ object Constant {
     const val CAMERA = 222
     const val REQUEST_ASK_PERMISSION_CAMERA = 333
     const val REQUEST_ASK_PERMISSION_GALLERY = 444
+    const val REQUEST_ASK_PERMISSION_CALL = 555
     const val NUMBER_ITEM = 10
 }
