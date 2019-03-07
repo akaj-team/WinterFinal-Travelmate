@@ -3,6 +3,7 @@ package vn.asiantech.travelmate.navigationdrawer
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -56,6 +57,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
     companion object {
         private const val KEY_ACCOUNT: String = "account"
+        private const val KEY_SAVE_VALUE = "value"
         fun newInstance(user: User) = SettingFragment().apply {
             arguments = Bundle().apply {
                 putParcelable(KEY_ACCOUNT, user)
@@ -188,8 +190,15 @@ class SettingFragment : Fragment(), View.OnClickListener {
                     }
                 })
                 auth?.signOut()
+                activity?.getSharedPreferences(Constant.FILE_NAME, Context.MODE_PRIVATE)?.apply {
+                    edit().apply {
+                        putBoolean(KEY_SAVE_VALUE, false)
+                        apply()
+                    }
+                }
                 startActivity(Intent(activity, LoginActivity::class.java))
                 Toast.makeText(context, getString(R.string.successful), Toast.LENGTH_SHORT).show()
+                activity?.finish()
             } else {
                 Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
             }

@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -40,6 +41,9 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     var user: User? = null
     private var fragment: SettingFragment ?= null
 
+    companion object {
+        private const val KEY_SAVE_VALUE = "value"
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_popular_city)
@@ -117,7 +121,14 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
             }
             R.id.navLogout -> {
                 firebaseAuth?.signOut()
+                getSharedPreferences(Constant.FILE_NAME, Context.MODE_PRIVATE).apply {
+                    edit().apply {
+                        putBoolean(KEY_SAVE_VALUE, false)
+                        apply()
+                    }
+                }
                 startActivity(Intent(this, LoginActivity::class.java))
+                finish()
             }
             R.id.navSetting -> {
                 user?.let { SettingFragment.newInstance(it) }?.let {

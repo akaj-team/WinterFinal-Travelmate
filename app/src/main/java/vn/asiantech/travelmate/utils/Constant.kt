@@ -20,4 +20,5 @@ object Constant {
     const val CAMERA = 222
     const val REQUEST_ASK_PERMISSION_CAMERA = 333
     const val REQUEST_ASK_PERMISSION_GALLERY = 444
+    const val FILE_NAME = "file_login"
 }

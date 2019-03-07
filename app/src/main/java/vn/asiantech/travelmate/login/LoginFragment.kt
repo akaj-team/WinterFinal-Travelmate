@@ -1,6 +1,8 @@
 package vn.asiantech.travelmate.login
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -18,7 +20,11 @@ import vn.asiantech.travelmate.utils.Constant
 
 class LoginFragment : Fragment(), View.OnClickListener {
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
+    private var sharedPreferences: SharedPreferences? = null
 
+    companion object {
+        private const val KEY_SAVE_VALUE = "value"
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
@@ -51,11 +57,12 @@ class LoginFragment : Fragment(), View.OnClickListener {
                     ?.addOnCompleteListener { task: Task<AuthResult> ->
                         if (task.isSuccessful) {
                             Toast.makeText(context, getString(R.string.loginFragmentSuccessful), Toast.LENGTH_SHORT).show()
-                            activity?.finish()
+                            saveSharedPreferences()
                             val intent = Intent(activity, PopularCityActivity::class.java).apply {
                                 putExtra(Constant.KEY_PASSWORD, passwordLogin)
                             }
                             startActivity(intent)
+                            activity?.finish()
                             (activity as? LoginActivity)?.dismissProgressbarDialog()
                         } else {
                             Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
@@ -66,5 +73,12 @@ class LoginFragment : Fragment(), View.OnClickListener {
                 Toast.makeText(context, getString(R.string.inputAccount), Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun saveSharedPreferences() {
+        sharedPreferences = activity?.getSharedPreferences(Constant.FILE_NAME, Context.MODE_PRIVATE)
+        val editor = sharedPreferences?.edit()
+        editor?.putBoolean(KEY_SAVE_VALUE, true)
+        editor?.apply()
     }
 }
