@@ -3,6 +3,7 @@ package vn.asiantech.travelmate.navigationdrawer
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -38,8 +39,8 @@ import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.utils.ValidationUtil
 import java.util.*
 
-@Suppress("DEPRECATED_IDENTITY_EQUALS")
 class SettingFragment : Fragment(), View.OnClickListener {
+
     private val firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
     private val fireBaseUser: FirebaseUser? = firebaseAuth?.currentUser
     private val auth: FirebaseAuth ?= null
@@ -56,6 +57,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
     companion object {
         private const val KEY_ACCOUNT: String = "account"
+        private const val KEY_SAVE_VALUE = "value"
         fun newInstance(user: User) = SettingFragment().apply {
             arguments = Bundle().apply {
                 putParcelable(KEY_ACCOUNT, user)
@@ -163,12 +165,10 @@ class SettingFragment : Fragment(), View.OnClickListener {
                     }
                 }
                 ?.addOnFailureListener { }
-        }
-        if (urlImageNew == "") {
+        } ?: run {
             urlImageNew = urlImage
             changePassAndAvatar()
         }
-
     }
 
     private fun changePassAndAvatar() {
@@ -185,12 +185,20 @@ class SettingFragment : Fragment(), View.OnClickListener {
                         (activity as? PopularCityActivity)?.dismissProgressbarDialog()
                         dataSnapshot.ref.child(Constant.KEY_IMAGE).setValue(urlImageNew)
                         dataSnapshot.ref.child(Constant.KEY_PASSWORD).setValue(newPassword)
+                        auth?.signOut()
+                        activity?.getSharedPreferences(Constant.FILE_NAME, Context.MODE_PRIVATE)?.apply {
+                            edit().apply {
+                                putBoolean(KEY_SAVE_VALUE, false)
+                                apply()
+                            }
+                        }
+                        startActivity(Intent(activity, LoginActivity::class.java))
+                        activity?.finish()
                     }
                 })
-                auth?.signOut()
-                startActivity(Intent(activity, LoginActivity::class.java))
                 Toast.makeText(context, getString(R.string.successful), Toast.LENGTH_SHORT).show()
             } else {
+                (activity as? PopularCityActivity)?.dismissProgressbarDialog()
                 Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
             }
         }

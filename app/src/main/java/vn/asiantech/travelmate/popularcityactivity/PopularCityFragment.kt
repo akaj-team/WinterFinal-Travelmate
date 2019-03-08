@@ -1,12 +1,11 @@
 package vn.asiantech.travelmate.popularcityactivity
 
 import android.content.Intent
-import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -74,5 +73,10 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
             putExtra(KEY_TRAVEL, listCity.get(position))
         }
         startActivity(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as AppCompatActivity).getSupportActionBar()?.show()
     }
 }

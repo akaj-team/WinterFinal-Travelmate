@@ -24,4 +24,5 @@ object Constant {
     const val REQUEST_ASK_PERMISSION_GALLERY = 444
     const val REQUEST_ASK_PERMISSION_CALL = 555
     const val NUMBER_ITEM = 10
+    const val FILE_NAME = "file_login"
 }

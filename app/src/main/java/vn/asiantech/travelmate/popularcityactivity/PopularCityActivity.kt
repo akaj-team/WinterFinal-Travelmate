@@ -1,23 +1,24 @@
 package vn.asiantech.travelmate.popularcityactivity
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.provider.Settings
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.view.Gravity
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -36,8 +37,16 @@ import vn.asiantech.travelmate.navigationdrawer.SettingFragment
 import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.utils.ValidationUtil
+import java.util.*
 
-class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener{
+class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener,
+    View.OnTouchListener {
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+        hideKeyBoard()
+        return true
+    }
+
     private var database: DatabaseReference? = null
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
     private var firebase: FirebaseDatabase? = FirebaseDatabase.getInstance()
@@ -52,15 +61,26 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
 
     companion object {
         private const val KEY_TRAVEL = "travel"
+        private const val KEY_SAVE_VALUE = "value"
     }
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        val idCity = listPlace.indexOf(parent?.getItemAtPosition(position))
-        val intent = Intent(this, DetailActivity::class.java).apply {
-            putExtra(KEY_TRAVEL, listCity.get(idCity))
-        }
-        startActivity(intent)
+        hideKeyBoard()
+        Handler().postDelayed({
+            val idCity = listPlace.indexOf(parent?.getItemAtPosition(position))
+            Intent(this, DetailActivity::class.java).apply {
+                putExtra(KEY_TRAVEL, listCity[idCity])
+                startActivity(this)
+            }
+        }, 500)
+
     }
+
+    fun hideKeyBoard() {
+        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_popular_city)
@@ -70,29 +90,11 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
         initFragment()
         fragment = SettingFragment()
         getInforUser()
-    }
-
-    fun getData(citys: ArrayList<Travel>, places: MutableList<String>) {
-         database = firebase?.getReference(Constant.KEY_TRAVEL)
-         database?.addValueEventListener(object : ValueEventListener {
-             override fun onCancelled(p0: DatabaseError) {
-             }
-
-             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (image in dataSnapshot.children) {
-                    image.getValue(Travel::class.java)?.let {
-                        citys.add(it)
-                    }
-                    image.child(Constant.KEY_NAME).value?.let {
-                        places.add(it.toString())
-                    }
-                }
-             }
-         })
+        drawerLayout.setOnTouchListener(this)
     }
 
     private fun initSuggestion() {
-        applicationContext?.let { suggestionAdapter = ArrayAdapter(it, R.layout.item_suggestion, mockData()) }
+        applicationContext?.let { suggestionAdapter = ArrayAdapter(it, R.layout.item_suggestion, getPlaces()) }
         autoCompleteTextView?.apply {
             setAdapter(suggestionAdapter)
             threshold = 1
@@ -118,6 +120,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                         }
                     }
                 }
+
             }
         })
     }
@@ -149,8 +152,23 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
         return super.onCreateOptionsMenu(menu)
     }
 
-    private fun mockData(): MutableList<String> {
-        getData(listCity, listPlace)
+    private fun getPlaces(): MutableList<String> {
+        database = firebase?.getReference(Constant.KEY_TRAVEL)
+        database?.addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (image in dataSnapshot.children) {
+                    image.getValue(Travel::class.java)?.let {
+                        listCity.add(it)
+                    }
+                    image.child(Constant.KEY_NAME).value?.let {
+                        listPlace.add(it.toString())
+                    }
+                }
+            }
+        })
         return listPlace
     }
 
@@ -168,12 +186,17 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                 if (fragment is PopularCityFragment) {
                     drawerLayout.closeDrawer(GravityCompat.START)
                 } else {
-                    startActivity(Intent(this, PopularCityActivity::class.java))
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.frameLayoutDrawer, PopularCityFragment())
+                        .commit()
                 }
             }
             R.id.navHotel -> {
-                if (fragment is SearchHotelFragment) {
-                    drawerLayout.closeDrawer(GravityCompat.START)
+                if (fragment is PopularCityFragment) {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.frameLayoutDrawer, SearchHotelFragment())
+                        .addToBackStack(null)
+                        .commit()
                 } else {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.frameLayoutDrawer, SearchHotelFragment())
@@ -182,15 +205,36 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
             }
             R.id.navLogout -> {
                 firebaseAuth?.signOut()
-                startActivity(Intent(this, LoginActivity::class.java))
-            }
-            R.id.navSetting -> {
-                user?.let { SettingFragment.newInstance(it) }?.let {
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.frameLayoutDrawer, it)
-                        .commit()
+                getSharedPreferences(Constant.FILE_NAME, Context.MODE_PRIVATE).apply {
+                    edit().apply {
+                        putBoolean(KEY_SAVE_VALUE, false)
+                        apply()
+                    }
                 }
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
             }
+            R.id.navSetting ->
+                when (fragment) {
+                    is PopularCityFragment -> {
+                        user?.let { SettingFragment.newInstance(it) }?.let {
+                            supportFragmentManager.beginTransaction()
+                                .replace(R.id.frameLayoutDrawer, it)
+                                .addToBackStack(null)
+                                .commit()
+                        }
+                    }
+                    is SettingFragment -> {
+                        drawerLayout.closeDrawer(GravityCompat.START)
+                    }
+                    else -> {
+                        user?.let { SettingFragment.newInstance(it) }?.let {
+                            supportFragmentManager.beginTransaction()
+                                .replace(R.id.frameLayoutDrawer, it)
+                                .commit()
+                        }
+                    }
+                }
         }
         drawerLayout.closeDrawer(GravityCompat.START)
         return true

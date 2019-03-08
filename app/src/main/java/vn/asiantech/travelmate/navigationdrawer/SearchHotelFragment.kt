@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +25,7 @@ import vn.asiantech.travelmate.utils.Constant
 
 class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAdapter.OnItemClickListener {
 
+    private var database: DatabaseReference? = null
     private var adapterHotel: HotelAdapter? = null
     private var listHotel: MutableList<Hotel> = mutableListOf()
     private var suggestionAdapter: ArrayAdapter<String>? = null
@@ -36,9 +38,9 @@ class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAd
         val idCity = listPlace.indexOf(parent?.getItemAtPosition(position))
         listHotel.apply {
             clear()
-            addAll(mockDataHotel(listCity.get(idCity).province.toString()))
+            addAll(getDataHotels(listCity[idCity].province.toString()))
         }
-        adapterHotel?.notifyDataSetChanged()
+        (activity as? PopularCityActivity)?.hideKeyBoard()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -48,12 +50,13 @@ class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAd
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
-        context?.let { suggestionAdapter = ArrayAdapter(it, R.layout.item_suggestion, mockData()) }
+        context?.let { suggestionAdapter = ArrayAdapter(it, R.layout.item_suggestion, getPlaces()) }
         actvSearchHotel.apply {
             setAdapter(suggestionAdapter)
             threshold = 1
             onItemClickListener = this@SearchHotelFragment
         }
+
     }
 
     private fun initRecyclerView() {
@@ -65,30 +68,45 @@ class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAd
         }
     }
 
-    private fun mockData(): List<String> {
-        (activity as? PopularCityActivity)?.getData(listCity, listPlace)
-        return listPlace
-    }
-
-    private fun mockDataHotel(place: String): MutableList<Hotel> {
-        getHotelByProvince = firebase?.getReference(Constant.KEY_HOTEL)?.orderByChild(Constant.KEY_PROVINCE)?.equalTo(place)
-        getDataHotel()
-        return listHotel
-    }
-
-    private fun getDataHotel() {
-        getHotelByProvince?.addValueEventListener(object : ValueEventListener {
+    private fun getPlaces(): List<String> {
+        database = firebase?.getReference(Constant.KEY_TRAVEL)
+        database?.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
             }
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (image in dataSnapshot.children) {
+                    image.getValue(Travel::class.java)?.let {
+                        listCity.add(it)
+                    }
+                    image.child(Constant.KEY_NAME).value?.let {
+                        listPlace.add(it.toString())
+                    }
+                }
+            }
+        })
+        return listPlace
+    }
+
+    private fun getDataHotels(place: String): MutableList<Hotel> {
+        (activity as? PopularCityActivity)?.showProgressbarDialog()
+        getHotelByProvince = firebase?.getReference(Constant.KEY_HOTEL)?.orderByChild(Constant.KEY_PROVINCE)?.equalTo(place)
+        getHotelByProvince?.addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                (activity as? PopularCityActivity)?.dismissProgressbarDialog()
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                (activity as? PopularCityActivity)?.dismissProgressbarDialog()
                 for (hotel in dataSnapshot.children) {
                     hotel.getValue(Hotel::class.java)?.let {
                         listHotel.add(it)
                     }
                 }
+                adapterHotel?.notifyDataSetChanged()
             }
         })
+        return listHotel
     }
 
     override fun onLocationClicked(position: Int) {
@@ -117,5 +135,10 @@ class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAd
             return false
         }
         return true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as AppCompatActivity).getSupportActionBar()?.hide()
     }
 }
