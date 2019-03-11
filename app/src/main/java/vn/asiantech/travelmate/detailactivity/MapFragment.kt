@@ -104,7 +104,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
             }
 
             override fun onError(status: Status) {
-
+                Toast.makeText(context, status.toString(), Toast.LENGTH_SHORT).show()
             }
         })
     }
