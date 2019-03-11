@@ -49,9 +49,13 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     private var autoCompleteTextView: AutoCompleteTextView? = null
     private var fragment: SettingFragment ?= null
 
+    companion object {
+        private const val KEY_TRAVEL: String = "travel"
+    }
+
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         val intent = Intent(this, DetailActivity::class.java)
-        intent.putExtra(Constant.DATA_FROM_POPULAR_ACTIVITY_TO_DETAIL_ACTIVITY,"danang")
+        intent.putExtra(KEY_TRAVEL,"danang")
         startActivity(intent)
     }
 
