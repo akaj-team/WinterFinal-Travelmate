@@ -1,9 +1,13 @@
 package vn.asiantech.travelmate.detailactivity
 
+import android.Manifest
 import android.app.ProgressDialog
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.utils.Constant
@@ -19,6 +23,7 @@ class DetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
+        checkAndRequestPermission()
         travel = intent.getParcelableExtra(KEY_TRAVEL) as Travel
         progressDialog = ProgressDialog(this)
         initFragment()
@@ -31,6 +36,22 @@ class DetailActivity : AppCompatActivity() {
                 .replace(R.id.fragment_container, it)
                 .commit()
         }
+    }
+
+    private fun checkAndRequestPermission(): Boolean {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                Constant.REQUEST_CODE_ASK_PERMISSIONS_LOCATION
+            )
+            return false
+        }
+        return true
     }
 
     fun showProgressbarDialog() {
@@ -49,8 +70,7 @@ class DetailActivity : AppCompatActivity() {
         when (requestCode) {
             Constant.REQUEST_CODE_ASK_PERMISSIONS_LOCATION -> {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as MapFragment
-                    fragment.updateViewFragment()
+                    Log.w("xxxxx", "ok")
                 }
             }
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)

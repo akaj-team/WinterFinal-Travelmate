@@ -4,28 +4,36 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import android.widget.Toast
+import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.utils.Constant
+import java.util.*
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
-    GoogleMap.OnMyLocationClickListener {
+    GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationChangeListener {
     private var supportMapFragment: SupportMapFragment? = null
     private var travel: Travel? = null
     private var mapGoogle: GoogleMap? = null
+    private var locationTravel: LatLng? = null
 
     companion object {
         fun newInstance(travel: Travel) = MapFragment().apply {
@@ -36,7 +44,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
     }
 
     override fun onMyLocationClick(location: Location) {
-        // TO DO
+        //TO DO
     }
 
     override fun onMyLocationButtonClick(): Boolean {
@@ -44,13 +52,27 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
         return false
     }
 
+    override fun onMyLocationChange(location: Location) {
+        mapGoogle?.let { map ->
+            val myLocation = LatLng(location.latitude, location.longitude)
+            locationTravel?.let { locate ->
+                getUrl(myLocation, locate)
+            }?.let {
+                GetDirection(it, map).execute()
+            }
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         arguments?.let {
             travel = arguments?.getParcelable(WeatherFragment.KEY_TRAVEL)
         }
-        checkAndRequestPermission()
-        initViews()
         return inflater.inflate(R.layout.fragment_map, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initViews()
     }
 
     private fun initViews() {
@@ -59,46 +81,41 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
             fragmentManager?.beginTransaction()?.replace(R.id.flMap, it)?.commit()
             it.getMapAsync(this)
         }
-    }
-
-    private fun checkAndRequestPermission(): Boolean {
-        if (context?.let {
-                ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION)
-            } != PackageManager.PERMISSION_GRANTED) {
-            activity?.let { temp ->
-                ActivityCompat.requestPermissions(
-                    temp,
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    Constant.REQUEST_CODE_ASK_PERMISSIONS_LOCATION
-                )
-            }
-            return false
+        context?.let {
+            Places.initialize(it, Constant.API_MAP).toString()
         }
-        return true
+        activity?.let { Places.createClient(it) }
+        val autoCompleteFragment =
+            childFragmentManager.findFragmentById(R.id.autocomplete_fragment_from) as AutocompleteSupportFragment
+        autoCompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG))
+        autoCompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+            override fun onPlaceSelected(place: Place) {
+                val placeLocate = place.latLng
+                mapGoogle?.run {
+                    clear()
+                    addMarker(placeLocate?.let { temp -> MarkerOptions().position(temp).title(place.name) })
+                    addMarker(locationTravel?.let { temp -> MarkerOptions().position(temp).title(travel?.name) })
+                        .setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_location_travel))
+                    moveCamera(CameraUpdateFactory.newLatLngZoom(placeLocate, Constant.MAP_ZOOM))
+                    uiSettings?.let { temp ->
+                        temp.isZoomControlsEnabled = true
+                    }
+                }
+            }
+
+            override fun onError(status: Status) {
+
+            }
+        })
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
         mapGoogle = googleMap
-//        val daNang = travel?.location?.split(",")?.let {
-//            LatLng(
-//                it[0].trim().toDouble(),
-//                it[1].trim().toDouble()
-//            )
-//        }
-        val quangNam = LatLng(16.063638, 108.185032)
-        mapGoogle?.addMarker(MarkerOptions().position(quangNam)?.title("Da Nang"))
-        val dienNgoc = LatLng(15.945502, 108.282542)
-        mapGoogle?.addMarker(MarkerOptions().position(dienNgoc)?.title("DienNgoc"))
-
-        mapGoogle?.let { GetDirection(getUrl(quangNam, dienNgoc), it).execute() }
+        locationTravel = travel?.latitude?.let { lat -> travel?.longitude?.let { long -> LatLng(lat, long) } }
         mapGoogle?.run {
-            addMarker(quangNam.let { temp -> MarkerOptions().position(temp).title(travel?.name) })
-//                .setIcon(
-//                    BitmapDescriptorFactory.fromResource(
-//                        R.drawable.ic_building_24
-//                    )
-//                )
-            moveCamera(CameraUpdateFactory.newLatLngZoom(quangNam, Constant.MAP_ZOOM))
+            addMarker(locationTravel?.let { temp -> MarkerOptions().position(temp).title(travel?.name) })
+                .setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_location_travel))
+            moveCamera(CameraUpdateFactory.newLatLngZoom(locationTravel, Constant.MAP_ZOOM))
             uiSettings?.let { temp ->
                 temp.isZoomControlsEnabled = true
                 temp.isCompassEnabled = true
@@ -111,11 +128,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
             customMyLocation()
             setOnMyLocationButtonClickListener(this@MapFragment)
             setOnMyLocationClickListener(this@MapFragment)
+            setOnMyLocationChangeListener(this@MapFragment)
         }
-    }
-
-    fun updateViewFragment() {
-        supportMapFragment?.getMapAsync(this)
     }
 
     private fun customMyLocation() {
@@ -126,7 +140,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
         }
     }
 
-    private fun getUrl(quangNam: LatLng, dienNgoc: LatLng): String {
-        return "${Constant.URL_API_MAP}origin=${quangNam.latitude},${quangNam.longitude}&destination=${dienNgoc.latitude},${dienNgoc.longitude}"
+    private fun getUrl(myLocation: LatLng, travelLocation: LatLng): String {
+        return "${Constant.URL_API_MAP}origin=${myLocation.latitude},${myLocation.longitude}&destination=${travelLocation.latitude},${travelLocation.longitude}"
     }
 }
