@@ -1,6 +1,7 @@
 package vn.asiantech.travelmate.navigationdrawer
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
@@ -15,6 +16,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
@@ -39,7 +41,12 @@ import vn.asiantech.travelmate.utils.Constant
 import vn.asiantech.travelmate.utils.ValidationUtil
 import java.util.*
 
-class SettingFragment : Fragment(), View.OnClickListener {
+class SettingFragment : Fragment(), View.OnClickListener, View.OnTouchListener {
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onTouch(view: View?, event: MotionEvent?): Boolean {
+        (activity as? PopularCityActivity)?.hideKeyBoard()
+        return true
+    }
 
     private val firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
     private val fireBaseUser: FirebaseUser? = firebaseAuth?.currentUser
@@ -80,6 +87,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
         btnChangePassword.setOnClickListener(this)
         imgAvatar.setOnClickListener(this)
         btnCancel.setOnClickListener(this)
+        view.setOnTouchListener(this)
     }
 
     override fun onClick(v: View?) {

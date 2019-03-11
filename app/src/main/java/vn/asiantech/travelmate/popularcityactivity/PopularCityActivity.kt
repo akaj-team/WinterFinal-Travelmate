@@ -39,14 +39,7 @@ import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.utils.ValidationUtil
 import java.util.*
 
-class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener,
-    View.OnTouchListener {
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-        hideKeyBoard()
-        return true
-    }
-
+class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener {
     private var database: DatabaseReference? = null
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
     private var firebase: FirebaseDatabase? = FirebaseDatabase.getInstance()
@@ -90,7 +83,6 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
         initFragment()
         fragment = SettingFragment()
         getInforUser()
-        drawerLayout.setOnTouchListener(this)
     }
 
     private fun initSuggestion() {
@@ -120,7 +112,6 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                         }
                     }
                 }
-
             }
         })
     }

@@ -63,6 +63,7 @@ class LoginActivity : AppCompatActivity(), View.OnTouchListener {
         val isSharedPreferences: SharedPreferences = getSharedPreferences(Constant.FILE_NAME, Context.MODE_PRIVATE)
         if (isSharedPreferences.getBoolean(KEY_SAVE_VALUE, false)) {
             startActivity(Intent(this@LoginActivity, PopularCityActivity::class.java))
+            finish()
         }
     }
 }
