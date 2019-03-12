@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.fragment_search_hotel.*
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.extensions.hideKeyboard
 import vn.asiantech.travelmate.models.Hotel
 import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.popularcityactivity.PopularCityActivity
@@ -40,7 +41,7 @@ class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAd
             clear()
             addAll(getDataHotels(listCity[idCity].province.toString()))
         }
-        (activity as? PopularCityActivity)?.hideKeyBoard()
+        view?.hideKeyboard()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

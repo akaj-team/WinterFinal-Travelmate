@@ -33,6 +33,7 @@ import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_setting.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.extensions.getInputText
+import vn.asiantech.travelmate.extensions.hideKeyboard
 import vn.asiantech.travelmate.login.LoginActivity
 import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.popularcityactivity.PopularCityActivity
@@ -44,7 +45,7 @@ import java.util.*
 class SettingFragment : Fragment(), View.OnClickListener, View.OnTouchListener {
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(view: View?, event: MotionEvent?): Boolean {
-        (activity as? PopularCityActivity)?.hideKeyBoard()
+        view?.hideKeyboard()
         return true
     }
 

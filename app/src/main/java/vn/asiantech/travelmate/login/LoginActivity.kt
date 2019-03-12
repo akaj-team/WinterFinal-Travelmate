@@ -6,25 +6,24 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.MotionEvent
 import android.view.View
-import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_login.*
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.extensions.hideKeyboard
 import vn.asiantech.travelmate.popularcityactivity.PopularCityActivity
 import vn.asiantech.travelmate.utils.Constant
 
 class LoginActivity : AppCompatActivity(), View.OnTouchListener {
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-        hideKeyBoard()
-        return true
-    }
+    private var doubleBackToExitPressedOnce = false
 
-    private fun hideKeyBoard() {
-        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onTouch(view: View?, event: MotionEvent?): Boolean {
+        view?.hideKeyboard()
+        return true
     }
 
     private var progressDialog: ProgressDialog? = null
@@ -58,6 +57,24 @@ class LoginActivity : AppCompatActivity(), View.OnTouchListener {
         progressDialog?.dismiss()
     }
 
+    override fun onBackPressed() {
+        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+        if (fragment !is LoginFragment) {
+            supportFragmentManager.beginTransaction().apply {
+                setCustomAnimations(R.anim.left_to_right1, R.anim.left_to_right2)
+                replace(R.id.fragment_container, LoginFragment())
+                commit()
+            }
+        } else {
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed()
+                return
+            }
+            this.doubleBackToExitPressedOnce = true
+            Toast.makeText(this, getString(R.string.backAgainToExit), Toast.LENGTH_SHORT).show()
+            Handler().postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
+        }
+    }
     override fun onStart() {
         super.onStart()
         val isSharedPreferences: SharedPreferences = getSharedPreferences(Constant.FILE_NAME, Context.MODE_PRIVATE)

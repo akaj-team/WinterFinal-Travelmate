@@ -1,7 +1,6 @@
 package vn.asiantech.travelmate.popularcityactivity
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
@@ -18,10 +17,10 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.*
-import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -30,6 +29,7 @@ import kotlinx.android.synthetic.main.activity_popular_city.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.detailactivity.DetailActivity
+import vn.asiantech.travelmate.extensions.hideKeyboard
 import vn.asiantech.travelmate.login.LoginActivity
 import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.navigationdrawer.SearchHotelFragment
@@ -50,7 +50,8 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     private var user: User? = null
     private var suggestionAdapter: ArrayAdapter<String>? = null
     private var autoCompleteTextView: AutoCompleteTextView? = null
-    private var fragment: SettingFragment ?= null
+    private var settingFragment: SettingFragment ?= null
+    private var doubleBackToExitPressedOnce = false
 
     companion object {
         private const val KEY_TRAVEL = "travel"
@@ -58,7 +59,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     }
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        hideKeyBoard()
+        view?.hideKeyboard()
         Handler().postDelayed({
             val idCity = listPlace.indexOf(parent?.getItemAtPosition(position))
             Intent(this, DetailActivity::class.java).apply {
@@ -66,12 +67,6 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                 startActivity(this)
             }
         }, 500)
-
-    }
-
-    fun hideKeyBoard() {
-        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,7 +76,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
         initDrawer()
         initView()
         initFragment()
-        fragment = SettingFragment()
+        settingFragment = SettingFragment()
         getInforUser()
     }
 
@@ -125,10 +120,23 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     }
 
     override fun onBackPressed() {
+        val fragment = supportFragmentManager.findFragmentById(R.id.frameLayoutDrawer)
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()
+            if (fragment !is PopularCityFragment) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.frameLayoutDrawer, PopularCityFragment())
+                    .commit()
+            } else {
+                if (doubleBackToExitPressedOnce) {
+                    super.onBackPressed()
+                    return
+                }
+                this.doubleBackToExitPressedOnce = true
+                Toast.makeText(this, getString(R.string.backAgainToExit), Toast.LENGTH_SHORT).show()
+                Handler().postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
+            }
         }
     }
 
@@ -183,16 +191,9 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                 }
             }
             R.id.navHotel -> {
-                if (fragment is PopularCityFragment) {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.frameLayoutDrawer, SearchHotelFragment())
-                        .addToBackStack(null)
-                        .commit()
-                } else {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.frameLayoutDrawer, SearchHotelFragment())
-                        .commit()
-                }
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.frameLayoutDrawer, SearchHotelFragment())
+                    .commit()
             }
             R.id.navLogout -> {
                 firebaseAuth?.signOut()
@@ -206,24 +207,14 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                 finish()
             }
             R.id.navSetting ->
-                when (fragment) {
-                    is PopularCityFragment -> {
-                        user?.let { SettingFragment.newInstance(it) }?.let {
-                            supportFragmentManager.beginTransaction()
-                                .replace(R.id.frameLayoutDrawer, it)
-                                .addToBackStack(null)
-                                .commit()
-                        }
-                    }
-                    is SettingFragment -> {
-                        drawerLayout.closeDrawer(GravityCompat.START)
-                    }
-                    else -> {
-                        user?.let { SettingFragment.newInstance(it) }?.let {
-                            supportFragmentManager.beginTransaction()
-                                .replace(R.id.frameLayoutDrawer, it)
-                                .commit()
-                        }
+                if (fragment is SettingFragment) {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                }
+                else -> {
+                    user?.let { SettingFragment.newInstance(it) }?.let {
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.frameLayoutDrawer, it)
+                            .commit()
                     }
                 }
         }
@@ -262,7 +253,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
         when (requestCode) {
             Constant.REQUEST_ASK_PERMISSION_CAMERA -> {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    fragment?.chooseCamera()
+                    settingFragment?.chooseCamera()
                 } else {
                     val isShowRationaleCamera =
                         ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)
@@ -277,7 +268,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
             }
             Constant.REQUEST_ASK_PERMISSION_GALLERY -> {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    fragment?.chooseGallery()
+                    settingFragment?.chooseGallery()
                 } else {
                     isShowRationaleWrite = ActivityCompat.shouldShowRequestPermissionRationale(
                         this,

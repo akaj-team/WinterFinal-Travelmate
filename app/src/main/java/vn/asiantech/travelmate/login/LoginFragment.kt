@@ -41,8 +41,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
                     R.anim.left_to_right1,
                     R.anim.left_to_right2
                 )
-                add(R.id.fragment_container, SignUpFragment())
-                addToBackStack(null)
+                replace(R.id.fragment_container, SignUpFragment())
                 commit()
             }
         } else {
