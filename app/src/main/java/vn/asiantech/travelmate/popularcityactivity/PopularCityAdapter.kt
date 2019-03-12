@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package vn.asiantech.travelmate.popularcityactivity
 
 import android.support.v7.widget.RecyclerView

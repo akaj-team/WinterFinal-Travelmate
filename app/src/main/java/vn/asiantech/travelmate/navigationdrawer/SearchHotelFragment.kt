@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package vn.asiantech.travelmate.navigationdrawer
 
 import android.Manifest
@@ -140,6 +142,6 @@ class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAd
 
     override fun onResume() {
         super.onResume()
-        (activity as AppCompatActivity).getSupportActionBar()?.hide()
+        (activity as AppCompatActivity).supportActionBar?.hide()
     }
 }

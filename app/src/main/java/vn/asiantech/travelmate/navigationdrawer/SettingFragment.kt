@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package vn.asiantech.travelmate.navigationdrawer
 
 import android.Manifest

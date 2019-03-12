@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package vn.asiantech.travelmate.popularcityactivity
 
 import android.content.Intent
@@ -70,13 +72,13 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
 
     override fun onClicked(position: Int) {
         val intent = Intent(activity, DetailActivity::class.java).apply {
-            putExtra(KEY_TRAVEL, listCity.get(position))
+            putExtra(KEY_TRAVEL, listCity[position])
         }
         startActivity(intent)
     }
 
     override fun onResume() {
         super.onResume()
-        (activity as AppCompatActivity).getSupportActionBar()?.show()
+        (activity as AppCompatActivity).supportActionBar?.show()
     }
 }

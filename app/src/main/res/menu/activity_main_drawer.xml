@@ -12,19 +12,20 @@
                 android:id="@+id/navHotel"
                 android:icon="@drawable/ic_hotel_black_24dp"
                 android:title="@string/navigationDrawerHotel"/>
+
+        <item android:title="@string/navigationDrawerCommunicate">
+            <menu>
+                <group android:checkableBehavior="single">
+                    <item
+                            android:id="@+id/navLogout"
+                            android:icon="@drawable/ic_person_outline_black_24dp"
+                            android:title="@string/navigationDrawerLogout"/>
+                    <item
+                            android:id="@+id/navSetting"
+                            android:icon="@drawable/ic_settings_black_24dp"
+                            android:title="@string/navigationDrawerSetting"/>
+                </group>
+            </menu>
+        </item>
     </group>
-
-    <item android:title="@string/navigationDrawerCommunicate">
-        <menu>
-            <item
-                    android:id="@+id/navLogout"
-                    android:icon="@drawable/ic_person_outline_black_24dp"
-                    android:title="@string/navigationDrawerLogout"/>
-            <item
-                    android:id="@+id/navSetting"
-                    android:icon="@drawable/ic_settings_black_24dp"
-                    android:title="@string/navigationDrawerSetting"/>
-        </menu>
-    </item>
-
 </menu>

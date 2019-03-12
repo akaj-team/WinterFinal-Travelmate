@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package vn.asiantech.travelmate.popularcityactivity
 
 import android.Manifest
@@ -40,6 +42,7 @@ import vn.asiantech.travelmate.utils.ValidationUtil
 import java.util.*
 
 class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener {
+
     private var database: DatabaseReference? = null
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
     private var firebase: FirebaseDatabase? = FirebaseDatabase.getInstance()
@@ -67,6 +70,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                 startActivity(this)
             }
         }, 500)
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -124,11 +128,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START)
         } else {
-            if (fragment !is PopularCityFragment) {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.frameLayoutDrawer, PopularCityFragment())
-                    .commit()
-            } else {
+            if (fragment is PopularCityFragment) {
                 if (doubleBackToExitPressedOnce) {
                     super.onBackPressed()
                     return
@@ -136,6 +136,11 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                 this.doubleBackToExitPressedOnce = true
                 Toast.makeText(this, getString(R.string.backAgainToExit), Toast.LENGTH_SHORT).show()
                 Handler().postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
+            } else {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.frameLayoutDrawer, PopularCityFragment())
+                    .commit()
+                navView.setCheckedItem(R.id.navDestination)
             }
         }
     }
@@ -206,17 +211,17 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
             }
-            R.id.navSetting ->
+            R.id.navSetting -> {
                 if (fragment is SettingFragment) {
                     drawerLayout.closeDrawer(GravityCompat.START)
-                }
-                else -> {
+                } else {
                     user?.let { SettingFragment.newInstance(it) }?.let {
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.frameLayoutDrawer, it)
                             .commit()
                     }
                 }
+            }
         }
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
@@ -226,7 +231,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
         supportActionBar?.title = getString(R.string.travelMate)
     }
 
-    override fun onClick(v: View?) {
+    override fun onClick(view: View?) {
         drawerLayout.openDrawer(Gravity.START)
     }
 
