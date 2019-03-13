@@ -14,7 +14,8 @@ object Constant {
     const val URL_ICON = "http://openweathermap.org/img/w/"
     const val URL_AVATAR = "https://firebasestorage.googleapis.com/v0/b/travelmate-54563.appspot.com/o/user.jpg?alt=media&token=8fc39414-2e94-4ba5-aefa-cececedaebbc"
     const val API_MAP = "AIzaSyAJJIgsmPyumcByLrCgWdQ9tz7mNMcg62g"
-    const val URL_API_MAP = "https://maps.googleapis.com/maps/api/directions/json?sensor=false&mode=driving&key=${API_MAP}&"
+    const val URL_API_MAP_GOOGLE = "https://maps.googleapis.com/maps/api/directions/"
+    const val URL_API_MAP_MODE = "driving"
     const val ONCLICK_GALLERY = 0
     const val ONCLICK_CAMERA = 1
     const val GALLERY = 111

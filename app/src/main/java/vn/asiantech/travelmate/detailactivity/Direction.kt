@@ -6,24 +6,33 @@ import android.util.Log
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
-import com.google.gson.Gson
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import vn.asiantech.travelmate.models.GoogleMapDTO
+import vn.asiantech.travelmate.utils.APIUtil
+import vn.asiantech.travelmate.utils.Constant
 
-class GetDirection(private val url: String, private val mapGoogle: GoogleMap) : AsyncTask<Void, Void, List<List<LatLng>>>() {
+class Direction(
+    private val myLocation: LatLng,
+    private val travelLocation: LatLng,
+    private val mapGoogle: GoogleMap
+) : AsyncTask<Void, Void, List<List<LatLng>>>() {
     override fun doInBackground(vararg params: Void?): List<List<LatLng>> {
-        val data = OkHttpClient().newCall(Request.Builder().url(url).build()).execute().body()?.string()
         val result = ArrayList<List<LatLng>>()
-        try {
-            val respObj = Gson().fromJson(data, GoogleMapDTO::class.java)
-            val path = ArrayList<LatLng>()
-            for (i in 0..(respObj.routes[0].legs[0].steps.size - 1)) {
-                path.addAll(decodePolyline(respObj.routes[0].legs[0].steps[i].polyline.points))
+        val path = ArrayList<LatLng>()
+        val service = APIUtil.setUpApi(Constant.URL_API_MAP_GOOGLE)
+        val googleMapDTO: GoogleMapDTO? = service.getDirection(
+            false,
+            Constant.URL_API_MAP_MODE,
+            "${myLocation.latitude},${myLocation.longitude}",
+            "${travelLocation.latitude},${travelLocation.longitude}"
+            , Constant.API_MAP
+        ).execute().body()
+        googleMapDTO?.let { googleMap ->
+            if (googleMap.routes[0].legs[0].steps.size != 0) {
+                for (i in googleMap.routes[0].legs[0].steps.indices) {
+                    path.addAll(decodePolyline(googleMap.routes[0].legs[0].steps[i].polyline.points))
+                }
+                result.add(path)
             }
-            result.add(path)
-        } catch (e: Exception) {
-            Log.w("error", e.printStackTrace().toString())
         }
         return result
     }

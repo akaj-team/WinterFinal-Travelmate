@@ -56,9 +56,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
         mapGoogle?.let { map ->
             val myLocation = LatLng(location.latitude, location.longitude)
             locationTravel?.let { locate ->
-                getUrl(myLocation, locate)
-            }?.let {
-                GetDirection(it, map).execute()
+                Direction(myLocation, locate, map).execute()
             }
         }
     }
@@ -85,6 +83,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
             Places.initialize(it, Constant.API_MAP).toString()
         }
         activity?.let { Places.createClient(it) }
+
         val autoCompleteFragment =
             childFragmentManager.findFragmentById(R.id.autocomplete_fragment_from) as AutocompleteSupportFragment
         autoCompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG))
@@ -122,9 +121,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
             }
             if (context?.let { temp ->
                     ContextCompat.checkSelfPermission(temp, Manifest.permission.ACCESS_FINE_LOCATION)
-                } == PackageManager.PERMISSION_GRANTED) {
-                isMyLocationEnabled = true
-            }
+                } == PackageManager.PERMISSION_GRANTED) isMyLocationEnabled = true
             customMyLocation()
             setOnMyLocationButtonClickListener(this@MapFragment)
             setOnMyLocationClickListener(this@MapFragment)
@@ -138,9 +135,5 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
             addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
             setMargins(0, 180, 180, 0)
         }
-    }
-
-    private fun getUrl(myLocation: LatLng, travelLocation: LatLng): String {
-        return "${Constant.URL_API_MAP}origin=${myLocation.latitude},${myLocation.longitude}&destination=${travelLocation.latitude},${travelLocation.longitude}"
     }
 }
