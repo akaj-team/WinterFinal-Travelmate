@@ -16,34 +16,38 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.fragment_search_hotel.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.extensions.hideKeyboard
 import vn.asiantech.travelmate.models.Hotel
 import vn.asiantech.travelmate.models.Travel
+import vn.asiantech.travelmate.popularcityactivity.CustomSearchViewAdapter
 import vn.asiantech.travelmate.popularcityactivity.PopularCityActivity
 import vn.asiantech.travelmate.utils.Constant
 
-class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAdapter.OnItemClickListener {
+class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAdapter.OnItemClickListener, CustomSearchViewAdapter.OnTouchItemDropdown {
 
     private var database: DatabaseReference? = null
     private var adapterHotel: HotelAdapter? = null
     private var listHotel: MutableList<Hotel> = mutableListOf()
-    private var suggestionAdapter: ArrayAdapter<String>? = null
+    private var customSearchViewAdapter: CustomSearchViewAdapter? = null
     private var listCity: ArrayList<Travel> = arrayListOf()
-    private var listPlace: MutableList<String> = mutableListOf()
     private var firebase: FirebaseDatabase? = FirebaseDatabase.getInstance()
     private var getHotelByProvince :Query ?= null
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        val idCity = listPlace.indexOf(parent?.getItemAtPosition(position))
+        val idCity = listCity.indexOf(parent?.getItemAtPosition(position))
+        actvSearchHotel.setText(listCity[idCity].name)
         listHotel.apply {
             clear()
             addAll(getDataHotels(listCity[idCity].province.toString()))
         }
         view?.hideKeyboard()
+    }
+
+    override fun onTouchItem(view: View) {
+        view.hideKeyboard()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -53,9 +57,9 @@ class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAd
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
-        context?.let { suggestionAdapter = ArrayAdapter(it, R.layout.item_suggestion, getPlaces()) }
+        context?.let { customSearchViewAdapter = CustomSearchViewAdapter(it, R.layout.item_suggest, getPlaces(), this) }
         actvSearchHotel.apply {
-            setAdapter(suggestionAdapter)
+            setAdapter(customSearchViewAdapter)
             threshold = 1
             onItemClickListener = this@SearchHotelFragment
         }
@@ -71,7 +75,7 @@ class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAd
         }
     }
 
-    private fun getPlaces(): List<String> {
+    private fun getPlaces(): ArrayList<Travel> {
         database = firebase?.getReference(Constant.KEY_TRAVEL)
         database?.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
@@ -82,13 +86,10 @@ class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAd
                     image.getValue(Travel::class.java)?.let {
                         listCity.add(it)
                     }
-                    image.child(Constant.KEY_NAME).value?.let {
-                        listPlace.add(it.toString())
-                    }
                 }
             }
         })
-        return listPlace
+        return listCity
     }
 
     private fun getDataHotels(place: String): MutableList<Hotel> {

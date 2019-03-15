@@ -2,6 +2,7 @@
 
 package vn.asiantech.travelmate.popularcityactivity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -9,6 +10,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -16,6 +18,7 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.fragment_popular_city.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.detailactivity.DetailActivity
+import vn.asiantech.travelmate.extensions.hideKeyboard
 import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.utils.Constant
 import java.util.*
@@ -36,6 +39,13 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
         initData()
+        view.setOnTouchListener(object : View.OnTouchListener{
+            @SuppressLint("ClickableViewAccessibility")
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                v?.hideKeyboard()
+                return false
+            }
+        })
     }
 
     private fun initData(){

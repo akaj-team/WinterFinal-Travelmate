@@ -29,7 +29,7 @@ class LoginActivity : AppCompatActivity(), View.OnTouchListener {
     private var progressDialog: ProgressDialog? = null
 
     companion object {
-        private const val KEY_SAVE_VALUE = "value"
+        private const val IS_LOGIN = "isLogin"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,7 +78,7 @@ class LoginActivity : AppCompatActivity(), View.OnTouchListener {
     override fun onStart() {
         super.onStart()
         val isSharedPreferences: SharedPreferences = getSharedPreferences(Constant.FILE_NAME, Context.MODE_PRIVATE)
-        if (isSharedPreferences.getBoolean(KEY_SAVE_VALUE, false)) {
+        if (isSharedPreferences.getBoolean(IS_LOGIN, false)) {
             startActivity(Intent(this@LoginActivity, PopularCityActivity::class.java))
             finish()
         }

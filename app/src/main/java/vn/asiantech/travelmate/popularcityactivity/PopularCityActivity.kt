@@ -3,6 +3,7 @@
 package vn.asiantech.travelmate.popularcityactivity
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
@@ -20,7 +21,6 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
@@ -41,36 +41,37 @@ import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.utils.ValidationUtil
 import java.util.*
 
-class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener {
+class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener,
+    CustomSearchViewAdapter.OnTouchItemDropdown {
 
     private var database: DatabaseReference? = null
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
     private var firebase: FirebaseDatabase? = FirebaseDatabase.getInstance()
     private var listCity: ArrayList<Travel> = arrayListOf()
-    private var listPlace: MutableList<String> = mutableListOf()
     private var fireBaseUser: FirebaseUser? = firebaseAuth?.currentUser
     private var progressDialog: ProgressDialog? = null
     private var user: User? = null
-    private var suggestionAdapter: ArrayAdapter<String>? = null
+    private var customSearchViewAdapter: CustomSearchViewAdapter? = null
     private var autoCompleteTextView: AutoCompleteTextView? = null
     private var settingFragment: SettingFragment ?= null
     private var doubleBackToExitPressedOnce = false
 
     companion object {
         private const val KEY_TRAVEL = "travel"
-        private const val KEY_SAVE_VALUE = "value"
+        private const val IS_LOGIN = "isLogin"
     }
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        view?.hideKeyboard()
-        Handler().postDelayed({
-            val idCity = listPlace.indexOf(parent?.getItemAtPosition(position))
-            Intent(this, DetailActivity::class.java).apply {
-                putExtra(KEY_TRAVEL, listCity[idCity])
-                startActivity(this)
-            }
-        }, 500)
+        val idCity = listCity.indexOf(parent?.getItemAtPosition(position))
+        autoCompleteTextView?.setText(listCity[idCity].name)
+        Intent(this, DetailActivity::class.java).apply {
+            putExtra(KEY_TRAVEL, listCity[idCity])
+            startActivity(this)
+        }
+    }
 
+    override fun onTouchItem(view: View) {
+        view.hideKeyboard()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,10 +85,14 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
         getInforUser()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun initSuggestion() {
-        applicationContext?.let { suggestionAdapter = ArrayAdapter(it, R.layout.item_suggestion, getPlaces()) }
+        applicationContext?.let {
+            customSearchViewAdapter = CustomSearchViewAdapter(it, R.layout.item_suggest, getPlaces(),this)
+        }
+        autoCompleteTextView?.dropDownWidth = resources.displayMetrics.widthPixels
         autoCompleteTextView?.apply {
-            setAdapter(suggestionAdapter)
+            setAdapter(customSearchViewAdapter)
             threshold = 1
             width = maxWidth
             onItemClickListener = this@PopularCityActivity
@@ -150,13 +155,14 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
         autoCompleteTextView = menu.findItem(R.id.actionSearch).actionView as AutoCompleteTextView
         autoCompleteTextView?.apply {
             maxLines = 1
+            maxWidth = Int.MAX_VALUE
             hint = getString(R.string.search)
         }
         initSuggestion()
         return super.onCreateOptionsMenu(menu)
     }
 
-    private fun getPlaces(): MutableList<String> {
+    private fun getPlaces(): ArrayList<Travel> {
         database = firebase?.getReference(Constant.KEY_TRAVEL)
         database?.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
@@ -167,13 +173,10 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                     image.getValue(Travel::class.java)?.let {
                         listCity.add(it)
                     }
-                    image.child(Constant.KEY_NAME).value?.let {
-                        listPlace.add(it.toString())
-                    }
                 }
             }
         })
-        return listPlace
+        return listCity
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -204,7 +207,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                 firebaseAuth?.signOut()
                 getSharedPreferences(Constant.FILE_NAME, Context.MODE_PRIVATE).apply {
                     edit().apply {
-                        putBoolean(KEY_SAVE_VALUE, false)
+                        putBoolean(IS_LOGIN, false)
                         apply()
                     }
                 }
@@ -313,5 +316,10 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                 context.startActivity(this)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        autoCompleteTextView?.setText("")
     }
 }

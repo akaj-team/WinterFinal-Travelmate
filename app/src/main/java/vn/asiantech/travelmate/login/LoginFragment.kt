@@ -20,7 +20,7 @@ import vn.asiantech.travelmate.utils.Constant
 class LoginFragment : Fragment(), View.OnClickListener {
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
     companion object {
-        private const val KEY_SAVE_VALUE = "value"
+        private const val IS_LOGIN = "isLogin"
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_login, container, false)
@@ -71,7 +71,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
     private fun saveSharedPreferences() {
         activity?.getSharedPreferences(Constant.FILE_NAME, Context.MODE_PRIVATE)?.apply {
             edit()?.apply {
-                putBoolean(KEY_SAVE_VALUE, true)
+                putBoolean(IS_LOGIN, true)
                 apply()
             }
         }
