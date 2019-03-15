@@ -8,11 +8,15 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import com.google.android.gms.maps.model.LatLng
 import vn.asiantech.travelmate.R
+import vn.asiantech.travelmate.models.PlaceMap
 import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.utils.Constant
 
 class DetailActivity : AppCompatActivity() {
+    var originPlace = PlaceMap(0, "Your location", LatLng(1.0, 1.0))
+    var destinationPlace = PlaceMap(0, "Choose destination...", LatLng(1.0, 1.0))
     private var progressDialog: ProgressDialog? = null
     private var travel: Travel? = null
 

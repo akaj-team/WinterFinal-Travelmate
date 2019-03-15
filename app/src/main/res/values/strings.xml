@@ -74,7 +74,7 @@
     <string name="noteGallery">gallery</string>
     <string name="noteCamera">camera</string>
     <string name="optionChoose">Please choose</string>
-    <string name="noteAccess">App needs to access the </string>
+    <string name="noteAccess">App needs to access the</string>
     <string name="setting">SETTINGS</string>
     <string name="cancel">don\'t allow</string>
     <string name="data">data</string>
@@ -82,4 +82,5 @@
     <string name="camera">Capture photo from camera</string>
     <string name="action">Select Action</string>
     <string name="percentProcess">%</string>
+    <string name="fragmentSearchEdtSearch">Search...</string>
 </resources>

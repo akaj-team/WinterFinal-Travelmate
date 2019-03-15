@@ -10,8 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
-import android.widget.Toast
-import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -19,17 +17,13 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import kotlinx.android.synthetic.main.fragment_map.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.utils.Constant
-import java.util.*
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
-    GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationChangeListener {
+    GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationChangeListener, View.OnClickListener {
     private var supportMapFragment: SupportMapFragment? = null
     private var travel: Travel? = null
     private var mapGoogle: GoogleMap? = null
@@ -56,7 +50,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
         mapGoogle?.let { map ->
             val myLocation = LatLng(location.latitude, location.longitude)
             locationTravel?.let { locate ->
-                Direction(myLocation, locate, map).execute()
+                //Direction(myLocation, locate, map).execute()
             }
         }
     }
@@ -70,6 +64,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        rlSearchFrom.setOnClickListener(this)
+        rlSearchTo.setOnClickListener(this)
         initViews()
     }
 
@@ -79,33 +75,31 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
             fragmentManager?.beginTransaction()?.replace(R.id.flMap, it)?.commit()
             it.getMapAsync(this)
         }
-        context?.let {
-            Places.initialize(it, Constant.API_MAP).toString()
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.rlSearchFrom -> {
+                fragmentManager?.beginTransaction()?.setCustomAnimations(
+                    R.anim.right_to_left1,
+                    R.anim.right_to_left2,
+                    R.anim.left_to_right1,
+                    R.anim.left_to_right2
+                )
+                    ?.replace(R.id.fragment_container, SearchMapFragment.newInstance(1))
+                    ?.addToBackStack("dfd")?.commit()
+            }
+            R.id.rlSearchTo -> {
+                fragmentManager?.beginTransaction()?.setCustomAnimations(
+                    R.anim.right_to_left1,
+                    R.anim.right_to_left2,
+                    R.anim.left_to_right1,
+                    R.anim.left_to_right2
+                )
+                    ?.replace(R.id.fragment_container, SearchMapFragment.newInstance(2))
+                    ?.addToBackStack("dfd")?.commit()
+            }
         }
-        activity?.let { Places.createClient(it) }
-
-        val autoCompleteFragment =
-            childFragmentManager.findFragmentById(R.id.autocomplete_fragment_from) as AutocompleteSupportFragment
-        autoCompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG))
-        autoCompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-            override fun onPlaceSelected(place: Place) {
-                val placeLocate = place.latLng
-                mapGoogle?.run {
-                    clear()
-                    addMarker(placeLocate?.let { temp -> MarkerOptions().position(temp).title(place.name) })
-                    addMarker(locationTravel?.let { temp -> MarkerOptions().position(temp).title(travel?.name) })
-                        .setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_location_travel))
-                    moveCamera(CameraUpdateFactory.newLatLngZoom(placeLocate, Constant.MAP_ZOOM))
-                    uiSettings?.let { temp ->
-                        temp.isZoomControlsEnabled = true
-                    }
-                }
-            }
-
-            override fun onError(status: Status) {
-                Toast.makeText(context, status.toString(), Toast.LENGTH_SHORT).show()
-            }
-        })
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -133,7 +127,24 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
         (supportMapFragment?.view?.findViewById<View>("2".toInt())?.layoutParams as RelativeLayout.LayoutParams).apply {
             addRule(RelativeLayout.ALIGN_PARENT_TOP, 0)
             addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
-            setMargins(0, 180, 180, 0)
+            setMargins(0, 300, 180, 0)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val originPlace = (activity as DetailActivity).originPlace
+        val destinationPlace = (activity as DetailActivity).destinationPlace
+        tvName.text = originPlace.name
+        tvNameTo.text = destinationPlace.name
+        if (originPlace.position == 1 && destinationPlace.position == 2) {
+            mapGoogle?.let { map ->
+                Direction(
+                    originPlace.latLng,
+                    destinationPlace.latLng,
+                    map
+                ).execute()
+            }
         }
     }
 }

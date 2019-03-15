@@ -1,0 +1,66 @@
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorWhite"
+        android:orientation="vertical">
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/rlSearch"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/bg_shape_round_strock"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp">
+
+        <ImageView
+                android:id="@+id/imgBack"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/ic_keyboard_arrow_left_dark_36dp"/>
+
+        <EditText
+                android:layout_weight="8"
+                android:id="@+id/edtSearch"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:hint="@string/fragmentSearchEdtSearch"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:singleLine="true"/>
+
+        <ImageView
+                android:id="@+id/imgClear"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:padding="7dp"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/ic_clear_black_36dp"
+                android:visibility="gone"/>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.CardView
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycleView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorWhite"/>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

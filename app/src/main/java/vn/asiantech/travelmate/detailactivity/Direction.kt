@@ -2,7 +2,6 @@ package vn.asiantech.travelmate.detailactivity
 
 import android.graphics.Color
 import android.os.AsyncTask
-import android.util.Log
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
@@ -27,12 +26,10 @@ class Direction(
             , Constant.API_MAP
         ).execute().body()
         googleMapDTO?.let { googleMap ->
-            if (googleMap.routes[0].legs[0].steps.size != 0) {
-                for (i in googleMap.routes[0].legs[0].steps.indices) {
-                    path.addAll(decodePolyline(googleMap.routes[0].legs[0].steps[i].polyline.points))
-                }
-                result.add(path)
+            for (i in googleMap.routes[0].legs[0].steps.indices) {
+                path.addAll(decodePolyline(googleMap.routes[0].legs[0].steps[i].polyline.points))
             }
+            result.add(path)
         }
         return result
     }
