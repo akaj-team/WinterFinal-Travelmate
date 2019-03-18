@@ -50,7 +50,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButton
         mapGoogle?.let { map ->
             val myLocation = LatLng(location.latitude, location.longitude)
             locationTravel?.let { locate ->
-                //Direction(myLocation, locate, map).execute()
+                Direction(myLocation, locate, map).execute()
             }
         }
     }
