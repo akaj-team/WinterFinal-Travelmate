@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#2196F3</color>
-    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorPrimaryDark">#009688</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorLightYellow">#FFD3EF92</color>
     <color name="colorBlack">#070707</color>
@@ -11,8 +11,11 @@
     <color name="colorBlueBeach">#00C3D3</color>
     <color name="colorDark">#323232</color>
     <color name="colorBlue">#3283F3</color>
-    <color name="colorBlueGreen">#129FAD</color>
-    <color name="colorYellow">#E6F553</color>
+    <color name="colorBlueGreen">#0D98A5</color>
+    <color name="colorYellow">#FFC107</color>
     <color name="colorRed">#f20323</color>
     <color name="colorDarkCream">#F0F1EC</color>
+    <!--item Restaurant-->
+    <color name="colorRestaurantName">#4E4E4E</color>
+    <color name="colorPrice">#504F4F</color>
 </resources>

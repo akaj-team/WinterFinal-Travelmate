@@ -49,6 +49,7 @@
     <string name="action_settings">Settings</string>
     <string name="navigationDrawerDestination">Destination</string>
     <string name="navigationDrawerHotel">Hotel</string>
+    <string name="navigationDrawerFood">Food and drink</string>
     <string name="navigationDrawerCommunicate">Communicate</string>
     <string name="navigationDrawerLogout">Logout</string>
     <string name="navigationDrawerSetting">Change password and avatar</string>
@@ -74,7 +75,7 @@
     <string name="noteGallery">gallery</string>
     <string name="noteCamera">camera</string>
     <string name="optionChoose">Please choose</string>
-    <string name="noteAccess">App needs to access the </string>
+    <string name="noteAccess">App needs to access the</string>
     <string name="setting">SETTINGS</string>
     <string name="cancel">don\'t allow</string>
     <string name="data">data</string>

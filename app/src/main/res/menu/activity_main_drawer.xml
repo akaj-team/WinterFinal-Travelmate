@@ -12,6 +12,10 @@
                 android:id="@+id/navHotel"
                 android:icon="@drawable/ic_hotel_black_24dp"
                 android:title="@string/navigationDrawerHotel"/>
+        <item
+                android:id="@+id/navFood"
+                android:icon="@drawable/ic_free_breakfast_black_24dp"
+                android:title="@string/navigationDrawerFood"/>
     </group>
 
     <item android:title="@string/navigationDrawerCommunicate">

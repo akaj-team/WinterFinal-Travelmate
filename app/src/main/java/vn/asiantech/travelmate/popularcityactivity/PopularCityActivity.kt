@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -14,10 +15,8 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.view.Gravity
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.util.AttributeSet
+import android.view.*
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -26,10 +25,11 @@ import kotlinx.android.synthetic.main.activity_popular_city.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.login.LoginActivity
+import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.navigationdrawer.SearchHotelFragment
+import vn.asiantech.travelmate.navigationdrawer.SearchRestaurantFragment
 import vn.asiantech.travelmate.navigationdrawer.SettingFragment
 import vn.asiantech.travelmate.utils.Constant
-import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.utils.ValidationUtil
 
 class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
@@ -38,7 +38,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     private var fireBaseUser: FirebaseUser? = firebaseAuth?.currentUser
     private var progressDialog: ProgressDialog? = null
     var user: User? = null
-    private var fragment: SettingFragment ?= null
+    private var fragment: SettingFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +60,8 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 navView.post {
-                    user = path?.let { ValidationUtil.getValuePathChild(it) }?.let { dataSnapshot.child(it).getValue(User::class.java) }
+                    user = path?.let { ValidationUtil.getValuePathChild(it) }
+                        ?.let { dataSnapshot.child(it).getValue(User::class.java) }
                     user?.let {
                         with(it) {
                             Glide.with(this@PopularCityActivity).load(avatar).into(imgAvatar)
@@ -74,7 +75,13 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
 
     private fun initDrawer() {
         setSupportActionBar(toolbar)
-        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigationDrawerOpen, R.string.navigationDrawerClose)
+        val toggle = ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            toolbar,
+            R.string.navigationDrawerOpen,
+            R.string.navigationDrawerClose
+        )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         navView.setNavigationItemSelectedListener(this)
@@ -115,6 +122,11 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                     .replace(R.id.frameLayoutDrawer, SearchHotelFragment())
                     .commit()
             }
+            R.id.navFood -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.frameLayoutDrawer, SearchRestaurantFragment()).addToBackStack(null)
+                    .commit()
+            }
             R.id.navLogout -> {
                 firebaseAuth?.signOut()
                 startActivity(Intent(this, LoginActivity::class.java))
@@ -153,7 +165,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
         }
     }
 
-    fun dismissProgressbarDialog(){
+    fun dismissProgressbarDialog() {
         progressDialog?.dismiss()
     }
 
