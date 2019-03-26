@@ -6,13 +6,9 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.GridLayoutManager
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.fragment_popular_city.*
@@ -27,11 +23,13 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
     private var firebase: FirebaseDatabase? = FirebaseDatabase.getInstance()
     private var listCity: ArrayList<Travel> = arrayListOf()
     private var popularCityAdapter: PopularCityAdapter? = null
+    private var register: MenuItem? = null
 
     companion object {
         private const val KEY_TRAVEL = "travel"
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_popular_city, container, false)
     }
 
@@ -87,8 +85,9 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
         startActivity(intent)
     }
 
-    override fun onResume() {
-        super.onResume()
-        (activity as AppCompatActivity).supportActionBar?.show()
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        register = menu.findItem(R.id.actionSearch)
+        register?.isVisible = true
+        super.onPrepareOptionsMenu(menu)
     }
 }

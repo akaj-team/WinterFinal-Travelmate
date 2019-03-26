@@ -5,6 +5,7 @@
             android:id="@+id/actionSearch"
             android:icon="@drawable/ic_search_white_24dp"
             android:title="@string/action_settings"
+            android:visible="false"
             app:actionViewClass="android.support.v7.widget.AppCompatAutoCompleteTextView"
             app:showAsAction="ifRoom|collapseActionView"/>
 </menu>

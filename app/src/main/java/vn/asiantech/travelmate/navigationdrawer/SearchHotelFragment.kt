@@ -140,9 +140,4 @@ class SearchHotelFragment : Fragment(), AdapterView.OnItemClickListener, HotelAd
         }
         return true
     }
-
-    override fun onResume() {
-        super.onResume()
-        (activity as AppCompatActivity).supportActionBar?.hide()
-    }
 }
