@@ -18,4 +18,7 @@
     <!--item Restaurant-->
     <color name="colorRestaurantName">#4E4E4E</color>
     <color name="colorPrice">#504F4F</color>
+    <color name="colorRestaurantProfile">#F5F5F5</color>
+    <color name="colorRestaurantDetail">#4D4B4B</color>
+    <color name="colorTransparent">#C3070707</color>
 </resources>

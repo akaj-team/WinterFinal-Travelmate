@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -15,8 +14,10 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.util.AttributeSet
-import android.view.*
+import android.view.Gravity
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -114,7 +115,9 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                 if (fragment is PopularCityFragment) {
                     drawerLayout.closeDrawer(GravityCompat.START)
                 } else {
-                    startActivity(Intent(this, PopularCityActivity::class.java))
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.frameLayoutDrawer, PopularCityFragment())
+                        .commit()
                 }
             }
             R.id.navHotel -> {

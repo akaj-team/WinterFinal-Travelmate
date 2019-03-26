@@ -37,7 +37,6 @@ class RestaurantDetailFragment : Fragment() {
         }
         imageAdapter = context?.let { ImageAdapter(it, listImage) }
         viewPagerSlideImage.adapter = imageAdapter
-        //viewPagerSlideImage.setPageTransformer(true, ZoomOutSlideTransformer())
         circleIndicator.setViewPager(viewPagerSlideImage)
         val handler = Handler()
         val update = Runnable {
