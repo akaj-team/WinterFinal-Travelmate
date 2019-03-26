@@ -1,7 +1,6 @@
 package vn.asiantech.travelmate.utils
 
 object Constant {
-    const val PICK_IMAGE_REQUEST = 71
     const val CHECK_SIGNUP = "OK"
     const val KEY_ACCOUNT = "account"
     const val KEY_PASSWORD = "password"
@@ -14,10 +13,15 @@ object Constant {
     const val KEY_TRAVEL = "travel"
     const val URL_ICON = "http://openweathermap.org/img/w/"
     const val URL_AVATAR = "https://firebasestorage.googleapis.com/v0/b/travelmate-54563.appspot.com/o/user.jpg?alt=media&token=8fc39414-2e94-4ba5-aefa-cececedaebbc"
+    const val API_MAP = "AIzaSyAJJIgsmPyumcByLrCgWdQ9tz7mNMcg62g"
+    const val URL_API_MAP_GOOGLE = "https://maps.googleapis.com/maps/api/directions/"
+    const val URL_API_MAP_MODE = "driving"
     const val ONCLICK_GALLERY = 0
     const val ONCLICK_CAMERA = 1
     const val GALLERY = 111
     const val CAMERA = 222
     const val REQUEST_ASK_PERMISSION_CAMERA = 333
     const val REQUEST_ASK_PERMISSION_GALLERY = 444
+    const val REQUEST_CODE_ASK_PERMISSIONS_LOCATION = 123
+    const val MAP_ZOOM = 8F
 }

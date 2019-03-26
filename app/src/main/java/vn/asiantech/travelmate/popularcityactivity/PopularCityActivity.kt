@@ -26,10 +26,10 @@ import kotlinx.android.synthetic.main.activity_popular_city.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 import vn.asiantech.travelmate.R
 import vn.asiantech.travelmate.login.LoginActivity
+import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.navigationdrawer.SearchHotelFragment
 import vn.asiantech.travelmate.navigationdrawer.SettingFragment
 import vn.asiantech.travelmate.utils.Constant
-import vn.asiantech.travelmate.models.User
 import vn.asiantech.travelmate.utils.ValidationUtil
 
 class PopularCityActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
@@ -38,7 +38,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
     private var fireBaseUser: FirebaseUser? = firebaseAuth?.currentUser
     private var progressDialog: ProgressDialog? = null
     var user: User? = null
-    private var fragment: SettingFragment ?= null
+    private var fragment: SettingFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +60,8 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 navView.post {
-                    user = path?.let { ValidationUtil.getValuePathChild(it) }?.let { dataSnapshot.child(it).getValue(User::class.java) }
+                    user = path?.let { ValidationUtil.getValuePathChild(it) }
+                        ?.let { dataSnapshot.child(it).getValue(User::class.java) }
                     user?.let {
                         with(it) {
                             Glide.with(this@PopularCityActivity).load(avatar).into(imgAvatar)
@@ -74,7 +75,13 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
 
     private fun initDrawer() {
         setSupportActionBar(toolbar)
-        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigationDrawerOpen, R.string.navigationDrawerClose)
+        val toggle = ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            toolbar,
+            R.string.navigationDrawerOpen,
+            R.string.navigationDrawerClose
+        )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         navView.setNavigationItemSelectedListener(this)
@@ -107,7 +114,9 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
                 if (fragment is PopularCityFragment) {
                     drawerLayout.closeDrawer(GravityCompat.START)
                 } else {
-                    startActivity(Intent(this, PopularCityActivity::class.java))
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.frameLayoutDrawer, PopularCityFragment())
+                        .commit()
                 }
             }
             R.id.navHotel -> {
@@ -153,7 +162,7 @@ class PopularCityActivity : AppCompatActivity(), View.OnClickListener, Navigatio
         }
     }
 
-    fun dismissProgressbarDialog(){
+    fun dismissProgressbarDialog() {
         progressDialog?.dismiss()
     }
 

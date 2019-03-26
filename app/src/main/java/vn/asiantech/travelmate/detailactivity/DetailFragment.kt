@@ -41,6 +41,7 @@ class DetailFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         getWeatherData(travel?.province.toString())
         cvWeather.setOnClickListener(this)
+        imgMap.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -51,7 +52,14 @@ class DetailFragment : Fragment(), View.OnClickListener {
                 R.anim.left_to_right1,
                 R.anim.left_to_right2
             )
-            travel?.let { WeatherFragment.newInstance(it) }?.let { replace(R.id.fragment_container, it) }
+            when (v?.id) {
+                R.id.cvWeather -> {
+                    travel?.let { WeatherFragment.newInstance(it) }?.let { replace(R.id.fragment_container, it) }
+                }
+                R.id.imgMap -> {
+                    travel?.let { MapFragment.newInstance(it) }?.let { replace(R.id.fragment_container, it) }
+                }
+            }
             addToBackStack(null)
             commit()
         }
