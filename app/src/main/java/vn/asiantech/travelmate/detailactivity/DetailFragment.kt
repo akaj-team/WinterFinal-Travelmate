@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package vn.asiantech.travelmate.detailactivity
 
 import android.os.Bundle
@@ -32,7 +34,7 @@ class DetailFragment : Fragment(), View.OnClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         arguments?.let {
-            travel = arguments?.getParcelable(KEY_TRAVEL)
+            travel = it.getParcelable(KEY_TRAVEL)
         }
         return inflater.inflate(R.layout.fragment_detail, container, false)
     }
