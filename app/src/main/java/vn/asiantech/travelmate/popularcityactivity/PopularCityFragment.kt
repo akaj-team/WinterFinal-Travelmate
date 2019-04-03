@@ -1,29 +1,35 @@
+@file:Suppress("DEPRECATION")
+
 package vn.asiantech.travelmate.popularcityactivity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.GridLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.fragment_popular_city.*
 import vn.asiantech.travelmate.R
-import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.detailactivity.DetailActivity
+import vn.asiantech.travelmate.extensions.hideKeyboard
+import vn.asiantech.travelmate.models.Travel
 import vn.asiantech.travelmate.utils.Constant
+import java.util.*
 
 class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
-    private var database: DatabaseReference ?= null
     private var firebase: FirebaseDatabase? = FirebaseDatabase.getInstance()
     private var listCity: ArrayList<Travel> = arrayListOf()
     private var popularCityAdapter: PopularCityAdapter? = null
-    private val keyTravel = "travel"
+    private var register: MenuItem? = null
 
+    companion object {
+        private const val KEY_TRAVEL = "travel"
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_popular_city, container, false)
     }
 
@@ -31,12 +37,19 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
         initData()
+        view.setOnTouchListener(object : View.OnTouchListener{
+            @SuppressLint("ClickableViewAccessibility")
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                v?.hideKeyboard()
+                return false
+            }
+        })
     }
 
     private fun initData(){
         (activity as? PopularCityActivity)?.showProgressbarDialog()
-        database = firebase?.getReference(Constant.KEY_TRAVEL)
-        database?.addValueEventListener(object : ValueEventListener {
+        val query: Query? = firebase?.getReference(Constant.KEY_TRAVEL)?.limitToFirst(Constant.NUMBER_ITEM)
+        query?.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(dataSnapshot: DatabaseError) {
                 Toast.makeText(context, getString(R.string.checkInternet), Toast.LENGTH_SHORT).show()
                 (activity as? PopularCityActivity)?.dismissProgressbarDialog()
@@ -44,8 +57,9 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (image in dataSnapshot.children) {
-                    val city = image.getValue(Travel::class.java)
-                    city?.let { listCity.add(it) }
+                    image.getValue(Travel::class.java)?.let {
+                        listCity.add(it)
+                    }
                 }
                 popularCityAdapter?.notifyDataSetChanged()
                 (activity as? PopularCityActivity)?.dismissProgressbarDialog()
@@ -66,8 +80,14 @@ class PopularCityFragment : Fragment(), PopularCityAdapter.OnItemClickListener {
 
     override fun onClicked(position: Int) {
         val intent = Intent(activity, DetailActivity::class.java).apply {
-            putExtra(keyTravel, listCity.get(position))
+            putExtra(KEY_TRAVEL, listCity[position])
         }
         startActivity(intent)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        register = menu.findItem(R.id.actionSearch)
+        register?.isVisible = true
+        super.onPrepareOptionsMenu(menu)
     }
 }

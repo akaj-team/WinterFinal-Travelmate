@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">WinterFinal-Travelmate</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="todo">TODO</string>
     <string name="checkInternet">please check the internet</string>
@@ -82,4 +81,5 @@
     <string name="camera">Capture photo from camera</string>
     <string name="action">Select Action</string>
     <string name="percentProcess">%</string>
+    <string name="backAgainToExit">Please click BACK again to exit</string>
 </resources>

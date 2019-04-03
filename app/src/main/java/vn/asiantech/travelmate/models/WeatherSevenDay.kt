@@ -6,7 +6,7 @@ import kotlin.math.ceil
 data class WeatherList(
 
     @SerializedName("city")
-    var city: CityAPIWeather,
+    var city: CityWeatherApi,
 
     @SerializedName("cod")
     var cod: String,
@@ -22,7 +22,7 @@ data class WeatherList(
     var list: List<WeatherSevenDay>
 )
 
-data class CityAPIWeather(
+data class CityWeatherApi(
 
     @SerializedName("id")
     var id: Int,

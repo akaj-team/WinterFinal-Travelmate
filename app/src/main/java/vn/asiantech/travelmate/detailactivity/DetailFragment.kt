@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package vn.asiantech.travelmate.detailactivity
 
 import android.os.Bundle
@@ -32,7 +34,7 @@ class DetailFragment : Fragment(), View.OnClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         arguments?.let {
-            travel = arguments?.getParcelable(KEY_TRAVEL)
+            travel = it.getParcelable(KEY_TRAVEL)
         }
         return inflater.inflate(R.layout.fragment_detail, container, false)
     }
@@ -58,31 +60,29 @@ class DetailFragment : Fragment(), View.OnClickListener {
     }
 
     private fun getWeatherData(city: String) {
-        if (activity is DetailActivity) {
-            (activity as DetailActivity).showProgressbarDialog()
-            val service = APIUtil.setUpApi(Constant.BASE_URL)
-            service.getCity(city, Constant.UNITS, Constant.APP_ID)?.enqueue(object : Callback<WeatherResponse> {
-                override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>?) {
-                    (activity as? DetailActivity)?.dismissProgressbarDialog()
-                    response?.body()?.let {
-                        with(it) {
-                            tvTemperature.text = getString(R.string.degreeC, tempDisplay)
-                            tvHumidity.text = getString(R.string.percent, humidityDisplay)
-                            tvWind.text = getString(R.string.meterOverSecond, speedDisplay)
-                            tvDescription.text = travel?.description
-                            tvNamePlace.text = travel?.name
-                            Glide.with(this@DetailFragment).load(travel?.image).into(imgCity)
-                            Glide.with(this@DetailFragment).load("${Constant.URL_ICON}$iconDisplay.png")
-                                .into(imgIconWeather)
-                        }
+        (activity as? DetailActivity)?.showProgressbarDialog()
+        val service = APIUtil.setUpApi(Constant.BASE_URL)
+        service.getCity(city, Constant.UNITS, Constant.APP_ID)?.enqueue(object : Callback<WeatherResponse> {
+            override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>?) {
+                (activity as? DetailActivity)?.dismissProgressbarDialog()
+                response?.body()?.let {
+                    with(it) {
+                        tvTemperature.text = getString(R.string.degreeC, tempDisplay)
+                        tvHumidity.text = getString(R.string.percent, humidityDisplay)
+                        tvWind.text = getString(R.string.meterOverSecond, speedDisplay)
+                        tvDescription.text = travel?.description
+                        tvNamePlace.text = travel?.name
+                        Glide.with(this@DetailFragment).load(travel?.image).into(imgCity)
+                        Glide.with(this@DetailFragment).load("${Constant.URL_ICON}$iconDisplay.png")
+                            .into(imgIconWeather)
                     }
                 }
+            }
 
-                override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
-                    (activity as? DetailActivity)?.dismissProgressbarDialog()
-                    Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
-                }
-            })
-        }
+            override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
+                (activity as? DetailActivity)?.dismissProgressbarDialog()
+                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }

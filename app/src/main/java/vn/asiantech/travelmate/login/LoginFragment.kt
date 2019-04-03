@@ -1,5 +1,6 @@
 package vn.asiantech.travelmate.login
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -18,7 +19,9 @@ import vn.asiantech.travelmate.utils.Constant
 
 class LoginFragment : Fragment(), View.OnClickListener {
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
-
+    companion object {
+        private const val IS_LOGIN = "isLogin"
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
@@ -38,8 +41,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
                     R.anim.left_to_right1,
                     R.anim.left_to_right2
                 )
-                add(R.id.fragment_container, SignUpFragment())
-                addToBackStack(null)
+                replace(R.id.fragment_container, SignUpFragment())
                 commit()
             }
         } else {
@@ -50,20 +52,27 @@ class LoginFragment : Fragment(), View.OnClickListener {
                 firebaseAuth?.signInWithEmailAndPassword(emailLogin, passwordLogin)
                     ?.addOnCompleteListener { task: Task<AuthResult> ->
                         if (task.isSuccessful) {
+                            (activity as? LoginActivity)?.dismissProgressbarDialog()
                             Toast.makeText(context, getString(R.string.loginFragmentSuccessful), Toast.LENGTH_SHORT).show()
+                            saveSharedPreferences()
+                            startActivity(Intent(activity, PopularCityActivity::class.java))
                             activity?.finish()
-                            val intent = Intent(activity, PopularCityActivity::class.java).apply {
-                                putExtra(Constant.KEY_PASSWORD, passwordLogin)
-                            }
-                            startActivity(intent)
-                            (activity as? LoginActivity)?.dismissProgressbarDialog()
                         } else {
-                            Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
                             (activity as? LoginActivity)?.dismissProgressbarDialog()
+                            Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
                         }
                     }
             } else {
                 Toast.makeText(context, getString(R.string.inputAccount), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun saveSharedPreferences() {
+        activity?.getSharedPreferences(Constant.FILE_NAME, Context.MODE_PRIVATE)?.apply {
+            edit()?.apply {
+                putBoolean(IS_LOGIN, true)
+                apply()
             }
         }
     }
